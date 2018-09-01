@@ -1,0 +1,26 @@
+<div class="cui-tab-header">
+  <div class="cui-tab-header-hover"></div>
+  <div class="flaticon-prev cui-tab-prev"></div>
+  <div class="flaticon-next cui-tab-next"></div>
+  <div class="cui-tab-labels">
+    <div *ngFor="let tab of tabsRef;let i = index;" class="cui-tab-label {{currentIndex==i?'active':''}} {{tab.disabled?'disabled':''}}"
+      (click)="active(i)" (touchstart)="active(i)" #label>
+      <div class="cui-tab-label-text">
+        <ng-container *ngIf="tab.label; else tab.labelRef;">
+          {{tab.label}}
+        </ng-container>
+      </div>
+      <span *ngIf="tab.onClose" class="flaticon-close" (click)="tab.onClose(i)"></span>
+    </div>
+  </div>
+</div>
+<div class="cui-tab-body">
+  <div class="cui-tab-contents">
+    <div *ngFor="let tab of tabsRef;let i = index" class="cui-tab-content {{currentIndex==i?'active':''}}">
+      <ng-container *ngTemplateOutlet="tab.templateRef">
+      </ng-container>
+      <ng-container *ngTemplateOutlet="tab.contentRef">
+      </ng-container>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<div #menuScreen class="main-menu-screen">
+</div>
+<div #menu class="main-menu">
+  <div class="main-menu-content">
+    <div class="info" [routerLink]="AppRoute.Main.Default">FP</div>
+    <app-accordion [array]="routes"></app-accordion>
+    <div class="cui-button-row center">
+      <button class="cui-button bg-accent" (click)='logout()'>登出</button>
+    </div>
+  </div>
+</div>

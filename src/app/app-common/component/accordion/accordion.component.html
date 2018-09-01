@@ -1,0 +1,13 @@
+<div class="accordion-list">
+  <ul>
+    <li *ngFor="let route of routes" class="item {{route.active?'active':''}}">
+      <div *ngIf="route.type==0">
+        <div class="text {{route.className}}" (click)="open(route,child)">{{route.name}}</div>
+        <div class="child" #child>
+          <app-accordion [array]="nextArray[route.id]"></app-accordion>
+        </div>
+      </div>
+      <a *ngIf="route.type==1" class="text {{route.className}}" [routerLink]="route.path" [routerLinkActive]="activeClassName">{{route.name}}</a>
+    </li>
+  </ul>
+</div>

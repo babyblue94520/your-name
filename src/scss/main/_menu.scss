@@ -1,0 +1,72 @@
+@import "base/function";
+@import "base/themes";
+.main-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  float: left;
+  display: none;
+  height: 100%;
+  min-width: 250px;
+  border-right: 1px solid #ddd;
+  opacity: 0;
+  overflow-y: auto;
+  background-color: $primary-bg-color1;
+  pointer-events: none;
+  @include transition(all .3s ease-in-out);
+  &.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .main-menu-content {
+    display: inline-block;
+    width: 100%;
+    .info {
+      width: 100%;
+      font-size: 10em;
+      letter-spacing: 5px;
+      text-align: center;
+      text-shadow: 1px 1px 5px #34383a;
+      background-color: $primary-bg-color2;
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+}
+
+.main-menu-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: none !important;
+  opacity: 0;
+  pointer-events: none;
+  background-color: #0000003d;
+  @include transition(all .3s ease-in-out);
+  &.open {
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+}
+
+@media screen and(max-width:996px) {
+  html,
+  body {
+    &.open-menu {
+      overflow: hidden !important;
+      .main-container,
+      .main-header,
+      .main-footer {
+        padding-left: 0px !important;
+      }
+      .main-menu-screen {
+        display: block !important;
+      }
+    }
+  }
+}

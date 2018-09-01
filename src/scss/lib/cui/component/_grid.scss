@@ -1,0 +1,118 @@
+@import 'base/function';
+.cui-grid {
+  width: 100%;
+  background-color: #fff;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  tr {
+    &.has-content {
+      cursor: pointer;
+      &.show {
+        border-bottom: none;
+      }
+      &:hover {
+        background-color: #E0F7FA;
+      }
+    }
+  }
+}
+
+.cui-grid-footer {
+  display: inline-block;
+  width: 100%;
+  padding-right: 5px; // border-top: 1px solid #7a7575;
+  user-select: none;
+  text-align: center;
+  line-height: 2em;
+  .left-info {
+    display: inline-block;
+  }
+  .right-info {
+    float: right;
+  }
+  .first-page,
+  .prev-page,
+  .next-page,
+  .last-page {
+    display: inline-block;
+    padding: 0 10px 0 10px;
+    line-height: 1.5em;
+    font-size: 1em;
+    cursor: pointer;
+    &.disable {
+      color: #c0bfbf;
+      cursor: no-drop;
+    }
+  }
+  .page-info {
+    display: inline-block;
+    input {
+      width: 3em;
+      height: 1.5em;
+      font-size: 1em;
+      text-align: center;
+    }
+  }
+}
+
+.cui-grid-container {
+  width: 100%;
+  min-height: 300px;
+  margin-bottom: 5px;
+  overflow: auto;
+  thead {
+    background-color: #80DEEA;
+    th {
+      padding: 5px 10px 5px 10px;
+      &.sort {
+        cursor: pointer;
+      }
+      &:before {
+        font-size: 50%;
+      }
+    }
+  }
+  tbody {
+    font-size: 80%;
+    tr {
+      border-bottom: 1px solid #bbb;
+      &.empty {
+        border-bottom: none;
+      }
+      &.cui-grid-content {
+        display: none;
+        &.show {
+          display: table-row;
+        }
+        .cui-grid {
+          display: inline-block;
+          width: auto;
+        }
+        table {
+          width: auto;
+        }
+        tr {
+          border-bottom: none;
+        }
+        td {
+          word-break: break-all;
+        }
+      }
+    }
+    td {
+      padding: 2px 5px 2px 5px;
+      .cui-grid-td-div {
+        padding: 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        .cui-button {
+          margin-top: 0px;
+          margin-bottom: 0px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,307 @@
+@import 'base/function';
+.cui-button-row {
+  float: left;
+  width: 100%;
+  text-align: left;
+  &.center {
+    text-align: center;
+  }
+  &.right {
+    text-align: right;
+  }
+}
+
+.cui-button {
+  padding: 5px 16px 5px 16px;
+  margin: 5px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+  background-color: $primary-color1;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-family: inherit;
+  user-select: none;
+  touch-action: manipulation;
+  @include box-shadow(0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24));
+  &[disabled] {
+    opacity: .6;
+    @include box-shadow(none);
+  }
+  &:before {
+    padding-right: 5px;
+    font-size: 12px;
+  }
+  &.small {
+    padding: 5px;
+    margin-right: 5px;
+    min-width: auto;
+  }
+  &.bold {
+    font-weight: bold;
+  }
+}
+
+.cui-link-button {
+  padding: 2px 10px 2px 10px;
+  cursor: pointer;
+  text-decoration-line: underline;
+}
+
+// .cui-field {
+//   position: relative;
+//   min-height: 3.3em;
+//   padding: 1em .5em 0 .5em;
+//   margin-bottom: .8em;
+//   background-color: transparent;
+//   &.float {
+//     input,
+//     textarea,
+//     select {
+//       &~label {
+//         @include transform(translate(0, 15px));
+//         font-size: 100%;
+//         color: #aaa;
+//       }
+//     }
+//   }
+//   &.not-empty {
+//     border-bottom-color: #2196F3;
+//     input,
+//     textarea,
+//     select {
+//       &~label {
+//         color: $primary-color1;
+//       }
+//     }
+//   }
+//   input,
+//   select {
+//     height: 1.5em;
+//   }
+//   input,
+//   textarea,
+//   select {
+//     width: 100%;
+//     border: 0;
+//     font-size: 1em;
+//     background-color: transparent;
+//     border-bottom: 1px solid #aaa;
+//     &:focus {
+//       border-bottom-color: #2196F3;
+//       &~label {
+//         color: $primary-color1;
+//       }
+//     }
+//     &:hover {
+//       border-bottom-color: #2196F3;
+//       &~label {
+//         color: $primary-color1;
+//       }
+//     }
+//     &~label {
+//       position: absolute;
+//       top: 0;
+//       left: .5em;
+//       width: 100%;
+//       font-size: 80%;
+//       color: $primary-color1;
+//       cursor: default;
+//       @include transition(all .2s ease-in-out);
+//     }
+//     &[required] {
+//       &~label:before {
+//         content: "*";
+//         color: #f00;
+//         margin-right: .5em;
+//       }
+//     }
+//   }
+//   input,
+//   textarea {
+//     &:read-only,
+//     &:disabled {
+//       border-bottom: 1px solid #aaa !important;
+//       cursor: no-drop;
+//       color: #aaa !important;
+//       &~label {
+//         color: #aaa !important;
+//       }
+//     }
+//   }
+//   select {
+//     cursor: pointer;
+//     option {
+//       padding: 50px;
+//     }
+//     &:disabled {
+//       -webkit-appearance: none;
+//       border-bottom: 1px solid #aaa !important;
+//       cursor: no-drop;
+//       color: #aaa !important;
+//       &~label {
+//         color: #aaa !important;
+//       }
+//     }
+//   }
+//   .message {
+//     width: 100%;
+//     font-size: 80%;
+//     color: #aaa;
+//   }
+//   input[type=checkbox],
+//   input[type=radio] {
+//     height: 1em;
+//     width: 1em;
+//     margin: 0;
+//     cursor: pointer;
+//     &:checked {
+//       &~label {
+//         color: #000;
+//       }
+//     }
+//     &~label {
+//       position: relative;
+//       color: #aaa;
+//       cursor: pointer;
+//     }
+//     &:read-only,
+//     &:disabled {
+//       border-bottom: 1px solid #aaa !important;
+//       cursor: no-drop;
+//       color: #aaa !important;
+//       &~label {
+//         color: #aaa !important;
+//       }
+//     }
+//   }
+// }
+.cui-field {
+  position: relative;
+  padding-top: 1em;
+  margin-bottom: 1em;
+  background-color: transparent;
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #2196F3;
+    opacity: 0;
+    @include transform( scale3d(0, 1, 1));
+    @include transition(all .2s ease-in-out);
+  }
+  &.focus,
+  &.not-empty {
+    &:after {
+      opacity: 1;
+      @include transform( scale3d(1, 1, 1));
+    }
+    label {
+      color: #2196F3;
+      font-size: 80%;
+      pointer-events: initial;
+      @include transform( translate3d(0, 0, 0));
+    }
+    select {
+      color: #000;
+    }
+  }
+  &.required {
+    label:before {
+      content: "*";
+      color: #f00;
+      margin-right: .5em;
+    }
+  }
+  label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-size: 80%;
+    cursor: default;
+    color: #aaa;
+    font-size: 100%;
+    pointer-events: none;
+    @include transform(translate3d(0, 1em, 0));
+    @include transition(all .2s ease-in-out);
+  }
+  input,
+  select {
+    height: 1.5em;
+  }
+  input,
+  textarea,
+  select {
+    width: 100%;
+    border: 0;
+    font-size: 1em;
+    background-color: transparent;
+    border-bottom: 1px solid #aaa;
+  }
+  input,
+  textarea {
+    &:read-only,
+    &:disabled {
+      border-bottom: 1px solid #aaa !important;
+      cursor: no-drop;
+      color: #aaa !important;
+      &~label {
+        color: #aaa !important;
+      }
+    }
+  }
+  select {
+    cursor: pointer;
+    color: transparent;
+    option {
+      padding: 50px;
+    }
+    &:disabled {
+      -webkit-appearance: none;
+      border-bottom: 1px solid #aaa !important;
+      cursor: no-drop;
+      color: #aaa !important;
+      &~label {
+        color: #aaa !important;
+      }
+    }
+  }
+  .message {
+    position: absolute;
+    left: 0;
+    bottom: -1em;
+    width: 100%;
+    font-size: 80%;
+    color: #aaa;
+  }
+  input[type=checkbox],
+  input[type=radio] {
+    height: 1em;
+    width: 1em;
+    margin: 0;
+    cursor: pointer;
+    &:checked {
+      &~label {
+        color: #000;
+      }
+    }
+    &~label {
+      position: relative;
+      color: #aaa;
+      cursor: pointer;
+    }
+    &:read-only,
+    &:disabled {
+      border-bottom: 1px solid #aaa !important;
+      cursor: no-drop;
+      color: #aaa !important;
+      &~label {
+        color: #aaa !important;
+      }
+    }
+  }
+}

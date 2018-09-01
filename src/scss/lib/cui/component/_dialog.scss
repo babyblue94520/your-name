@@ -1,0 +1,87 @@
+body {
+  &.cui-show-dialog {
+    overflow: hidden !important;
+  }
+}
+
+.cui-dialog-screen {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  display: none;
+  background-color: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  @include transition(opacity .3s ease-in-out);
+}
+
+.cui-dialog {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: none;
+  overflow: auto;
+  &.show {
+    ~.cui-dialog-screen {
+      opacity: 1;
+    }
+    >.cui-dialog-window {
+      opacity: 1;
+      &.center {
+        top: 50%;
+      }
+      &.top {
+        top: 20px !important;
+      }
+    }
+  }
+  >.cui-dialog-toolbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    width: 100%;
+    padding: 5px 15px 5px 15px;
+    background: #fff;
+    @include box-shadow(0px -2px 3px rgba(0, 0, 0, 0.3));
+  }
+  .cui-dialog-window {
+    position: absolute;
+    z-index: 2;
+    display: inline-block;
+    max-width: 100%;
+    padding: 0;
+    opacity: 0;
+    background-color: #FFF;
+    @include box-shadow(0 14px 45px rgba(0, 0, 0, 0.25), 0 10px 18px rgba(0, 0, 0, 0.22));
+    @include transitions(opacity .3s ease-in-out);
+    >.cui-dialog-header {
+      position: relative;
+      width: 100%;
+      padding-right: 31px;
+      line-height: 2em;
+      text-indent: .5em;
+      font-size: 1.2em;
+      font-weight: bold;
+      background-color: #2196F3;
+      color: #fff;
+    }
+    >.close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      padding: 10px;
+      cursor: pointer;
+      color: #fff;
+      &:before {
+        font-size: 1em;
+      }
+    }
+  }
+}

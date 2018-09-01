@@ -1,0 +1,147 @@
+html,
+body {
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+body {
+  font-size: 1em;
+  font-family: "Microsoft JhengHei", "黑体", "宋体", sans-serif;
+  background-color: #fff;
+  color: #262d38;
+}
+
+.space-1 {
+  float: left;
+  width: 100%;
+  height: 10px;
+}
+
+.space-2 {
+  float: left;
+  width: 100%;
+  height: 20px;
+}
+
+.space-3 {
+  float: left;
+  width: 100%;
+  height: 30px;
+}
+
+.load-circle {
+  text-align: center;
+
+  &:before {
+    display: inline-block;
+    width: 3em;
+    height: 3em;
+    border: 6px #B2EBF2 solid;
+    border-top: 6px #26C6DA solid;
+    border-radius: 50%;
+    content: '';
+    @include animation(spCircRot .8s infinite linear);
+  }
+}
+
+.image-code {
+  .image-space {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 30px;
+    cursor: pointer;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.panel {
+  display: inline-block;
+  width: 100%;
+  padding: 10px;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.errorMessage {
+  padding-bottom: 10px;
+  color: $primary-color2;
+}
+
+.icon-button {
+  cursor: pointer;
+  font-size: 150%;
+}
+
+.primary {
+  color: $primary-color1
+}
+
+.accent {
+  color: $primary-color2
+}
+
+.dark {
+  color: $primary-color3
+}
+
+.bg-primary {
+  background-color: $primary-color1
+}
+
+.bg-accent {
+  background-color: $primary-color2
+}
+
+.bg-dark {
+  background-color: $primary-color3
+}
+
+.tab {
+  background-color: #4a90e2;
+  color: #00408b;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 2em;
+  text-align: center;
+
+  .tab-item {
+    position: relative;
+    padding: 0 15px 0 15px;
+    float: left;
+    cursor: pointer;
+
+    &.active {
+      color: #fff;
+
+      &:after {
+        @include transform(scale(1));
+      }
+    }
+
+    &:hover {
+      color: #fff;
+
+      &:after {
+        @include transform(scale(1));
+      }
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #fff;
+      @include transform(scale(0));
+      @include transition(all .3s ease-in-out);
+    }
+  }
+}

@@ -1,0 +1,28 @@
+<app-menu></app-menu>
+<div #headerSpace class="main-header-space">
+</div>
+<header #header class="main-header">
+  <table>
+    <tbody>
+      <tr>
+        <td align="left" nowrap="nowrap" width="1%" matTooltip="選單" (click)="openMenu()">
+          <div class="flaticon-menu icon-button"></div>
+        </td>
+        <td align="left" nowrap="nowrap" width="100%">
+          <div>{{Global.currentRouteName}}</div>
+        </td>
+        <td align="right" nowrap="nowrap">
+          <select [(ngModel)]="lang" (change)="langChange()">
+            <option value="en">英文</option>
+            <option value="zh_TW">中文(繁體)</option>
+            <option value="zh_CN">中文(簡體)</option>
+          </select>
+        </td>
+        <td align="right" nowrap="nowrap" width="1%">
+          <div class="flaticon-refresh  icon-button" (click)="refresh()"></div>
+        </td>
+      </tr>
+      <tr></tr>
+    </tbody>
+  </table>
+</header>

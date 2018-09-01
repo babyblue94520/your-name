@@ -1,0 +1,358 @@
+@import 'base/themes';
+@import 'base/function';
+$block-width:100%/7;
+
+html,
+body {
+  &.show-datepicker {
+    overflow: hidden !important;
+  }
+}
+
+.cui-datepicker-select {
+  cursor: pointer !important;
+
+  input {
+    cursor: pointer !important;
+  }
+}
+
+.cui-datepicker-icon {
+  font-size: 20px;
+  position: absolute;
+  top: .8em;
+  right: .5em;
+  cursor: pointer !important;
+}
+
+.cui-datepicker {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: none;
+  overflow-y: auto;
+
+  &.show {
+    .cui-datepicker-screen {
+      opacity: 1;
+    }
+
+    .cui-datepicker-window {
+      top: 50%;
+      opacity: 1;
+      pointer-events: auto;
+
+      &.top {
+        top: 20px !important;
+      }
+    }
+  }
+
+  .cui-datepicker-screen {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    @include transition(opacity .3s ease-in-out);
+  }
+
+  .cui-datepicker-window {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    z-index: 99;
+    display: inline-block;
+    width: 300px;
+    height: auto;
+    padding: 0;
+    background-color: #fff;
+    color: $primary-color3;
+    opacity: 0;
+    pointer-events: none;
+    @include box-shadow(rgba(0, 0, 0, 0.247059) 0px 14px 45px, rgba(0, 0, 0, 0.219608) 0px 10px 18px);
+    @include transitions(opacity .3s ease-in-out, top .3s ease-in-out);
+
+    &.top {
+      top: 0px !important;
+    }
+
+    .cui-datepicker-content {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      font-size: .8em;
+      background-color: #fff;
+    }
+  }
+}
+
+.cui-datepicker-header {
+  display: inline-block;
+  width: 100%;
+  background-color: $primary-color1;
+
+  .cui-datepicker-header-text-1 {
+    text-align: left;
+    text-indent: 5px;
+    font-size: 1em;
+    color: rgba(255, 255, 255, .8);
+  }
+
+  .cui-datepicker-header-text-2 {
+    width: 4em;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 4em;
+    color: #fff;
+    cursor: pointer;
+  }
+}
+
+.cui-datepicker-footer {
+  padding: 10px;
+  background-color: #fff;
+}
+
+.cui-datepicker-buttons {
+  text-align: right;
+}
+
+.cui-datepicker-button {
+  display: inline-block;
+  padding: 5px 10px 5px 10px;
+  border: none;
+  letter-spacing: 1px;
+  font-family: Roboto, sans-serif;
+  font-size: 1em;
+  font-weight: 500;
+  text-transform: uppercase;
+  background-color: transparent;
+  color: $primary-color1;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e8e8e8;
+  }
+}
+
+.cui-datepicker-year-block {
+  display: none;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  line-height: 250%;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  overflow-y: auto;
+  @include transition;
+
+  &.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  >div {
+    display: inline-block;
+    width: 100%;
+
+    >div {
+      width: 100%;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      font-size: 1.5em;
+      cursor: pointer;
+
+      &.active {
+        background-color: #EDEDED;
+        color: $primary-color1;
+      }
+    }
+  }
+}
+
+.cui-datepicker-month-block {
+  display: none;
+  width: 100%;
+  height: 300px;
+  padding: 10px;
+  text-align: center;
+  line-height: 250%;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  overflow-y: auto;
+  @include transition;
+
+  &.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  div {
+    display: inline-block;
+    width: 100%;
+
+    >div {
+      width: 100%;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      font-size: 1.5em;
+      cursor: pointer;
+
+      &.active {
+        background-color: #EDEDED;
+        color: $primary-color1;
+      }
+    }
+  }
+}
+
+.cui-datepicker-day-block {
+  display: inline-block;
+  width: 100%;
+  padding: 10px;
+  opacity: 0;
+  pointer-events: none;
+  @include transition;
+
+  &.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.cui-datepicker-day-yearmonth {
+  position: relative;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.cui-datepicker-day-yearmonth-next {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: left;
+  cursor: pointer;
+
+  >div {
+    float: right;
+    width: 1.2em;
+    height: 1.2em;
+    border-top: 3px solid;
+    border-right: 3px solid;
+    @include transform(rotate(45deg));
+  }
+}
+
+.cui-datepicker-day-yearmonth-prev {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: left;
+  cursor: pointer;
+
+  >div {
+    float: left;
+    width: 1.2em;
+    height: 1.2em;
+    border-top: 3px solid;
+    border-left: 3px solid;
+    @include transform(rotate(-45deg));
+  }
+}
+
+.cui-datepicker-day-yearmonth-text {
+  font-weight: 600;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.cui-datepicker-week {
+  display: inline-block;
+  width: 100%;
+  font-size: 600;
+  color: #969a9c;
+}
+
+.cui-datepicker-days {
+  display: inline-block;
+  width: 100%;
+}
+
+.cui-datepicker-date-item {
+  position: relative;
+  display: inline-block;
+  width: $block-width;
+  height: 3em;
+  vertical-align: top;
+  cursor: pointer;
+
+  &.day:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: transparent;
+    @include transform(scale3d(0, 0, 0));
+    @include transition();
+  }
+
+  span {
+    position: relative;
+    z-index: 2;
+    display: block;
+    text-align: center;
+    line-height: 3em;
+    border-radius: 50%;
+    @include transition();
+  }
+
+  &:hover {
+    &.day:before {
+      @include transform(scale3d(.9, .9, .9));
+      background-color: #a7d5f9;
+    }
+
+    span {
+      color: #fff;
+    }
+  }
+
+  &.active {
+    span {
+      background-color: $primary-color1;
+      color: #fff;
+    }
+  }
+}
+
+.cui-datepicker-time {
+  display: none;
+
+  input {
+    width: 6em;
+    text-align: center;
+    font-size: 1.2em;
+    line-height: 1.5em;
+    letter-spacing: 1px;
+  }
+}

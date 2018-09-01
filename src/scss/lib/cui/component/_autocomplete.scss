@@ -1,0 +1,27 @@
+@import 'base/function';
+
+.cui-autocomplete-list {
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  @include box-shadow(rgba(0, 0, 0, 0.247059) 0px 14px 45px, rgba(0, 0, 0, 0.219608) 0px 10px 18px);
+
+  >div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: #E0F7FA;
+    }
+
+    &.active {
+      background-color: #80DEEA;
+    }
+  }
+}

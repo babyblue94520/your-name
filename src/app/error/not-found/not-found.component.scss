@@ -1,0 +1,38 @@
+@import 'base/function';
+div {
+  font-size: 30em;
+  text-align: center;
+  line-height: 1.5em;
+  @include animation(not-found .3s infinite linear);
+}
+
+$c:10px;
+@include keyframes(not-found) {
+  0% {
+    @include transform(translate(-$c, -$c));
+  }
+  12% {
+    @include transform(translate(0px, -$c));
+  }
+  24% {
+    @include transform(translate($c, -$c));
+  }
+  36% {
+    @include transform(translate($c, 0px));
+  }
+  48% {
+    @include transform(translate($c, $c));
+  }
+  60% {
+    @include transform(translate(0px, $c));
+  }
+  72% {
+    @include transform(translate(-$c, $c));
+  }
+  84% {
+    @include transform(translate(-$c, 0px));
+  }
+  100% {
+    @include transform(translate(-$c, -$c));
+  }
+}
