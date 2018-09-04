@@ -1,14 +1,8 @@
 import {
     AjaxManager,
     DatePicker,
-    Loader,
-    StoreNodeSource,
-    Cache
+    Loader
 } from '@cui/core';
-import { AuthUser } from './data/entity/auth-user';
-import { AuthUserNode, LangNode } from './data/node/common';
-import { environment } from '@environment';
-import { TranslateGO } from 'translate-go';
 
 
 interface QueryString {
@@ -16,12 +10,6 @@ interface QueryString {
 }
 
 export class Global {
-    public static readonly translateGO = new TranslateGO(LangNode.get(), !environment.production);
-    public static readonly ajaxManager = new AjaxManager();
-    public static readonly datePicker = new DatePicker();
-    public static readonly loader = new Loader();
-    @StoreNodeSource(AuthUserNode)
-    public static readonly authUser: AuthUser;
     public static currentRouteName = '';
     public static routeName = {};
     private static queryParamters: QueryString = {};

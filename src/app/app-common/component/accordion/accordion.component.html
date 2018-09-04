@@ -1,9 +1,9 @@
 <div class="accordion-list">
   <ul>
-    <li *ngFor="let route of routes" class="item {{route.active?'active':''}}">
+    <li *ngFor="let route of routes" class="item active">
       <div *ngIf="route.type==0">
         <div class="text {{route.className}}" (click)="open(route,child)">{{route.name}}</div>
-        <div class="child" #child>
+        <div class="child" #child style="height: auto;">
           <app-accordion [array]="nextArray[route.id]"></app-accordion>
         </div>
       </div>

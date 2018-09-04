@@ -1,12 +1,5 @@
+import { CompanyRouteName, CompanyRoute } from 'ts/ng/router/company';
 
-import { MainRoute, MainRouteName } from './main';
-import { BootRouteName } from './boot';
-import { ManageRouteName } from './manage';
-import { ToolRouteName } from './tool';
-import { ABRouteName } from 'ts/ng/router/ab';
-import { I88RouteName } from 'ts/ng/router/i88';
-import { C01RouteName } from 'ts/ng/router/c01';
-import { C02RouteName } from 'ts/ng/router/c02';
 
 
 export enum AppRouteName {
@@ -22,9 +15,8 @@ export enum AppRouteName {
     NotFound = 'not-found',
 }
 export class AppRoute {
-    Index: string;
-    Company: string[];
-
+    public static Index = ['/index'];
+    public static Company = {} as CompanyRoute;
 }
 
 /**
@@ -48,3 +40,6 @@ export class AppRouteUtil {
         return newRoutePath;
     }
 }
+
+// 產生 Company 路由絕對路徑
+AppRoute.Company = AppRouteUtil.extend(['/' + AppRouteName.Company], CompanyRouteName);

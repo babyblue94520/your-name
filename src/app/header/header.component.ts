@@ -5,11 +5,10 @@ import {
   ElementRef,
   ViewChild
 } from '@angular/core';
-import { BasicComponent } from '../../basic-component';
-import { BasicService } from 'ts/service/core/basic-service';
 import { CUI } from '@cui/core';
-import { MainHeaderHeightNode, MainMenuWidthNode, LangNode } from 'ts/data/node/common';
+import { MainHeaderHeightNode, MainMenuWidthNode } from 'ts/data/node/common';
 import { MenuComponent } from '../menu/menu.component';
+import { BasicComponent } from 'app/basic-component';
 
 
 @Component({
@@ -23,8 +22,6 @@ export class HeaderComponent extends BasicComponent implements AfterViewInit {
   private headerElement: HTMLElement;
   private headerSpaceElement: HTMLElement;
   private resizeDelayHandler: any;
-
-  public lang = LangNode.get();
 
   @ViewChild('header')
   public headerRef: ElementRef;
@@ -51,10 +48,6 @@ export class HeaderComponent extends BasicComponent implements AfterViewInit {
     }, true);
 
     this.resize();
-  }
-
-  public langChange() {
-    LangNode.set(this.lang);
   }
 
   /**
@@ -87,18 +80,6 @@ export class HeaderComponent extends BasicComponent implements AfterViewInit {
    */
   public openMenu = () => {
     this.menu.openOrClose();
-  }
-
-  public refresh() {
-    if (window.confirm('確定更新登入資訊?')) {
-      BasicService.refresh((result) => {
-        if (result.success) {
-          alert('更新成功');
-        } else {
-          alert(result.message);
-        }
-      });
-    }
   }
 
   public show() {

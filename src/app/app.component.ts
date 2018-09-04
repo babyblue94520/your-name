@@ -1,4 +1,6 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { BasicComponent } from 'app/basic-component';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { MainMenuWidthNode } from 'ts/data/node/common';
 
 @Component({
   selector: 'app-root',
@@ -6,6 +8,14 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
-  title = 'app';
+export class AppComponent extends BasicComponent {
+  public paddingLeft = '0px';
+
+  constructor(private changeDetectorRef: ChangeDetectorRef) {
+    super();
+    this.listenNode(MainMenuWidthNode, () => {
+      this.paddingLeft = MainMenuWidthNode.get() + 'px';
+      this.changeDetectorRef.markForCheck();
+    }, true);
+  }
 }

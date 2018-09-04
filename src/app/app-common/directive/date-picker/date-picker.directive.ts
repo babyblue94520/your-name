@@ -44,6 +44,6 @@ export class DatePickerDirective {
     if (!this.input) {
       this.input = this.element.querySelector('input');
     }
-    Global.datePicker.open(this.input, this._format, this._pickerType);
+    // Global.datePicker.open(this.input, this._format, this._pickerType);
   }
 }

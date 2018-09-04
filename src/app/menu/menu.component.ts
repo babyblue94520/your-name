@@ -6,10 +6,12 @@ import {
   ElementRef,
   ViewChild
 } from '@angular/core';
-import { AuthUserNode, MainMenuWidthNode } from 'ts/data/node/common';
-import { BasicComponent } from '../../basic-component';
-import { BasicService } from 'ts/service/core/basic-service';
-import { Cache, CUI } from '@cui/core';
+import { MainMenuWidthNode } from 'ts/data/node/common';
+import { Cache, CUI, Async } from '@cui/core';
+import { BasicComponent } from 'app/basic-component';
+import { MenuRoutes } from 'ts/data/word/routes';
+
+
 
 @Component({
   selector: 'app-menu',
@@ -28,18 +30,10 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
   private timer;
   private bodyClassName = 'open-menu';
   private openClassName = 'open';
-  public animationTime = 300;
-  public routes;
+  public routes = MenuRoutes;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
     super();
-    this.listenNode(AuthUserNode, () => {
-      let user = AuthUserNode.get();
-      if (user) {
-        this.routes = user.routes;
-        this.changeDetectorRef.markForCheck();
-      }
-    }, true);
   }
 
   ngAfterViewInit() {
@@ -49,15 +43,15 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
     this.menuElement.addEventListener('click', this.resize);
     this.menuScreenElement.addEventListener('click', this.close);
     if (this.isShow == true) {
-      this.open();
-    } else {
-      this.close();
-    }
-  }
-
-  public logout() {
-    if (window.confirm('確定要登出系統?')) {
-      BasicService.logout();
+      document.documentElement.classList.add(this.bodyClassName);
+      document.body.classList.add(this.bodyClassName);
+      this.menuElement.style.display = 'block';
+      this.menuScreenElement.style.display = 'block';
+      this.menuElement.classList.add(this.openClassName);
+      this.menuScreenElement.classList.add(this.openClassName);
+      this.menuElement.style.transform = 'translateX(0px)';
+      this.menuElement.style.webkitTransform = '-webkit-translateX(0px)';
+      MainMenuWidthNode.set(this.menuElement.offsetWidth);
     }
   }
 
@@ -96,13 +90,10 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
     }
     document.documentElement.classList.add(this.bodyClassName);
     document.body.classList.add(this.bodyClassName);
-    clearTimeout(this.timer);
     this.menuElement.style.display = 'block';
     this.menuScreenElement.style.display = 'block';
-    this.timer = setTimeout(() => {
-      this.menuElement.style.left = (this.menuElement.offsetWidth * -1) + 'px';
-      setTimeout(this.doOpen, 0);
-    }, 0);
+    clearTimeout(this.timer);
+    this.timer = this.doOpen1();
   }
 
   /**
@@ -112,22 +103,34 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
     if (this.isOpen()) {
       document.documentElement.classList.remove(this.bodyClassName);
       document.body.classList.remove(this.bodyClassName);
-      clearTimeout(this.timer);
       this.menuElement.classList.remove(this.openClassName);
       this.menuScreenElement.classList.remove(this.openClassName);
-      this.timer = setTimeout(this.doClose, this.animationTime);
-      this.menuElement.style.left = (this.menuElement.offsetWidth * -1) + 'px';
+
+      this.menuElement.style.transform = 'translateX(-' + this.menuElement.offsetWidth + 'px)';
+      this.menuElement.style.webkitTransform = '-webkit-translateX(-' + this.menuElement.offsetWidth + 'px)';
+
       MainMenuWidthNode.set(0);
+      clearTimeout(this.timer);
+      this.timer = this.doClose();
     }
+  }
+
+  @Async(0)
+  private doOpen1() {
+    this.menuElement.style.transform = 'translateX(-' + this.menuElement.offsetWidth + 'px)';
+    this.menuElement.style.webkitTransform = '-webkit-translateX(-' + this.menuElement.offsetWidth + 'px)';
+    this.doOpen2();
   }
 
   /**
    * 執行開啟
    */
-  private doOpen = () => {
+  @Async(0)
+  private doOpen2() {
     this.menuElement.classList.add(this.openClassName);
     this.menuScreenElement.classList.add(this.openClassName);
-    this.menuElement.style.left = '0px';
+    this.menuElement.style.transform = 'translateX(0px)';
+    this.menuElement.style.webkitTransform = '-webkit-translateX(0px)';
     MainMenuWidthNode.set(this.menuElement.offsetWidth);
     this.isShow = true;
   }
@@ -135,7 +138,8 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
   /**
    * 執行關閉
    */
-  private doClose = () => {
+  @Async(300)
+  private doClose() {
     this.menuElement.style.display = 'none';
     this.menuScreenElement.style.display = 'none';
     this.isShow = false;

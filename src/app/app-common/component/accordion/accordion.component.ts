@@ -1,4 +1,4 @@
-import { AuthRoute } from 'ts/data/entity/auth-user';
+
 import { CUI, Async } from '@cui/core';
 import {
   ChangeDetectionStrategy,
@@ -6,6 +6,7 @@ import {
   Component,
   Input,
 } from '@angular/core';
+import { AuthRoute } from 'ts/data/entity/entity';
 
 
 interface RouteActive extends AuthRoute {

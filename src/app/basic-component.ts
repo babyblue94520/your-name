@@ -1,11 +1,8 @@
 
 import { AppRoute as AppRouteOrigin } from 'ts/ng/router/app';
 import { StoreNode, IStoreListener } from '@cui/core';
-import { OnDestroy, AfterContentChecked, AfterViewChecked, DoCheck } from '@angular/core';
-import { ApiClassName as ApiClassNameOrigin } from 'ts/constant/API';
+import { OnDestroy } from '@angular/core';
 import { Global as GlobalOrigin } from 'ts/globle';
-import { TranslateGoSourceKey as TranslateGoSourceKeyOrigin } from 'ts/translate/TranslateGoSource';
-import { BasicState as BasicStateOrigin } from 'ts/constant/basic-state';
 
 
 interface Nodes {
@@ -15,12 +12,9 @@ interface NodeHandlers {
     [key: string]: IStoreListener[];
 }
 
-export abstract class BasicComponent implements AfterViewChecked, OnDestroy {
-    public TranslateGoSourceKey = TranslateGoSourceKeyOrigin;
-    public BasicState = BasicStateOrigin;
+export abstract class BasicComponent implements OnDestroy {
     public Global = GlobalOrigin;
     public AppRoute = AppRouteOrigin;
-    public ApiClassName = ApiClassNameOrigin;
     public nodes: Nodes = {};
     public nodeHandlers: NodeHandlers = {};
     public constructorName;
@@ -28,12 +22,7 @@ export abstract class BasicComponent implements AfterViewChecked, OnDestroy {
         this.constructorName = this.constructor.name;
     }
 
-    ngAfterViewChecked() {
-        // console.log(this.constructorName + ' ngAfterViewChecked');
-    }
-
     ngOnDestroy() {
-        // console.log(this.constructorName + ' ngOnDestroy');
         this.interruptNode();
     }
 

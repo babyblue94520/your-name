@@ -1,3 +1,43 @@
-<p>
-  index works!
-</p>
+<div class="cui-col-xs32-12 cui-col-sm-10 cui-col-sm-offset-1 cui-col-lg-8 cui-col-lg-offset-2">
+  <div class="space-2"></div>
+  <h3 class="bold">前言</h3>
+  <div style="text-indent:2em;">
+    因為要成立公司，需要取一個公司行號，原本想直接讓算命師幫我算一個名稱，
+    結果算出來的名稱沒有一個念起來很順的，因此順便了解了一下公司行號取名的公式，
+    自己來取名，但是名稱組合太多，所以只好開發這個系統，來方便我取名。
+  </div>
+  <div class="space-2"></div>
+  <h3 class="bold">功能</h3>
+  <ol>
+    <li>公司
+      <ul>
+        <li>
+          <div class="cui-link-button" [routerLink]="AppRoute.Company.Name">名字運勢</div>
+          <div>
+            幫您計算公司名稱的運勢，不好也別灰心，事在人為，人定勝天。
+          </div>
+        </li>
+        <li>
+          <div class="cui-link-button" [routerLink]="AppRoute.Company.Find">找名字</div>
+          <div>
+            準備開公司的朋友有福了，讓您快速找到滿意、風水好的名字。
+          </div>
+        </li>
+        <li>
+          <div class="cui-link-button" [routerLink]="AppRoute.Company.Description">筆畫運勢說明</div>
+          <div>
+            說明公司名稱的總筆劃的五行跟運勢。
+          </div>
+        </li>
+        <li>
+          <div class="cui-link-button" [routerLink]="AppRoute.Company.Rule">好名字規則</div>
+          <div>
+            教您如何找到符合自己的公司名字。
+          </div>
+        </li>
+      </ul>
+    </li>
+    <li>個人(未開發)
+    </li>
+  </ol>
+</div>

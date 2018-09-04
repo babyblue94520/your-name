@@ -1,0 +1,53 @@
+<div class="space-3"></div>
+<div class="cui-col-xs32-12 cui-col-sm-10 cui-col-sm-offset-1 cui-col-lg-8 cui-col-lg-offset-2">
+  <div class="space-1"></div>
+  <div class="cui-field">
+    <input type="text" [(ngModel)]="form.name1" required>
+    <label>公司名稱(主運)</label>
+    <div class="message">ex:鴻海</div>
+  </div>
+  <div class="cui-field">
+    <input type="text" [(ngModel)]="form.name2" required>
+    <label>公司行號(從運)</label>
+    <div class="message">ex:股份有限公司</div>
+  </div>
+  <div class="space-1"></div>
+  <div class="cui-button-row center">
+    <button class="cui-button" (click)="submit()">看運勢</button>
+  </div>
+  <div class="space-1"></div>
+
+  <fieldset *ngIf="fortune1" class="cui-col-xs32-12">
+    <legend><strong>公司主運({{fortune1.luck}})</strong></legend>
+    <span>名稱：</span><span>{{form.name1}}</span><br>
+    <span>筆畫：</span><span>{{fortune1.num}}(原:{{total1}})</span>
+    <br>
+    <span>五行：</span><span>{{fortune1.type}}</span>
+    <br>
+    <span>五行順序：</span><span>{{type}}</span>
+    <br>
+    <span>譯釋：</span><span>{{fortune1.content}}</span>
+    <br>
+    <ng-container *ngIf="words">
+      <fieldset *ngFor="let word of words">
+        <legend><strong>{{word.word}}</strong></legend>
+        <strong>發音：</strong><span>{{word.sound}}</span>
+        <br>
+        <strong>筆畫：</strong><span>{{word.num}}</span>
+        <br>
+        <strong>五行：</strong><span>{{word.type}}</span>
+        <br>
+        <strong>譯釋：</strong><span>{{word.content}}</span>
+      </fieldset>
+    </ng-container>
+  </fieldset>
+  <fieldset *ngIf="fortune2" class="cui-col-xs32-12">
+    <legend><strong>總運勢({{fortune2.luck}})</strong>
+    </legend>
+    <span>名稱：</span><span>{{form.name1}}{{form.name2}}</span><br>
+    <span>筆畫：</span><span>{{fortune2.num}}(原:{{total2}})</span><br>
+    <span>五行：</span><span>{{fortune2.type}}</span><br>
+    <span>譯釋：</span><span>{{fortune2.content}}</span><br>
+  </fieldset>
+
+</div>

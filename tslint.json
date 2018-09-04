@@ -15,21 +15,21 @@
       "severity": "warn"
     },
     "eofline": true,
-    "forin": true,
+    "forin": false,
     "import-blacklist": [
       true,
       "rxjs/Rx"
     ],
     "import-spacing": true,
     "indent": [
-      true,
+      false,
       "spaces"
     ],
     "interface-over-type-literal": true,
     "label-position": true,
     "max-line-length": [
       true,
-      140
+      240
     ],
     "member-access": false,
     "member-ordering": [
@@ -82,7 +82,7 @@
       "check-else",
       "check-whitespace"
     ],
-    "prefer-const": true,
+    "prefer-const": false,
     "quotemark": [
       true,
       "single"
@@ -93,7 +93,7 @@
       "always"
     ],
     "triple-equals": [
-      true,
+      false,
       "allow-null-check"
     ],
     "typedef-whitespace": [

@@ -1,7 +1,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -16,6 +15,22 @@
     "lib": [
       "es2017",
       "dom"
+    ],
+    "baseUrl": "src/",
+    "paths": {
+      "@cui/core": [
+        "ts/lib/cui/core"
+      ],
+      "@environment": [
+        "environments/environment"
+      ]
+    },
+    "plugins": [{
+        "name": "@angular/language-service"
+      },
+      {
+        "name": "tslint-language-service"
+      }
     ]
   }
 }

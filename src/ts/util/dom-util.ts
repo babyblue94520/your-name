@@ -1,4 +1,3 @@
-import { AuthorityUtil } from './authority-util';
 
 interface DefaultConfig {
     text: string;
@@ -15,15 +14,12 @@ export class DomUtil {
      * @param config
      * @param level 檢查或不檢查權限等級
      */
-    public static buildButton(config: ButtonConfig, level?: number): HTMLButtonElement {
-        if (level == undefined || AuthorityUtil.isPermissionByLevel(level)) {
-            let button = DomUtil.create('button');
-            button.className = 'cui-button ' + config.className || '';
-            button.addEventListener('click', config.onclick);
-            button.innerText = config.text;
-            return button as HTMLButtonElement;
-        }
-        return null;
+    public static buildButton(config: ButtonConfig): HTMLButtonElement {
+        let button = DomUtil.create('button');
+        button.className = 'cui-button ' + config.className || '';
+        button.addEventListener('click', config.onclick);
+        button.innerText = config.text;
+        return button as HTMLButtonElement;
     }
 
     public static buildLinkButton(config: ButtonConfig): HTMLSpanElement {
