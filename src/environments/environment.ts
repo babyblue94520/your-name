@@ -5,6 +5,4 @@
 
 export const environment = {
   production: false,
-  lang: 'zh_TW',
-  passwordLength: 8
 };
