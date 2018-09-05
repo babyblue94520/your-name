@@ -1,12 +1,10 @@
-import { Words } from 'ts/data/word/words';
 import { Word } from 'ts/data/entity/entity';
+import { Words } from 'ts/data/word/words';
 
 /**
  */
 export class WordService {
-
 	/**
-	 *
 	 * @param {String} word 文字
 	 * @return {Object} wordObject
 	 */

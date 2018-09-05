@@ -26,7 +26,3 @@ export interface Fortune {
     type: string;
     luck: string;
 }
-export interface GoodName {
-    name: string;
-    type: string;
-}

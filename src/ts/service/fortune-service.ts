@@ -1,13 +1,16 @@
-import { Fortunes } from '../data/word/fortunes';
+import { Fortune, Word } from 'ts/data/entity/entity';
+import { Words } from 'ts/data/word/words';
 import { WordsByNum } from 'ts/data/word/words-by-num';
-import { Fortune, Word, GoodName } from 'ts/data/entity/entity';
+import { Fortunes } from 'ts/data/word/fortunes';
 
 
 export class FortuneService {
 	// 相生
 	private static create = ['木', '火', '土', '金', '水'];
 
-	private static count = 0;
+	public static getFortunes() {
+		return Fortunes;
+	}
 
 	/**
 	 * 找出筆畫運勢
@@ -15,7 +18,7 @@ export class FortuneService {
 	 * @return {Object} fortune Object
 	 */
 	public static getFortuneByNum(num): Fortune {
-		return Fortunes[num - 1];
+		return Words[num - 1];
 	}
 
 	/**
@@ -31,13 +34,11 @@ export class FortuneService {
 		if (count == 1) {
 			return [[total]];
 		}
-		FortuneService.count = 0;
 		let result = [];
 		let start = 1;
 		let end = Math.floor(total / count);
 		let lastIndex = count - 1;
 		FortuneService.next(result, start, end, [], total, lastIndex);
-		console.log('getNumGroup', FortuneService.count, result.length);
 		return result;
 	}
 
@@ -59,49 +60,6 @@ export class FortuneService {
 	}
 
 	/**
-	 * 依次算完，跑很慢，會死雞
-	 * @param word
-	 * @param group
-	 * @param wordsByNum
-	 */
-	public static getGoodNames(word: Word, group: number[], wordsByNum) {
-		let count = 0;
-		let create = ['木', '火', '土', '金', '水'];
-		let tempNames: GoodName[] = [{
-			name: word.word,
-			type: word.type
-		}];
-		let nextType = word.type;
-		let words;
-		let names: GoodName[] = [];
-		for (let i = 1; i < group.length; i++) {
-			nextType = create[(create.indexOf(nextType) + 1) % 5];
-			words = wordsByNum[group[i]][nextType] || [];
-			if (words.length == 0) {
-				count++;
-				return [];
-			}
-			console.log(nextType, words.length, tempNames.length);
-			for (let w in words) {
-				for (let n in tempNames) {
-					count++;
-					names.push({
-						name: tempNames[n].name + words[w].word,
-						type: tempNames[n].type + ' 生 ' + words[w].type,
-					});
-				}
-			}
-			tempNames = names;
-			console.log(tempNames.length);
-			names = [];
-		}
-		console.log('getGoodNames', count, names.length);
-		return tempNames;
-
-	}
-
-
-	/**
 	 * 搜尋下一個數字
 	 * @param result
 	 * @param start
@@ -113,17 +71,14 @@ export class FortuneService {
 	private static next(result: number[][], start: number, end: number, temp: number[], remain: number, lastIndex: number) {
 		let nextTemp;
 		if (temp.length == lastIndex) {
-			FortuneService.count++;
 			nextTemp = Object.assign([], temp);
 			nextTemp.push(remain);
 			result.push(nextTemp);
 		} else {
 			for (let i = start; i <= end; i++) {
 				if (i > remain - i) {
-					FortuneService.count++;
 					break;
 				}
-				FortuneService.count++;
 				nextTemp = Object.assign([], temp);
 				nextTemp.push(i);
 				FortuneService.next(result, i + 1, end, nextTemp, remain - i, lastIndex);

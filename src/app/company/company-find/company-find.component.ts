@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Cache, Delay } from '@cui/core';
 import { FortuneService } from 'ts/service/fortune-service';
-import { Word, GoodName, Fortune } from 'ts/data/entity/entity';
+import { Word } from 'ts/data/entity/entity';
 import { WordsByNum } from 'ts/data/word/words-by-num';
 import { ShrinkComponent } from 'app/app-common/component/shrink/shrink.component';
 import { JsThread } from 'ts/util/js-thread';
