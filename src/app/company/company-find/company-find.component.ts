@@ -4,7 +4,6 @@ import { FortuneService } from 'ts/service/fortune-service';
 import { Word } from 'ts/data/entity/entity';
 import { WordsByNum } from 'ts/data/word/words-by-num';
 import { ShrinkComponent } from 'app/app-common/component/shrink/shrink.component';
-import { JsThread } from 'ts/util/js-thread';
 
 interface Form {
   total: number;
@@ -74,7 +73,6 @@ export class CompanyFindComponent {
     this.name = undefined;
     this.nameTypes = undefined;
     this.nameWords = undefined;
-    console.log(this.groupShrink);
     if (this.groupShrink) {
       this.groupShrink.open();
     }

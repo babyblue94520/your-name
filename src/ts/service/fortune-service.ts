@@ -18,7 +18,7 @@ export class FortuneService {
 	 * @return {Object} fortune Object
 	 */
 	public static getFortuneByNum(num): Fortune {
-		return Words[num - 1];
+		return Fortunes[num - 1];
 	}
 
 	/**

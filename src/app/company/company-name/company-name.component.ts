@@ -1,5 +1,5 @@
 import { Cache } from '@cui/core';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Fortune, Word } from 'ts/data/entity/entity';
 import { FortuneService } from 'ts/service/fortune-service';
 import { WordService } from 'ts/service/word-service';

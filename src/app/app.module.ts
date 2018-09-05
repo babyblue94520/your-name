@@ -57,11 +57,9 @@ export class AppModule {
     for (let i in MenuRoutes) {
       Global.routeName[MenuRoutes[i].path.join('/')] = MenuRoutes[i].name;
     }
-    console.log(Global.routeName);
     // 路由切換遮罩
     router.events.subscribe((e: RouterEvent) => {
       if (e instanceof NavigationEnd) {
-        console.log(e.url);
         Global.currentRouteName = Global.routeName[e.url] || '';
       }
     });
