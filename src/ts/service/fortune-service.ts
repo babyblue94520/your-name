@@ -1,8 +1,7 @@
 import { Fortune, Word } from 'ts/data/entity/entity';
-import { Words } from 'ts/data/word/words';
-import { WordsByNum } from 'ts/data/word/words-by-num';
 import { Fortunes } from 'ts/data/word/fortunes';
 
+declare var WordsByNum: any;
 
 export class FortuneService {
 	// 相生

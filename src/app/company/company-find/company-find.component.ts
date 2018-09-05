@@ -2,8 +2,9 @@ import { Component, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from
 import { Cache, Delay } from '@cui/core';
 import { FortuneService } from 'ts/service/fortune-service';
 import { Word } from 'ts/data/entity/entity';
-import { WordsByNum } from 'ts/data/word/words-by-num';
 import { ShrinkComponent } from 'app/app-common/component/shrink/shrink.component';
+
+declare var WordsByNum: any;
 
 interface Form {
   total: number;

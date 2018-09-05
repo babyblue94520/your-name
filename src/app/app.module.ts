@@ -4,10 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import {
   RouterModule,
   Routes,
-  NavigationCancel,
   RouterEvent,
   Router,
-  NavigationStart,
   NavigationEnd,
 } from '@angular/router';
 import { NgModule } from '@angular/core';
