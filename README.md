@@ -1,27 +1,38 @@
-# YourName
+# Your Name
+## 算命
+### 網址：http://babyblue94520.github.io/your-name/dist/
+#### 前言
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.1.0.
+    因為要成公司，需要算一個運勢不錯的公司名稱，透過算命師得到名稱組合的公式，如果靠人工的方式很難找到一個運勢好又喜歡的名稱，於是開發這個系統來幫助自己算公司名稱~~
+    
+#### 功能以下：
 
-## Development server
+1. #### 首頁：
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+  就說明一下。
+  
+2. #### 公司：
 
-## Code scaffolding
+  * 名字運勢：
+  
+    幫您計算公司名稱的運勢，不好也別灰心，事在人為，人定勝天。
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+  * 找名字：
+    
+    準備開公司的朋友有福了，讓您快速找到滿意、風水好的名字。
+   
+  * 筆畫運勢說明：
+    
+    說明公司名稱的總筆劃的五行跟運勢。
 
-## Build
+  * 好名字規則：
+    
+    教您如何找到符合自己的公司名字。
+  
+3. #### 個人(未開發)：
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+  等我哪天找算命師算名字的時候再補上這個功能。
+  
+#### 架構：
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+  [舊版](http://babyblue94520.github.io/CompanyFortune)，利用Angular翻新。
