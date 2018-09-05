@@ -13,7 +13,7 @@ export class FortuneService {
 	}
 
 	/**
-	 * 找出筆畫運勢
+	 * 找出筆劃運勢
 	 * @param {Integer} num 文字
 	 * @return {Object} fortune Object
 	 */
@@ -22,7 +22,7 @@ export class FortuneService {
 	}
 
 	/**
-	 * 找出筆畫字數組合陣列
+	 * 找出筆劃字數組合陣列
 	 * @param total
 	 * @param count
 	 */
@@ -52,7 +52,7 @@ export class FortuneService {
 
 	/**
 	 * 取得最好的下一個字組
-	 * @param num 筆畫
+	 * @param num 筆劃
 	 * @param type 屬性
 	 */
 	public static getGoodNextWords(num, type): Word[] {
@@ -93,7 +93,7 @@ export class FortuneService {
 	public static parseData() {
 		let dataArr = document.querySelector('div').innerHTML.replace(/\s+/g, '：').replace(/\\r\\n/g, '：').replace(/：+/g, '：').split('：');
 		console.log(dataArr);
-		let reg1 = /^(\d+)畫/;
+		let reg1 = /^(\d+)劃/;
 		let reg2 = /^五行屬「(.)」的字有/;
 		let dictionary = new Object();
 		let m1, m2, obj = new Object();

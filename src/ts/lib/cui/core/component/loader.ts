@@ -27,7 +27,7 @@ export class Loader {
     }
 
     /**
-     * 延遲開啟繞圈圈動畫，如果等待時間太短就不用出現
+     * 延遲開啟繞圈圈動劃，如果等待時間太短就不用出現
      * @param {string} msg 顯示訊息
      * @param {any} zIndex css z-index
      */
@@ -43,7 +43,7 @@ export class Loader {
     }
 
     /**
-     * 開啟繞圈圈動畫
+     * 開啟繞圈圈動劃
      * @param {string} msg 顯示訊息
      * @param {any} zIndex css z-index
      */

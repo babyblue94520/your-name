@@ -42,7 +42,7 @@ export const MenuRoutes: AuthRoute[] = [
     {
         id: 6,
         className: 'flaticon-file',
-        name: '筆畫運勢說明',
+        name: '筆劃運勢說明',
         order: 3,
         parentId: 2,
         path: AppRoute.Company.Description,

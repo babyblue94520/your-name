@@ -1,10 +1,10 @@
 <app-shrink>
-  <h2>智慧選名</h2>
+  <h2 shrink-title>智慧選名</h2>
   <div class="space-1"></div>
   <div class="cui-field cui-col-xs32-6">
     <input type="text" required [(ngModel)]="form.total" (input)="delayFindNumGroup()">
-    <label>公司名稱筆畫</label>
-    <div class="message">不包含「有限公司」之類的總筆畫</div>
+    <label>公司名稱筆劃</label>
+    <div class="message">不包含「有限公司」之類的總筆劃</div>
   </div>
   <div class="cui-field cui-col-xs32-6">
     <input type="text" required [(ngModel)]="form.count" (input)="delayFindNumGroup()">
@@ -24,7 +24,7 @@
       <legend>{{firstWord.word}}</legend>
       <strong>發音：</strong><span>{{firstWord.sound}}</span>
       <br>
-      <strong>筆畫：</strong><span>{{firstWord.num}}</span>
+      <strong>筆劃：</strong><span>{{firstWord.num}}</span>
       <br>
       <strong>五行：</strong><span>{{firstWord.type}}</span>
       <br>
@@ -63,7 +63,7 @@
       <legend>{{name[i+1].word}}</legend>
       <strong>發音：</strong><span>{{name[i+1].sound}}</span>
       <br>
-      <strong>筆畫：</strong><span>{{name[i+1].num}}</span>
+      <strong>筆劃：</strong><span>{{name[i+1].num}}</span>
       <br>
       <strong>五行：</strong><span>{{name[i+1].type}}</span>
       <br>

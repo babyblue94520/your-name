@@ -64,7 +64,7 @@ export class CompanyFindComponent {
   }
 
   /**
-   * 找出筆畫字數組合陣列
+   * 找出筆劃字數組合陣列
    */
   public findNumGroup() {
     this.numGroups = FortuneService.getNumGroup(this.form.total, this.form.count);
@@ -79,7 +79,7 @@ export class CompanyFindComponent {
   }
 
   /**
-   * 選擇筆畫字數組合
+   * 選擇筆劃字數組合
    * @param group
    */
   public selectedGroup(group: number[]) {
