@@ -21,6 +21,7 @@ td {
 
 html,
 body {
+  position: relative;
   width: 100%;
   height: 100%;
   margin: 0;
@@ -35,4 +36,9 @@ body {
 
 a {
   text-decoration-line: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
 }

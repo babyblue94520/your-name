@@ -1,18 +1,18 @@
 import { StoreNode } from '../store/store-node';
 
-export function StoreNodeSource(store: StoreNode<any>) {
-    return (target, key: string) => {
-        let _val;
+export function StoreNodeSource(store: StoreNode<any>, defaultValue?: any) {
+    return function (target, key: string) {
+        let _val = defaultValue;
         // property value
         let getter = function () {
             return _val;
         };
-        // property setter
-        let setter = function (newVal) {
-        };
 
         store.listen(() => {
             _val = store.get();
+            if (!_val) {
+                _val = defaultValue;
+            }
         }, true);
 
         // Delete property.
@@ -20,7 +20,6 @@ export function StoreNodeSource(store: StoreNode<any>) {
             // Create new property with getter and setter
             Object.defineProperty(target, key, {
                 get: getter,
-                set: setter,
                 enumerable: true,
                 configurable: true
             });

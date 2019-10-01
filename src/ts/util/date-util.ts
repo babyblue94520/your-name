@@ -1,8 +1,15 @@
 import * as moment from 'moment';
 
+(<any>window).moment = moment;
 export class DateUtil {
-    public static moment(): moment.Moment {
-        return moment();
+
+
+    public static moment(date?: any): moment.Moment {
+        if (date) {
+            return moment(date);
+        } else {
+            return moment();
+        }
     }
 
     /**
@@ -18,7 +25,7 @@ export class DateUtil {
 
     public static format(time: number, format: string): string {
         if (time) {
-            return moment(time).format(format);
+            return moment(Number(time)).format(format);
         } else {
             return;
         }
@@ -31,6 +38,4 @@ export class DateUtil {
             return;
         }
     }
-
-
 }

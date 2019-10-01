@@ -5,7 +5,7 @@ import { DatePickerDirective } from './directive/date-picker/date-picker.directi
 import { DatePipe } from './pipe/date/date.pipe';
 import { DialogComponent } from './component/dialog/dialog.component';
 import { InitElementDirective } from './directive/init-element/init-element.directive';
-import { MomeyPipe } from './pipe/momey/momey.pipe';
+import { MoneyPipe } from './pipe/money/money.pipe';
 import { NgModule } from '@angular/core';
 import { QuickDatePickerComponent } from './component/quick-date-picker/quick-date-picker.component';
 import { RouterModule } from '@angular/router';
@@ -14,7 +14,6 @@ import { ScrollTopComponent } from './component/scroll-top/scroll-top.component'
 import { ShrinkComponent } from './component/shrink/shrink.component';
 import { TabComponent } from './component/tabs/tab/tab.component';
 import { TabGroupComponent } from './component/tabs/tab-group/tab-group.component';
-import { FieldComponent } from './component/field/field/field.component';
 
 
 @NgModule({
@@ -29,14 +28,13 @@ import { FieldComponent } from './component/field/field/field.component';
     InitElementDirective,
     SafeHtmlPipe,
     DatePipe,
-    MomeyPipe,
+    MoneyPipe,
     DialogComponent,
     ShrinkComponent,
     ScrollTopComponent,
     QuickDatePickerComponent,
     TabComponent,
     TabGroupComponent,
-    FieldComponent,
   ],
   exports: [
     AccordionComponent,
@@ -45,14 +43,13 @@ import { FieldComponent } from './component/field/field/field.component';
     InitElementDirective,
     SafeHtmlPipe,
     DatePipe,
-    MomeyPipe,
+    MoneyPipe,
     DialogComponent,
     ShrinkComponent,
     ScrollTopComponent,
     QuickDatePickerComponent,
     TabComponent,
     TabGroupComponent,
-    FieldComponent,
   ]
 })
 export class AppCommonModule { }

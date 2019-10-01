@@ -1,17 +1,23 @@
 @import 'base/function';
+
 .cui-grid {
   width: 100%;
   background-color: #fff;
+
   table {
     width: 100%;
     border-collapse: collapse;
   }
+
   tr {
     &.has-content {
       cursor: pointer;
+
       &.show {
         border-bottom: none;
+        background-color: #e0f7fa;
       }
+
       &:hover {
         background-color: #E0F7FA;
       }
@@ -26,32 +32,38 @@
   user-select: none;
   text-align: center;
   line-height: 2em;
+
   .left-info {
     display: inline-block;
   }
+
   .right-info {
     float: right;
   }
+
   .first-page,
   .prev-page,
   .next-page,
   .last-page {
     display: inline-block;
-    padding: 0 10px 0 10px;
+    padding: 0 .8em 0 .8em;
     line-height: 1.5em;
-    font-size: 1em;
+    font-size: 100%;
     cursor: pointer;
+
     &.disable {
       color: #c0bfbf;
       cursor: no-drop;
     }
   }
+
   .page-info {
     display: inline-block;
+
     input {
       width: 3em;
       height: 1.5em;
-      font-size: 1em;
+      font-size: 100%;
       text-align: center;
     }
   }
@@ -62,52 +74,80 @@
   min-height: 300px;
   margin-bottom: 5px;
   overflow: auto;
+
+  .checkbox {
+    width: 1em;
+    height: 1em;
+    margin-right: 3px;
+    vertical-align: middle;
+    font-size: 100%;
+  }
+
   thead {
     background-color: #80DEEA;
+
     th {
-      padding: 5px 10px 5px 10px;
+      padding: .2em .8em .2em .8em;
+
       &.sort {
         cursor: pointer;
       }
+
       &:before {
         font-size: 50%;
       }
     }
   }
+
   tbody {
     font-size: 80%;
+
     tr {
       border-bottom: 1px solid #bbb;
+
       &.empty {
         border-bottom: none;
       }
+
+      &.selected {
+        background-color: #E0F7FA;
+      }
+
       &.cui-grid-content {
         display: none;
+
         &.show {
           display: table-row;
         }
+
         .cui-grid {
           display: inline-block;
           width: auto;
         }
+
         table {
           width: auto;
         }
+
         tr {
-          border-bottom: none;
+          border-bottom: 1px solid #eee;
         }
+
         td {
           word-break: break-all;
         }
       }
     }
+
     td {
       padding: 2px 5px 2px 5px;
+
       .cui-grid-td-div {
         padding: 5px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+
         .cui-button {
           margin-top: 0px;
           margin-bottom: 0px;
@@ -115,4 +155,10 @@
       }
     }
   }
+}
+
+.cui-grid-load-more {
+  color: #4696f3;
+  font-weight: bold;
+  cursor: pointer;
 }

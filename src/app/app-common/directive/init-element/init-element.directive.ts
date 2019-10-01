@@ -1,18 +1,30 @@
-import { Directive, ElementRef, Input } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Input,
+  OnDestroy
+} from '@angular/core';
+import { CUI } from '@cui/core';
 
 @Directive({
   selector: '[appInitElement]'
 })
-export class InitElementDirective {
-  private init = false;
+export class InitElementDirective implements OnDestroy {
+  private element: HTMLElement;
   constructor(private el: ElementRef) {
 
   }
 
   @Input() set appInitElement(element: HTMLElement) {
-    if (!this.init) {
+    if (this.element != element) {
+      CUI.remove(this.element);
+      this.element = element;
       this.el.nativeElement.appendChild(element);
-      this.init = true;
     }
+  }
+
+  ngOnDestroy() {
+    CUI.remove(this.element);
+    this.element = undefined;
   }
 }

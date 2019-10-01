@@ -10,8 +10,13 @@ import { MainMenuWidthNode } from 'ts/data/node/common';
 import { Cache, CUI, Async } from '@cui/core';
 import { BasicComponent } from 'app/basic-component';
 import { MenuRoutes } from 'ts/data/word/routes';
+import { AuthRoute } from 'ts/data/entity/entity';
+import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 
 
+interface RouteMap {
+  [key: number]: AuthRoute;
+}
 
 @Component({
   selector: 'app-menu',
@@ -20,8 +25,7 @@ import { MenuRoutes } from 'ts/data/word/routes';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuComponent extends BasicComponent implements AfterViewInit {
-  @ViewChild('menu') menuRef: ElementRef;
-  @ViewChild('menuScreen') menuScreenRef: ElementRef;
+
   private menuElement: HTMLElement;
   private menuScreenElement: HTMLElement;
 
@@ -30,10 +34,28 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
   private timer;
   private bodyClassName = 'open-menu';
   private openClassName = 'open';
-  public routes = MenuRoutes;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {
+  @Cache.session('Menu', MenuRoutes)
+  public routes: RouteMap;
+  public roots = [];
+  public childs = {};
+  @ViewChild('menu')
+  public menuRef: ElementRef;
+  @ViewChild('menuScreen')
+  public menuScreenRef: ElementRef;
+
+  constructor(private cdf: ChangeDetectorRef, private router: Router) {
     super();
+    // 路由切換
+    router.events.subscribe((e: RouterEvent) => {
+      if (e instanceof NavigationEnd) {
+        if (window.innerWidth < 996) {
+          this.close();
+          this.cdf.markForCheck();
+        }
+      }
+    });
+    this.initRoutes(MenuRoutes);
   }
 
   ngAfterViewInit() {
@@ -42,6 +64,8 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
     CUI.addElementContentChangeEvent(this.menuElement, this.resize);
     this.menuElement.addEventListener('click', this.resize);
     this.menuScreenElement.addEventListener('click', this.close);
+
+    // 不做動畫
     if (this.isShow == true) {
       document.documentElement.classList.add(this.bodyClassName);
       document.body.classList.add(this.bodyClassName);
@@ -49,22 +73,53 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
       this.menuScreenElement.style.display = 'block';
       this.menuElement.classList.add(this.openClassName);
       this.menuScreenElement.classList.add(this.openClassName);
-      this.menuElement.style.transform = 'translateX(0px)';
-      this.menuElement.style.webkitTransform = '-webkit-translateX(0px)';
+      this.menuElement.style.left = '0px';
       MainMenuWidthNode.set(this.menuElement.offsetWidth);
+    } else {
+      document.documentElement.classList.remove(this.bodyClassName);
+      document.body.classList.remove(this.bodyClassName);
+      this.menuElement.classList.remove(this.openClassName);
+      this.menuScreenElement.classList.remove(this.openClassName);
+      this.menuElement.style.left = (this.menuElement.offsetWidth * -1) + 'px';
+      MainMenuWidthNode.set(0);
+      this.menuElement.style.display = 'none';
+      this.menuScreenElement.style.display = 'none';
     }
   }
 
-  public isOpen = () => {
-    return this.menuElement.classList.contains(this.openClassName);
+  public initRoutes(routes) {
+    let oldRoutes = this.routes;
+    this.routes = {};
+    this.roots = [];
+    this.childs = {};
+    let route: AuthRoute;
+    let old: AuthRoute;
+    let parentId;
+    for (let i in routes) {
+      route = routes[i];
+      this.routes[route.id] = route;
+      old = oldRoutes[route.id];
+      parentId = route.parentId;
+      route.active = old ? old.active : false;
+      if (parentId != 0) {
+        if (!this.childs[parentId]) {
+          this.childs[parentId] = [];
+        }
+        this.childs[parentId].push(route);
+      } else {
+        this.roots.push(route);
+      }
+    }
   }
 
   /**
    * 刷新寬度
    */
-  private resize = () => {
-    MainMenuWidthNode.set(this.menuElement.offsetWidth);
-    if (!this.isOpen()) {
+  private resize = (e) => {
+    if (this.isShow) {
+      MainMenuWidthNode.set(this.menuElement.offsetWidth);
+    } else {
+      MainMenuWidthNode.set(0);
       this.menuElement.style.left = (this.menuElement.offsetWidth * -1) + 'px';
     }
   }
@@ -74,7 +129,7 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
    * 開啟或關閉
    */
   public openOrClose = () => {
-    if (this.isOpen()) {
+    if (this.isShow) {
       this.close();
     } else {
       this.open();
@@ -85,54 +140,49 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
    * 開啟
    */
   public open = () => {
-    if (this.isOpen()) {
+    if (this.isShow) {
       return;
     }
+    this.isShow = true;
     document.documentElement.classList.add(this.bodyClassName);
     document.body.classList.add(this.bodyClassName);
     this.menuElement.style.display = 'block';
     this.menuScreenElement.style.display = 'block';
     clearTimeout(this.timer);
-    this.timer = this.doOpen1();
+    this.timer = setTimeout(() => {
+      this.menuElement.style.left = (this.menuElement.offsetWidth * -1) + 'px';
+      clearTimeout(this.timer);
+      this.timer = this.doOpen();
+    }, 0);
   }
 
   /**
    * 關閉
    */
   public close = () => {
-    if (this.isOpen()) {
-      document.documentElement.classList.remove(this.bodyClassName);
-      document.body.classList.remove(this.bodyClassName);
-      this.menuElement.classList.remove(this.openClassName);
-      this.menuScreenElement.classList.remove(this.openClassName);
-
-      this.menuElement.style.transform = 'translateX(-' + this.menuElement.offsetWidth + 'px)';
-      this.menuElement.style.webkitTransform = '-webkit-translateX(-' + this.menuElement.offsetWidth + 'px)';
-
-      MainMenuWidthNode.set(0);
-      clearTimeout(this.timer);
-      this.timer = this.doClose();
+    if (!this.isShow) {
+      return;
     }
-  }
-
-  @Async(0)
-  private doOpen1() {
-    this.menuElement.style.transform = 'translateX(-' + this.menuElement.offsetWidth + 'px)';
-    this.menuElement.style.webkitTransform = '-webkit-translateX(-' + this.menuElement.offsetWidth + 'px)';
-    this.doOpen2();
+    this.isShow = false;
+    document.documentElement.classList.remove(this.bodyClassName);
+    document.body.classList.remove(this.bodyClassName);
+    this.menuElement.classList.remove(this.openClassName);
+    this.menuScreenElement.classList.remove(this.openClassName);
+    this.menuElement.style.left = (this.menuElement.offsetWidth * -1) + 'px';
+    MainMenuWidthNode.set(0);
+    clearTimeout(this.timer);
+    this.timer = this.doClose();
   }
 
   /**
    * 執行開啟
    */
   @Async(0)
-  private doOpen2() {
+  private doOpen() {
     this.menuElement.classList.add(this.openClassName);
     this.menuScreenElement.classList.add(this.openClassName);
-    this.menuElement.style.transform = 'translateX(0px)';
-    this.menuElement.style.webkitTransform = '-webkit-translateX(0px)';
+    this.menuElement.style.left = '0px';
     MainMenuWidthNode.set(this.menuElement.offsetWidth);
-    this.isShow = true;
   }
 
   /**
@@ -142,6 +192,5 @@ export class MenuComponent extends BasicComponent implements AfterViewInit {
   private doClose() {
     this.menuElement.style.display = 'none';
     this.menuScreenElement.style.display = 'none';
-    this.isShow = false;
   }
 }

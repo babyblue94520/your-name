@@ -4,425 +4,115 @@ import { CUI } from '../cui';
  * 表格
  */
 export namespace Grid {
-
-    export enum ClassName {
-        Grid = 'cui-grid',
-        Container = 'cui-grid-container',
-        Header = 'cui-grid-header',
-        Body = 'cui-grid-body',
-        Footer = 'cui-grid-footer',
-        Column = 'cui-grid-column',
-        ColumnDiv = 'cui-grid-td-div',
-        Content = 'cui-grid-content',
-        Desc = 'flaticon-down',
-        Asc = 'flaticon-up',
-        Sort = 'sort',
-        FirstPage = 'first-page  flaticon-first',
-        PrevPage = 'prev-page flaticon-prev',
-        NextPage = 'next-page flaticon-next',
-        LastPage = 'last-page flaticon-last',
-        PageInfo = 'page-info',
-        RowInfo = 'row-info',
-        PageInput = 'page-input',
-        Disable = 'disable',
-        HasContent = 'has-content',
-        Show = 'show',
-    }
-
     /**
-     * 排序列舉
+     * 表格
      */
-    export enum Sort {
-        Desc = 'DESC',
-        Asc = 'ASC',
-    }
-
-    export interface IExportConfig {
-        tableStyle?: string;
-        theadStyle?: string;
-        tbodyStyle?: string;
-        tdStyle?: string;
-    }
-
-    /**
-     * 配置
-     */
-    export interface IConfig<T> {
-        rowColumns: IColumnConfig<T>[];
-        size?: number;
-        height?: string;
-        width?: string;
-        index?: boolean;
-        singleSort?: boolean;
-        scroll?: boolean;
-        contentColumns?: IColumnConfig<T>[];
-        onLoad?: IOnLoad<T>;
-    }
-
-    /**
-     * 欄位介面
-     */
-    export interface IColumnConfig<T> {
-        value: string;
-        name: string;
-        sort?: Sort;
-        canSort?: boolean;
-        className?: string;
-        align?: string;
-        width?: string;
-        maxWidth?: string;
-        minWidth?: string;
-        nowrap?: boolean;
-        html?: boolean;
-        element?: boolean;
-        onRender?: IColumnRender<T>;
-    }
-
-    /**
-     * 欄位渲染方法介面
-     */
-    export type IColumnRender<T> = (value: any, record: T, index: number) => any;
-
-    export interface IGridColumn<T> {
-        config: IColumnConfig<T>;
-        render: IColumnRender<T>;
-    }
-
-    /**
-     *
-     */
-    export type IOnLoad<T> = (pageable: IPageable, load: ILoad<T>) => any;
-
-    /**
-     *
-     */
-    export type ILoad<T> = (page: IPage<T> | T[]) => any;
-
-    export interface IPageable {
-        // 每頁顯示數量
-        size: number;
-        // 頁碼
-        page: number;
-        // 排序
-        sort: string[];
-    }
-
-    export interface IPage<T> {
-        // 返回資料
-        content: T[];
-        // 是否第一筆
-        first?: boolean;
-        // 是否最後一筆
-        last?: boolean;
-        // 目前頁碼
-        number: number;
-        // 資料筆數
-        numberOfElements?: number;
-        // 每頁顯示筆數
-        size: number;
-        // 排序
-        sort?: IPageSort[];
-        // 總共幾筆
-        totalElements?: number;
-        // 總共幾頁
-        totalPages?: number;
-    }
-
-    export interface IPageSort {
-        // 排序類型
-        direction: Sort;
-        // 排序欄位
-        property: string;
-    }
-
-    export function htmlRender(onRender: IColumnRender<any>, value, record, index) {
-        let render = onRender.call(this, value, record, index);
-        if (this instanceof Element) {
-            (<HTMLElement>this).innerHTML = render;
-        } else {
-            return render;
-        }
-    }
-    export function elementRender(onRender: IColumnRender<any>, value, record, index) {
-        try {
-            let render = onRender.call(this, value, record, index);
-
-            if (this instanceof Element) {
-                if (CUI.isArray(render)) {
-                    let el;
-                    for (let i in render) {
-                        el = render[i];
-                        if (el instanceof Element) {
-                            (<HTMLElement>this).appendChild(el);
-                        }
-                    }
-                } else {
-                    if (render instanceof Element) {
-                        (<HTMLElement>this).appendChild(render);
-                    }
-                }
-            } else {
-                return render;
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
-    export function textRender(onRender: IColumnRender<any>, value, record, index) {
-        let render = onRender.call(this, value, record, index);
-        if (this instanceof Element) {
-            (<HTMLElement>this).innerText = render;
-        } else {
-            return render;
-        }
-    }
-    export function valueRender(onRender: IColumnRender<any>, value, record, index) {
-        if (this instanceof Element) {
-            (<HTMLElement>this).innerText = value;
-        } else {
-            return value;
-        }
-    }
-
-    export class PageGridBuilder {
-
-        public static build<T>(config: IConfig<T>): PageGrid<T> {
-            if (!config.rowColumns || config.rowColumns.length == 0) {
-                throw new Error('rowColumns is required');
-            }
-            return new PageGrid<T>(config);
-        }
-
-        /**
-         *
-         * @param config 檢查
-         */
-        public static checkColumnConfig<T>(config: IColumnConfig<T>) {
-            if (config.value == undefined) {
-                throw new Error('column value is required');
-            }
-            if (config.name == undefined) {
-                throw new Error('column name is required');
-            }
-        }
-
-        public static buildColumnConfig<T>(config: IColumnConfig<T>): IColumnConfig<T> {
-            PageGridBuilder.checkColumnConfig(config);
-            return CUI.deepClone({
-                value: '',
-                name: '',
-                className: '',
-                sort: '',
-                canSort: false,
-                align: 'left',
-                width: 'auto',
-                nowrap: true,
-                html: false,
-                element: false
-            }, config);
-        }
-
-        /**
-         * 產生表頭
-         */
-        public static buildGridHeaderElement<T>(config: IColumnConfig<T>): HTMLElement {
-            let element = document.createElement('th');
-            let className = ClassName.Column + ' ' + (config.canSort ? ClassName.Sort : '');
-            element.className = className;
-            element.noWrap = true;
-            element.align = 'center';
-            element.width = config.width;
-            element.innerText = config.name;
-            return element;
-        }
-
-        /**
-         * 產生每筆資料的 tr
-         * @param columns
-         * @param index
-         * @param record
-         */
-        public static buildEmptyGridRecordElement<T>(count: number): HTMLElement {
-            let tr: HTMLElement = document.createElement('tr');
-            tr.className = 'empty';
-            let td: HTMLTableCellElement = document.createElement('td');
-            td.colSpan = count;
-            td.align = 'center';
-            td.innerText = '無資料';
-            tr.appendChild(td);
-            return tr;
-        }
-
-        /**
-         * 產生每筆資料的 tr
-         * @param columns
-         * @param index
-         * @param record
-         */
-        public static buildGridRecordElement<T>(columns: IGridColumn<T>[], index: number, record: T): HTMLElement {
-            let tr: HTMLElement = document.createElement('tr');
-            let column: IGridColumn<T>, config: IColumnConfig<T>, td: HTMLTableCellElement, div: HTMLElement;
-            for (let i in columns) {
-                column = columns[i];
-                config = column.config;
-                td = document.createElement('td');
-                tr.appendChild(td);
-                td.className = ClassName.Column;
-                td.align = config.align;
-                td.noWrap = config.nowrap;
-                div = document.createElement('div');
-                td.appendChild(div);
-                td.width = config.width;
-                if (config.maxWidth) {
-                    div.style.maxWidth = config.maxWidth;
-                }
-                if (config.minWidth) {
-                    div.style.minWidth = config.minWidth;
-                }
-                div.className = ClassName.ColumnDiv + ' ' + config.className;
-
-                column.render.call(div, config.onRender, PageGridBuilder.getValue(config.value, record), record, index);
-            }
-            return tr;
-        }
-
-        /**
-         * 產生每筆資料的 content
-         * @param columns
-         * @param index
-         * @param record
-         */
-        public static buildGridRecordContentElement<T>(colSpan: number, columns: IGridColumn<T>[], index: number, record: T): HTMLElement {
-            let tr: HTMLElement = document.createElement('tr');
-            tr.className = ClassName.Content;
-            let td = document.createElement('td');
-            td.colSpan = colSpan;
-            tr.appendChild(td);
-            return tr;
-        }
-
-        /**
-         * 延遲加載content
-         * @param columns
-         * @param index
-         * @param record
-         */
-        public static loadContent<T>(columns: IGridColumn<T>[], index: number, record: T): HTMLElement {
-            let table: HTMLElement = document.createElement('table');
-            let column: IGridColumn<T>, config: IColumnConfig<T>, tr: HTMLTableRowElement, label: HTMLTableCellElement, content: HTMLTableCellElement, colon;
-            for (let i in columns) {
-                tr = document.createElement('tr');
-                column = columns[i];
-                config = column.config;
-                label = document.createElement('td');
-                label.align = 'left';
-                label.width = '1%';
-                label.noWrap = true;
-                label.innerText = config.name;
-                if (config.name) {
-                    colon = document.createElement('span');
-                    colon.innerText = '：';
-                    label.appendChild(colon);
-                }
-                content = document.createElement('td');
-                content.align = 'left';
-                content.width = '100%';
-                column.render.call(content, config.onRender, PageGridBuilder.getValue(config.value, record), record, index);
-                tr.appendChild(label);
-                tr.appendChild(content);
-                table.appendChild(tr);
-            }
-            return table;
-        }
-
-        /**
-         *
-         * @param column 產生渲染方法
-         */
-        public static builderGridColumnRenderHandler<T>(config: IColumnConfig<T>): Function {
-            if (config.onRender instanceof Function) {
-                if (config.html) {
-                    return htmlRender;
-                } else if (config.element) {
-                    return elementRender;
-                } else {
-                    return textRender;
-                }
-            } else {
-                return valueRender;
-            }
-        }
-
-
-        /**
-         * 解析 key  ex: id.time
-         * @param key
-         * @param record
-         */
-        public static getValue(key: string, record: any) {
-            if (CUI.isEmpty(key)) {
-                return undefined;
-            }
-            let vs = key.split('.'), value = record;
-            for (let i in vs) {
-                value = value[vs[i]];
-            }
-            return value;
-        }
-    }
-
-    /**
-     * 分頁表格
-     */
-    export class PageGrid<T> {
-        private _config: IConfig<T> = {
+    // tslint:disable-next-line:no-shadowed-variable
+    export class Grid<T> {
+        protected _config: IConfig<T> = {
             size: 50,
             height: 'auto',
             width: '100%',
             index: false,
-            scroll: false,
+            select: false,
             singleSort: true,
             rowColumns: null,
             contentColumns: null,
             onLoad: null
         };
-        private _element: HTMLElement;
-        private _columns: IGridColumn<T>[];
-        private _columnContents: IGridColumn<T>[];
-        private _headerElements: HTMLElement[];
-        private _gridElement: HTMLElement;
-        private _tableElement: HTMLElement;
-        private _theadElement: HTMLElement;
-        private _tbodyElement: HTMLElement;
-        private _footerElement: HTMLElement;
-        // private _footerLeftElement: HTMLTableCellElement;
-        // private _footerRightElement: HTMLTableCellElement;
-        private _footerLeftElement: HTMLElement;
-        private _footerRightElement: HTMLElement;
+        protected _element: HTMLElement;
+        protected _columns: IGridColumn<T>[];
+        protected _columnContents: IGridColumn<T>[];
 
-        private _firstPageElement: HTMLDivElement;
-        private _prevPageElement: HTMLDivElement;
-        private _nextPageElement: HTMLDivElement;
-        private _lastPageElement: HTMLDivElement;
+        protected _pageElement: HTMLElement;
+        protected _pageLeftElement: HTMLElement;
+        protected _pageRightElement: HTMLElement;
 
-        private _pageInfoElement: HTMLDivElement;
-        private _pageInputElement: HTMLInputElement;
-        private _pageTotalTextNode: Text;
+        protected _headerElements: HTMLElement[];
+        protected _gridElement: HTMLElement;
+        protected _tableElement: HTMLElement;
+        protected _theadElement: HTMLElement;
+        protected _tbodyElement: HTMLElement;
+        protected _footerElement: HTMLElement;
+        protected _footerLeftElement: HTMLElement;
+        protected _footerRightElement: HTMLElement;
 
-        private _rowTotalTextNode: Text;
-        private _rowCUItTextNode: Text;
-        private _rowEndTextNode: Text;
+        protected _checkedAllElement: HTMLInputElement;
+        protected _checkedAllText: Text;
 
-        private _defaultSorts = {};
-        private _sorts = {};
-        private _pageable: IPageable;
-        private _page: IPage<T>;
+        protected _loadMoreElement: HTMLDivElement;
+
+        protected _rowTotalTopTextNode: Text;
+        protected _rowStartTopTextNode: Text;
+        protected _rowEndTopTextNode: Text;
+
+        protected _rowTotalTextNode: Text;
+        protected _rowStartTextNode: Text;
+        protected _rowEndTextNode: Text;
+
+        protected _defaultSorts = {};
+        protected _sorts = {};
+        protected _pageable: IPageable;
+        protected _page: IPage<T>;
+        protected _realPage = false;
+        protected _count = 0;
+        protected _reloadPage = 0;
+
+        protected _checkboxs: IGridChecbox[] = [];
+        protected _selectedRecords: T[] = [];
 
         constructor(config: IConfig<T>) {
             this._config = CUI.deepClone(this._config, config);
-
+            // checkbox
+            if (this._config.select) {
+                this._config.rowColumns.splice(0, 0, {
+                    checkbox: true,
+                    name: '',
+                    value: '',
+                    width: '1%',
+                    align: 'center',
+                } as IGridColumnConfig<T>);
+            }
+            // 序號
+            if (this._config.index) {
+                this._config.rowColumns.splice(0, 0, {
+                    name: '',
+                    value: '',
+                    width: '1%',
+                    onRender: (value, record, index) => {
+                        if (this._realPage) {
+                            return this._page.number * this._page.size + index + 1;
+                        } else {
+                            return index + 1;
+                        }
+                    }
+                });
+            }
             this.initElement();
             this.initPageable();
+            this.initPage();
+            this.setPageInfo();
+        }
+
+        /**
+         * 取得element
+         */
+        public getElement(): HTMLElement {
+            return this._element;
+        }
+
+        /**
+         * 取得選取的列
+         */
+        public getSelecteds(): T[] {
+            return this._selectedRecords;
+        }
+
+        public resize(height: number) {
+            this._gridElement.style.height = (height - this._gridElement.offsetTop - this._footerElement.offsetHeight - 10) + 'px';
+        }
+
+        public initPage() {
             this._page = {
                 content: [],
                 number: 0,
@@ -434,18 +124,6 @@ export namespace Grid {
                 totalElements: 0,
                 totalPages: 0
             };
-            this.setFooterPageInfo();
-        }
-
-        /**
-         * 取得element
-         */
-        public getElement = (): HTMLElement => {
-            return this._element;
-        }
-
-        public resize = (height: number) => {
-            this._gridElement.style.height = (height - this._gridElement.offsetTop - this._footerElement.offsetHeight - 10) + 'px';
         }
 
         /**
@@ -458,16 +136,17 @@ export namespace Grid {
                 page: 0,
                 sort: this.getSortArray(),
             };
+            this._reloadPage = 0;
             this.setHeaderColumnSort();
         }
 
         /**
          * 匯出html
          */
-        public export = (config: IExportConfig, records: T[]): string => {
+        public export(config: IExportConfig, records: T[]): string {
             let html = '<table style="' + (config.tableStyle || '') + '">';
             html += '<thead ><tr style="' + (config.theadStyle || '') + '">';
-            let column: IGridColumn<T>, columnConfig: IColumnConfig<T>;
+            let column: IGridColumn<T>, columnConfig: IGridColumnConfig<T>;
             for (let i in this._columns) {
                 column = this._columns[i];
                 columnConfig = column.config;
@@ -486,8 +165,10 @@ export namespace Grid {
                 for (let j in this._columns) {
                     column = this._columns[j];
                     columnConfig = column.config;
-                    value = column.render.call(null, columnConfig.onRender, PageGridBuilder.getValue(columnConfig.value, record), record, i);
-                    html += '<td align="' + columnConfig.align + '" nowrap style="' + config.tdStyle + '" width="' + columnConfig.width + '">' + value + '</td>';
+                    if (!columnConfig.checkbox) {
+                        value = column.render.call(null, columnConfig.onRender, GridBuilder.getValue(columnConfig.value, record), record, i);
+                        html += '<td align="' + columnConfig.align + '" nowrap style="' + config.tdStyle + '" width="' + columnConfig.width + '">' + value + '</td>';
+                    }
                 }
                 html += '</tr>';
             }
@@ -495,28 +176,17 @@ export namespace Grid {
             return html;
         }
 
+        public clean() {
+            this.initPage();
+            this.doLoadPage(true, this._page);
+        }
+
         /**
          * 載入資料
          */
-        public load = (data?: IPage<T> | T[]) => {
-            if (data) {
-                let page: IPage<T>;
-                if (CUI.isArray(data)) {
-                    let length = (<T[]>data).length;
-                    page = {
-                        content: data as T[],
-                        number: 0,
-                        sort: this.getPageSort(),
-                        size: length,
-                        first: true,
-                        last: true,
-                        totalElements: length,
-                        totalPages: 0
-                    };
-                } else {
-                    page = data as IPage<T>;
-                }
-                this._page = page;
+        public load(page?: IPage<T> | T[]) {
+            if (page) {
+                this._page = this.covertPage(page);
             }
             this.initPageable();
             this.onLoad();
@@ -524,88 +194,24 @@ export namespace Grid {
 
         /**
          * 刷新
+         * 當前所有加載的資料
          */
         public reload() {
-            this.onLoad();
-        }
-
-        /**
-         * 第一頁
-         */
-        private onFirstPageClick = () => {
-            if (!this._page.first) {
-                this._pageable.page = 0;
-                this.onLoad();
+            // 計數刷新前page index
+            this._reloadPage = this._pageable.page;
+            // 計算總共要拉回多少資料
+            this._pageable.size = this._page.number * this._page.size + this._page.numberOfElements;
+            if (this._pageable.size < this._config.size) {
+                this._pageable.size = this._config.size;
             }
+            this._pageable.page = 0;
+            this.onLoad(true);
         }
-
-        /**
-         * 上一頁
-         */
-        private onPrevPageClick = () => {
-            if (!this._page.first) {
-                this._pageable.page -= 1;
-                this.onLoad();
-            }
-        }
-
-        /**
-         * 下一頁
-         */
-        private onNextPageClick = () => {
-            if (!this._page.last) {
-                this._pageable.page += 1;
-                this.onLoad();
-            }
-        }
-
-        /**
-         * 最後一頁
-         */
-        private onLastPageClick = () => {
-            if (!this._page.last) {
-                this._pageable.page = this._page.totalPages - 1;
-                this.onLoad();
-            }
-        }
-
-        /**
-         * 禁止輸入非數字
-         */
-        private onPageKeydown = (e) => {
-            if (e.keyCode == 8) { return; }
-            return /\d/.test(e.key);
-        }
-
-        /**
-         *
-         */
-        private onPageInput = (e) => {
-            let value = Number(this._pageInputElement.value);
-            if (value < 1) {
-                value = 1;
-            } else if (value > this._page.totalPages) {
-                value = this._page.totalPages;
-            }
-            this._pageInputElement.value = String(value);
-        }
-
-        /**
-         * page input enter load
-         */
-        private onPageEnter = (e) => {
-            let value = Number(this._pageInputElement.value) - 1;
-            if (value != this._pageable.page) {
-                this._pageable.page = value;
-                this.onLoad();
-            }
-        }
-
 
         /**
          * 排序事件
          */
-        private onSort = (id, sort) => {
+        protected onSort(id, sort) {
             if (sort) {
                 if (this._config.singleSort) {
                     this._sorts = {};
@@ -619,65 +225,114 @@ export namespace Grid {
         }
 
         /**
+         * 排序事件
+         */
+        protected onCheckedAll(e) {
+            if (e.target != this._checkedAllElement) {
+                this._checkedAllElement.checked = !this._checkedAllElement.checked;
+            }
+            this._selectedRecords.length = 0;
+            let gridCheckbox;
+            if (this._checkedAllElement.checked) {
+                for (let i in this._checkboxs) {
+                    gridCheckbox = this._checkboxs[i];
+                    gridCheckbox.tr.classList.add('selected');
+                    gridCheckbox.checkbox.checked = true;
+                    this._selectedRecords.push(gridCheckbox.record);
+                }
+            } else {
+                for (let i in this._checkboxs) {
+                    gridCheckbox = this._checkboxs[i];
+                    gridCheckbox.tr.classList.remove('selected');
+                    gridCheckbox.checkbox.checked = false;
+                }
+            }
+            this._checkedAllText.data = '(' + this._selectedRecords.length + ')';
+        }
+
+        /**
          * 載入事件
          */
-        private onLoad = () => {
+        protected onLoad(clean: boolean = true) {
+            if (clean) {
+                this._count = 0;
+                this._selectedRecords.length = 0;
+                this._checkboxs.length = 0;
+            } else {
+                this._count += this._page.numberOfElements;
+            }
             if (this._config.onLoad instanceof Function) {
-                this._config.onLoad(this._pageable, this.doLoadPage);
+                this._config.onLoad(this._pageable, this.doLoadPage.bind(this, clean));
             } else {
                 this._page.number = this._pageable.page;
-                this.doLoadPage(this._page);
+                this.doLoadPage(clean, this._page);
             }
+        }
+
+        /**
+         *
+         * @param page
+         */
+        protected covertPage(page: IPage<T> | T[]): IPage<T> {
+            if (CUI.isArray(page)) {
+                let length = (<T[]>page).length;
+                page = {
+                    content: page as T[],
+                    number: this._pageable.page,
+                    sort: this.getPageSort(),
+                    size: this._pageable.size,
+                    totalElements: length,
+                } as IPage<T>;
+                this._realPage = false;
+            } else {
+                this._realPage = true;
+            }
+            return page as IPage<T>;
         }
 
         /**
          * 執行載入資料
          */
-        private doLoadPage = (page: IPage<T> | T[]) => {
+        protected doLoadPage(clean: boolean, page: IPage<T> | T[]) {
             if (page) {
-                if (CUI.isArray(page)) {
-                    let length = (<T[]>page).length;
-                    page = {
-                        content: page as T[],
-                        number: 0,
-                        sort: this.getPageSort(),
-                        size: length,
-                        first: true,
-                        last: true,
-                        totalElements: length,
-                        totalPages: 0
-                    } as IPage<T>;
-                }
-                page = page as IPage<T>;
+                page = this.covertPage(page);
                 let total = page.totalElements;
                 let size = page.size;
                 let totalPage = Math.ceil(total == 0 ? 0 : total / size);
                 page.first = (page.number == 0);
                 page.last = (total == 0) || (page.number + 1 == totalPage);
                 page.totalPages = totalPage;
-                page.numberOfElements = page.content.length;
+                page.numberOfElements = page.content.length > page.size ? page.size : page.content.length;
                 this._page = page;
-                this.updateSorts(page);
+                // this.updateSorts(page);
                 this.resetPageable(page);
                 this.setHeaderColumnSort();
                 if (this._columnContents && this._columnContents.length > 0) {
-                    this.loadTbodyContent(this._page.content);
+                    this.loadTbody(this._page.content, this.tbodyAppendChildContent, clean);
                 } else {
-                    this.loadTbody(this._page.content);
+                    this.loadTbody(this._page.content, this.tbodyAppendChild, clean);
+                }
+            } else {
+                if (clean) {
+                    this._tbodyElement.innerHTML = '';
                 }
             }
-            this.setFooterPageInfo();
+            this.setPageInfo();
         }
 
         /**
          * 初始化grid element
          */
-        private initElement = () => {
+        protected initElement() {
             this._element = document.createElement('div');
             this._element.className = ClassName.Grid;
             if (this._config.width) {
                 this._element.style.width = this._config.width;
             }
+            this._pageElement = document.createElement('div');
+            this._element.appendChild(this._pageElement);
+            this._pageElement.className = ClassName.Footer;
+
             this._gridElement = document.createElement('div');
             this._element.appendChild(this._gridElement);
             if (this._config.height) {
@@ -689,26 +344,23 @@ export namespace Grid {
             this._gridElement.appendChild(this._tableElement);
             this._theadElement = document.createElement('thead');
             this._tableElement.appendChild(this._theadElement);
-            // this._theadElement.className = ClassName.Header;
             this._tbodyElement = document.createElement('tbody');
             this._tableElement.appendChild(this._tbodyElement);
-            // this._tbodyElement.className = ClassName.Body;
             this._footerElement = document.createElement('div');
             this._element.appendChild(this._footerElement);
-            // this._footerElement = document.createElement('table');
             this._footerElement.className = ClassName.Footer;
-            // this._element.appendChild(this._footerElement);
             this.initHeaderColumn();
+            this.initHeaderPage();
             this.initFooter();
         }
 
         /**
          * 初始化表頭
          */
-        private initHeaderColumn = () => {
+        protected initHeaderColumn() {
             this._headerElements = [];
             this._columns = [];
-            let colConfig: IColumnConfig<T>, hElement: HTMLElement;
+            let colConfig: IGridColumnConfig<T>, hElement: HTMLElement;
             let tr = document.createElement('tr');
             let column;
             for (let i in this._config.rowColumns) {
@@ -716,14 +368,30 @@ export namespace Grid {
                 if (!column) {
                     continue;
                 }
-                colConfig = PageGridBuilder.buildColumnConfig(column);
-                this.setSorts(colConfig);
-                this._columns.push({
-                    config: colConfig,
-                    render: PageGridBuilder.builderGridColumnRenderHandler(colConfig)
-                } as IGridColumn<T>);
-                hElement = PageGridBuilder.buildGridHeaderElement(colConfig);
-                hElement.addEventListener('click', onHeaderClick.bind(hElement, colConfig.value, this.onSort));
+                colConfig = GridBuilder.buildColumnConfig(column);
+                if (column.checkbox) {
+                    this._columns.push({
+                        config: column,
+                        render: this.checkboxRender
+                    } as IGridColumn<T>);
+                    hElement = GridBuilder.buildGridHeaderCheckboxElement(colConfig);
+                    this._checkedAllElement = document.createElement('input');
+                    this._checkedAllElement.type = 'checkbox';
+                    this._checkedAllElement.className = 'checkbox';
+                    this._checkedAllText = document.createTextNode('');
+                    hElement.appendChild(this._checkedAllElement);
+                    hElement.appendChild(this._checkedAllText);
+                    hElement.addEventListener('click', this.onCheckedAll.bind(this));
+                } else {
+                    this.setSorts(colConfig);
+                    this._columns.push({
+                        config: colConfig,
+                        render: GridBuilder.builderGridColumnRenderHandler(colConfig)
+                    } as IGridColumn<T>);
+                    hElement = GridBuilder.buildGridHeaderElement(colConfig);
+                    hElement.addEventListener('click', onHeaderClick.bind(hElement, colConfig.value, this.onSort.bind(this)));
+                }
+
                 tr.appendChild(hElement);
                 this._headerElements.push(hElement);
             }
@@ -736,10 +404,10 @@ export namespace Grid {
                     if (!column) {
                         continue;
                     }
-                    colConfig = PageGridBuilder.buildColumnConfig(column);
+                    colConfig = GridBuilder.buildColumnConfig(column);
                     this._columnContents.push({
                         config: colConfig,
-                        render: PageGridBuilder.builderGridColumnRenderHandler(colConfig)
+                        render: GridBuilder.builderGridColumnRenderHandler(colConfig)
                     } as IGridColumn<T>);
                 }
             }
@@ -748,48 +416,45 @@ export namespace Grid {
         /**
          * 底部
          */
-        private initFooter = () => {
+        protected initHeaderPage() {
+            this._pageLeftElement = document.createElement('div');
+            this._pageLeftElement.className = 'left-info';
+
+            this._pageRightElement = document.createElement('div');
+            this._pageRightElement.className = 'right-info';
+            this._rowStartTopTextNode = document.createTextNode('');
+            this._rowEndTopTextNode = document.createTextNode('');
+            this._rowTotalTopTextNode = document.createTextNode('');
+            this._pageRightElement.appendChild(document.createTextNode('Row '));
+            this._pageRightElement.appendChild(this._rowStartTopTextNode);
+            this._pageRightElement.appendChild(document.createTextNode(' - '));
+            this._pageRightElement.appendChild(this._rowEndTopTextNode);
+            this._pageRightElement.appendChild(document.createTextNode(' of '));
+            this._pageRightElement.appendChild(this._rowTotalTopTextNode);
+
+            this._pageElement.appendChild(this._pageLeftElement);
+            this._pageElement.appendChild(this._pageRightElement);
+        }
+
+        /**
+         * 底部
+         */
+        protected initFooter() {
             this._footerLeftElement = document.createElement('div');
             this._footerLeftElement.className = 'left-info';
-            this._firstPageElement = document.createElement('div');
-            this._prevPageElement = document.createElement('div');
-            this._nextPageElement = document.createElement('div');
-            this._lastPageElement = document.createElement('div');
+            this._loadMoreElement = document.createElement('div');
+            this._loadMoreElement.className = ClassName.LoadMore;
+            this._loadMoreElement.innerText = '載入更多';
+            this._loadMoreElement.addEventListener('click', this.onLoadMoreHandler.bind(this));
 
-            this._pageInputElement = document.createElement('input');
-            this._pageInputElement.onkeydown = this.onPageKeydown;
-            this._pageInputElement.oninput = this.onPageInput;
-            CUI.addListenOnEnter(this._pageInputElement, this.onPageEnter);
-            this._pageInfoElement = document.createElement('div');
-            this._pageTotalTextNode = document.createTextNode('');
-            this._pageInfoElement.className = ClassName.PageInfo;
-            this._pageInfoElement.appendChild(document.createTextNode('Page '));
-            this._pageInfoElement.appendChild(this._pageInputElement);
-            this._pageInfoElement.appendChild(document.createTextNode(' of '));
-            this._pageInfoElement.appendChild(this._pageTotalTextNode);
-
-            this._firstPageElement.className = ClassName.FirstPage;
-            this._prevPageElement.className = ClassName.PrevPage;
-            this._nextPageElement.className = ClassName.NextPage;
-            this._lastPageElement.className = ClassName.LastPage;
-            this._firstPageElement.addEventListener('click', this.onFirstPageClick);
-            this._prevPageElement.addEventListener('click', this.onPrevPageClick);
-            this._nextPageElement.addEventListener('click', this.onNextPageClick);
-            this._lastPageElement.addEventListener('click', this.onLastPageClick);
-
-            this._footerLeftElement.appendChild(this._firstPageElement);
-            this._footerLeftElement.appendChild(this._prevPageElement);
-            this._footerLeftElement.appendChild(this._pageInfoElement);
-            this._footerLeftElement.appendChild(this._nextPageElement);
-            this._footerLeftElement.appendChild(this._lastPageElement);
-
+            this._footerLeftElement.appendChild(this._loadMoreElement);
             this._footerRightElement = document.createElement('div');
             this._footerRightElement.className = 'right-info';
-            this._rowCUItTextNode = document.createTextNode('');
+            this._rowStartTextNode = document.createTextNode('');
             this._rowEndTextNode = document.createTextNode('');
             this._rowTotalTextNode = document.createTextNode('');
             this._footerRightElement.appendChild(document.createTextNode('Row '));
-            this._footerRightElement.appendChild(this._rowCUItTextNode);
+            this._footerRightElement.appendChild(this._rowStartTextNode);
             this._footerRightElement.appendChild(document.createTextNode(' - '));
             this._footerRightElement.appendChild(this._rowEndTextNode);
             this._footerRightElement.appendChild(document.createTextNode(' of '));
@@ -802,8 +467,8 @@ export namespace Grid {
         /**
          * 設定header排序className
          */
-        private setHeaderColumnSort() {
-            let colConfig: IColumnConfig<T>, hElement: HTMLElement;
+        protected setHeaderColumnSort() {
+            let colConfig: IGridColumnConfig<T>, hElement: HTMLElement;
             let sort: string;
             let column;
             for (let i in this._config.rowColumns) {
@@ -811,7 +476,7 @@ export namespace Grid {
                 if (!column) {
                     continue;
                 }
-                colConfig = PageGridBuilder.buildColumnConfig(column);
+                colConfig = GridBuilder.buildColumnConfig(column);
                 hElement = this._headerElements[i];
                 sort = this._sorts[colConfig.value];
                 if (sort) {
@@ -826,7 +491,6 @@ export namespace Grid {
                     hElement.classList.remove(ClassName.Desc);
                     hElement.classList.remove(ClassName.Asc);
                 }
-
             }
         }
 
@@ -834,7 +498,339 @@ export namespace Grid {
         /**
          * 設定底頁資訊
          */
-        private setFooterPageInfo = () => {
+        protected setPageInfo() {
+            let endRow = (this._page.number + 1) * this._page.size;
+            if (this._page.totalElements <= endRow) {
+                endRow = this._page.totalElements;
+                this._loadMoreElement.innerText = '';
+            } else {
+                this._loadMoreElement.innerText = '載入更多';
+            }
+            this._rowStartTextNode.data = String(1);
+            this._rowEndTextNode.data = String(endRow);
+            this._rowTotalTextNode.data = String(this._page.totalElements);
+
+            this._rowStartTopTextNode.data = String(1);
+            this._rowEndTopTextNode.data = String(endRow);
+            this._rowTotalTopTextNode.data = String(this._page.totalElements);
+        }
+
+
+        /**
+         * 將資料載入到 tbody
+         */
+        protected loadTbody(records: T[], tbodyAppendChild, clean: boolean) {
+            if (!records) {
+                return;
+            }
+            let tbody: DocumentFragment = document.createDocumentFragment();
+            let length = this._page.numberOfElements;
+            if (length > 0) {
+                let startRow, endRow;
+                // 真分頁
+                if (this._realPage) {
+                    startRow = 0;
+                    endRow = length;
+                } else {
+                    startRow = this._count;
+                    endRow = startRow + length;
+                }
+                let record;
+                let colSpan = this._headerElements.length;
+                for (let i = startRow; i < endRow; i++) {
+                    record = records[i];
+                    if (!record) {
+                        continue;
+                    }
+                    tbodyAppendChild(tbody, i, record, colSpan);
+                }
+                if (this._checkedAllElement) {
+                    this._checkedAllElement.checked = this._selectedRecords.length == this._count + endRow;
+                    this._checkedAllText.data = '(' + this._selectedRecords.length + ')';
+                }
+            } else {
+                tbody.appendChild(GridBuilder.buildEmptyGridRecordElement(this._columns.length));
+            }
+            if (clean) {
+                this._tbodyElement.innerHTML = '';
+            }
+            this._tbodyElement.appendChild(tbody);
+        }
+
+        /**
+         *
+         * @param tbody
+         * @param i
+         * @param record
+         */
+        protected tbodyAppendChild = (tbody, i, record) => {
+            tbody.appendChild(GridBuilder.buildGridRecordElement(this._columns, i, record));
+        }
+
+        /**
+         *
+         * @param tbody
+         * @param i
+         * @param record
+         * @param colSpan
+         */
+        protected tbodyAppendChildContent = (tbody, i, record, colSpan) => {
+            let tr = GridBuilder.buildGridRecordElement(this._columns, i, record);
+            tr.addEventListener('click', onTrClick.bind(tr, this._columnContents, record, i));
+            tr.classList.add(ClassName.HasContent);
+            tbody.appendChild(tr);
+            tbody.appendChild(GridBuilder.buildGridRecordContentElement(colSpan, this._columnContents, i, record));
+        }
+
+        /**
+         * 重新設定分頁
+         */
+        protected resetPageable(page: IPage<T>) {
+            if (page) {
+                this._pageable = {
+                    size: page.size,
+                    page: page.number,
+                    sort: this.getSortArray(),
+                };
+            }
+        }
+
+        /**
+         * 取得排序
+         */
+        protected getPageSort(): IPageSort[] {
+            let array: IPageSort[] = [];
+            if (this._sorts) {
+                for (let id in this._sorts) {
+                    array.push({
+                        direction: this._sorts[id],
+                        property: id
+                    });
+                }
+            }
+            return array;
+        }
+
+        /**
+         * 取得排序字串陣列
+         */
+        protected getSortArray(): string[] {
+            let array = [];
+            if (this._sorts) {
+                for (let id in this._sorts) {
+                    array.push(id + ',' + this._sorts[id]);
+                }
+            }
+            return array;
+        }
+
+        /**
+         * 設定排序
+         */
+        protected setSorts(config: IGridColumnConfig<T>) {
+            if (config && config.sort) {
+                this._defaultSorts[config.value] = config.sort;
+            }
+        }
+
+        /**
+         * 重新設定排序
+         */
+        protected updateSorts(page: IPage<T>) {
+            if (page && page.sort) {
+                this._sorts = {};
+                let sort: IPageSort;
+                for (let i in page.sort) {
+                    sort = page.sort[i];
+                    this._sorts[sort.property] = sort.direction;
+                }
+            }
+        }
+
+        /**
+         * 載入更多
+         */
+        protected onLoadMoreHandler() {
+            let startRow = (this._page.number + 1) * this._page.size;
+            if (startRow <= this._page.totalElements) {
+                // 考慮到之前刷新前的page index
+                this._pageable.page += this._reloadPage;
+                // 讀取完就重置
+                this._reloadPage = 0;
+                this._pageable.page++;
+                this._pageable.size = this._config.size;
+                this.onLoad(false);
+            }
+        }
+
+        protected checkboxRender = (tr: HTMLTableRowElement, td: HTMLTableCellElement, checkbox: HTMLInputElement, record: T, index: number) => {
+            this._checkboxs.push({
+                tr: tr,
+                td: td,
+                checkbox: checkbox,
+                record: record,
+                index: index
+            });
+            td.addEventListener('click', (e: Event) => {
+                e.stopPropagation();
+                if (e.target == td) {
+                    checkbox.checked = !checkbox.checked;
+                }
+                let i = this._selectedRecords.indexOf(record);
+                if (checkbox.checked) {
+                    if (i == -1) {
+                        this._selectedRecords.push(record);
+                    }
+                    tr.classList.add('selected');
+                } else {
+                    if (i != -1) {
+                        this._selectedRecords.splice(i, 1);
+                    }
+                    tr.classList.remove('selected');
+                }
+                this._checkedAllElement.checked = this._selectedRecords.length == this._count + this._page.numberOfElements;
+                this._checkedAllText.data = '(' + this._selectedRecords.length + ')';
+            });
+            if (this._config.isSelected) {
+                let checked = this._config.isSelected(null, record, index, tr);
+                if (checked) {
+                    tr.classList.add('selected');
+                    this._selectedRecords.push(record);
+                }
+                return checked;
+            }
+            return false;
+        }
+    }
+
+    export class PageGrid<T> extends Grid<T> {
+        private _firstPageTopElement: HTMLDivElement;
+        private _prevPageTopElement: HTMLDivElement;
+        private _nextPageTopElement: HTMLDivElement;
+        private _lastPageTopElement: HTMLDivElement;
+
+        private _pageInfoTopElement: HTMLDivElement;
+        private _pageTopInputElement: HTMLInputElement;
+        private _pageTotalTopTextNode: Text;
+
+        private _firstPageElement: HTMLDivElement;
+        private _prevPageElement: HTMLDivElement;
+        private _nextPageElement: HTMLDivElement;
+        private _lastPageElement: HTMLDivElement;
+
+        private _pageInfoElement: HTMLDivElement;
+        private _pageInputElement: HTMLInputElement;
+        private _pageTotalTextNode: Text;
+
+        /**
+         * 底部
+         */
+        protected initHeaderPage() {
+            this._pageLeftElement = document.createElement('div');
+            this._pageLeftElement.className = 'left-info';
+            this._firstPageTopElement = document.createElement('div');
+            this._prevPageTopElement = document.createElement('div');
+            this._nextPageTopElement = document.createElement('div');
+            this._lastPageTopElement = document.createElement('div');
+
+            this._pageTopInputElement = document.createElement('input');
+            this._pageTopInputElement.addEventListener('keydown', this.onPageKeydown.bind(this));
+            this._pageTopInputElement.addEventListener('blur', this.onTopPageBlur.bind(this));
+            CUI.addListenOnEnter(this._pageTopInputElement, this.onTopPageEnter.bind(this));
+            this._pageInfoTopElement = document.createElement('div');
+            this._pageTotalTopTextNode = document.createTextNode('');
+            this._pageInfoTopElement.className = ClassName.PageInfo;
+            this._pageInfoTopElement.appendChild(document.createTextNode('Page '));
+            this._pageInfoTopElement.appendChild(this._pageTopInputElement);
+            this._pageInfoTopElement.appendChild(document.createTextNode(' of '));
+            this._pageInfoTopElement.appendChild(this._pageTotalTopTextNode);
+
+            this._firstPageTopElement.className = ClassName.FirstPage;
+            this._prevPageTopElement.className = ClassName.PrevPage;
+            this._nextPageTopElement.className = ClassName.NextPage;
+            this._lastPageTopElement.className = ClassName.LastPage;
+            this._firstPageTopElement.addEventListener('click', this.onFirstPageClick.bind(this));
+            this._prevPageTopElement.addEventListener('click', this.onPrevPageClick.bind(this));
+            this._nextPageTopElement.addEventListener('click', this.onNextPageClick.bind(this));
+            this._lastPageTopElement.addEventListener('click', this.onLastPageClick.bind(this));
+
+            this._pageLeftElement.appendChild(this._firstPageTopElement);
+            this._pageLeftElement.appendChild(this._prevPageTopElement);
+            this._pageLeftElement.appendChild(this._pageInfoTopElement);
+            this._pageLeftElement.appendChild(this._nextPageTopElement);
+            this._pageLeftElement.appendChild(this._lastPageTopElement);
+
+            this._pageRightElement = document.createElement('div');
+            this._pageRightElement.className = 'right-info';
+            this._rowStartTopTextNode = document.createTextNode('');
+            this._rowEndTopTextNode = document.createTextNode('');
+            this._rowTotalTopTextNode = document.createTextNode('');
+            this._pageRightElement.appendChild(document.createTextNode('Row '));
+            this._pageRightElement.appendChild(this._rowStartTopTextNode);
+            this._pageRightElement.appendChild(document.createTextNode(' - '));
+            this._pageRightElement.appendChild(this._rowEndTopTextNode);
+            this._pageRightElement.appendChild(document.createTextNode(' of '));
+            this._pageRightElement.appendChild(this._rowTotalTopTextNode);
+
+            this._pageElement.appendChild(this._pageLeftElement);
+            this._pageElement.appendChild(this._pageRightElement);
+        }
+
+        /**
+         * 底部
+         */
+        protected initFooter() {
+            this._footerLeftElement = document.createElement('div');
+            this._footerLeftElement.className = 'left-info';
+            this._firstPageElement = document.createElement('div');
+            this._prevPageElement = document.createElement('div');
+            this._nextPageElement = document.createElement('div');
+            this._lastPageElement = document.createElement('div');
+
+            this._pageInputElement = document.createElement('input');
+            this._pageInputElement.addEventListener('keydown', this.onPageKeydown.bind(this));
+            this._pageInputElement.addEventListener('blur', this.onPageBlur.bind(this));
+            CUI.addListenOnEnter(this._pageInputElement, this.onPageEnter.bind(this));
+            this._pageInfoElement = document.createElement('div');
+            this._pageTotalTextNode = document.createTextNode('');
+            this._pageInfoElement.className = ClassName.PageInfo;
+            this._pageInfoElement.appendChild(document.createTextNode('Page '));
+            this._pageInfoElement.appendChild(this._pageInputElement);
+            this._pageInfoElement.appendChild(document.createTextNode(' of '));
+            this._pageInfoElement.appendChild(this._pageTotalTextNode);
+
+            this._firstPageElement.className = ClassName.FirstPage;
+            this._prevPageElement.className = ClassName.PrevPage;
+            this._nextPageElement.className = ClassName.NextPage;
+            this._lastPageElement.className = ClassName.LastPage;
+            this._firstPageElement.addEventListener('click', this.onFirstPageClick.bind(this));
+            this._prevPageElement.addEventListener('click', this.onPrevPageClick.bind(this));
+            this._nextPageElement.addEventListener('click', this.onNextPageClick.bind(this));
+            this._lastPageElement.addEventListener('click', this.onLastPageClick.bind(this));
+
+            this._footerLeftElement.appendChild(this._firstPageElement);
+            this._footerLeftElement.appendChild(this._prevPageElement);
+            this._footerLeftElement.appendChild(this._pageInfoElement);
+            this._footerLeftElement.appendChild(this._nextPageElement);
+            this._footerLeftElement.appendChild(this._lastPageElement);
+
+            this._footerRightElement = document.createElement('div');
+            this._footerRightElement.className = 'right-info';
+            this._rowStartTextNode = document.createTextNode('');
+            this._rowEndTextNode = document.createTextNode('');
+            this._rowTotalTextNode = document.createTextNode('');
+            this._footerRightElement.appendChild(document.createTextNode('Row '));
+            this._footerRightElement.appendChild(this._rowStartTextNode);
+            this._footerRightElement.appendChild(document.createTextNode(' - '));
+            this._footerRightElement.appendChild(this._rowEndTextNode);
+            this._footerRightElement.appendChild(document.createTextNode(' of '));
+            this._footerRightElement.appendChild(this._rowTotalTextNode);
+
+            this._footerElement.appendChild(this._footerLeftElement);
+            this._footerElement.appendChild(this._footerRightElement);
+        }
+
+        protected setPageInfo() {
             let page = this._page.number;
             let startRow = page * this._page.size;
             let endRow;
@@ -844,7 +840,7 @@ export namespace Grid {
                 endRow = startRow + this._page.numberOfElements;
             }
 
-            this._rowCUItTextNode.data = String(startRow + 1);
+            this._rowStartTextNode.data = String(startRow + 1);
             this._rowEndTextNode.data = String(endRow);
             this._rowTotalTextNode.data = String(this._page.totalElements);
             this._pageInputElement.value = String(page + 1);
@@ -864,127 +860,146 @@ export namespace Grid {
                 this._nextPageElement.classList.remove(ClassName.Disable);
                 this._lastPageElement.classList.remove(ClassName.Disable);
             }
-        }
 
-        /**
-         * 將資料載入到 tbody
-         */
-        private loadTbody = (records: T[]) => {
-            if (records) {
-                this._tbodyElement.innerHTML = '';
-                let tbody: DocumentFragment = document.createDocumentFragment();
-                let tr: HTMLElement;
-                if (records.length > 0) {
-                    let record;
-                    for (let i = 0, l = records.length; i < l; i++) {
-                        record = records[i];
-                        if (!record) {
-                            continue;
-                        }
-                        tr = PageGridBuilder.buildGridRecordElement(this._columns, i, record);
-                        tbody.appendChild(tr);
-                    }
-                } else {
-                    tr = PageGridBuilder.buildEmptyGridRecordElement(this._columns.length);
-                    tbody.appendChild(tr);
-                }
-                this._tbodyElement.appendChild(tbody);
+
+            this._rowStartTopTextNode.data = String(startRow + 1);
+            this._rowEndTopTextNode.data = String(endRow);
+            this._rowTotalTopTextNode.data = String(this._page.totalElements);
+            this._pageTopInputElement.value = String(page + 1);
+            this._pageTotalTopTextNode.data = String(this._page.totalPages);
+
+            if (this._page.first) {
+                this._firstPageTopElement.classList.add(ClassName.Disable);
+                this._prevPageTopElement.classList.add(ClassName.Disable);
+            } else {
+                this._firstPageTopElement.classList.remove(ClassName.Disable);
+                this._prevPageTopElement.classList.remove(ClassName.Disable);
+            }
+            if (this._page.last) {
+                this._nextPageTopElement.classList.add(ClassName.Disable);
+                this._lastPageTopElement.classList.add(ClassName.Disable);
+            } else {
+                this._nextPageTopElement.classList.remove(ClassName.Disable);
+                this._lastPageTopElement.classList.remove(ClassName.Disable);
             }
         }
 
         /**
-         * 將資料載入到 tbody
+         * 刷新
          */
-        private loadTbodyContent = (records: T[]) => {
-            if (records) {
-                this._tbodyElement.innerHTML = '';
-                let tbody: DocumentFragment = document.createDocumentFragment();
-                let tr: HTMLElement, content: HTMLElement;
-                if (records.length > 0) {
-                    let record;
-                    let colSpan = this._headerElements.length;
-                    for (let i = 0, l = records.length; i < l; i++) {
-                        record = records[i];
-                        if (!record) {
-                            continue;
-                        }
-                        tr = PageGridBuilder.buildGridRecordElement(this._columns, i, record);
-                        content = PageGridBuilder.buildGridRecordContentElement(colSpan, this._columnContents, i, record);
-                        tr.addEventListener('click', onTrClick.bind(tr, this._columnContents, record, i));
-                        tr.classList.add(ClassName.HasContent);
-                        tbody.appendChild(tr);
-                        tbody.appendChild(content);
-                    }
-                } else {
-                    tr = PageGridBuilder.buildEmptyGridRecordElement(this._columns.length);
-                    tbody.appendChild(tr);
-                }
-                this._tbodyElement.appendChild(tbody);
+        public reload() {
+            this.onLoad();
+        }
+
+        /**
+         * 第一頁
+         */
+        private onFirstPageClick() {
+            if (!this._page.first) {
+                this._pageable.page = 0;
+                this.onLoad();
             }
         }
 
         /**
-         * 重新設定分頁
+         * 上一頁
          */
-        private resetPageable = (page: IPage<T>) => {
-            if (page) {
-                this._pageable = {
-                    size: page.size,
-                    page: page.number,
-                    sort: this.getSortArray(),
-                };
+        private onPrevPageClick() {
+            if (!this._page.first) {
+                this._pageable.page -= 1;
+                this.onLoad();
             }
         }
 
         /**
-         * 取得排序
+         * 下一頁
          */
-        private getPageSort = (): IPageSort[] => {
-            let array: IPageSort[] = [];
-            if (this._sorts) {
-                for (let id in this._sorts) {
-                    array.push({
-                        direction: this._sorts[id],
-                        property: id
-                    });
-                }
-            }
-            return array;
-        }
-
-        /**
-         * 取得排序字串陣列
-         */
-        private getSortArray = (): string[] => {
-            let array = [];
-            if (this._sorts) {
-                for (let id in this._sorts) {
-                    array.push(id + ',' + this._sorts[id]);
-                }
-            }
-            return array;
-        }
-
-        /**
-         * 設定排序
-         */
-        private setSorts = (config: IColumnConfig<T>) => {
-            if (config && config.sort) {
-                this._defaultSorts[config.value] = config.sort;
+        private onNextPageClick() {
+            if (!this._page.last) {
+                this._pageable.page += 1;
+                this.onLoad();
             }
         }
 
         /**
-         * 重新設定排序
+         * 最後一頁
          */
-        private updateSorts = (page: IPage<T>) => {
-            this._sorts = {};
-            if (page && page.sort) {
-                let sort: IPageSort;
-                for (let i in page.sort) {
-                    sort = page.sort[i];
-                    this._sorts[sort.property] = sort.direction;
-                }
+        private onLastPageClick() {
+            if (!this._page.last) {
+                this._pageable.page = this._page.totalPages - 1;
+                this.onLoad();
+            }
+        }
+
+        /**
+         * 禁止輸入非數字
+         */
+        private onPageKeydown(e) {
+            if (e.keyCode == 8) { return; }
+            return /\d/.test(e.key);
+        }
+
+        private onPageBlur(e) {
+            let value = Number(this._pageInputElement.value);
+            if (value < 1) {
+                value = 1;
+            } else if (value > this._page.totalPages) {
+                value = this._page.totalPages;
+            }
+            this._pageInputElement.value = String(value);
+            this._pageTopInputElement.value = String(value);
+        }
+
+        private onTopPageBlur(e) {
+            let value = Number(this._pageTopInputElement.value);
+            if (value < 1) {
+                value = 1;
+            } else if (value > this._page.totalPages) {
+                value = this._page.totalPages;
+            }
+            this._pageInputElement.value = String(value);
+            this._pageTopInputElement.value = String(value);
+        }
+
+        /**
+         * page input enter load
+         */
+        private onPageEnter(e) {
+            let value = Number(this._pageInputElement.value);
+            if (value < 1) {
+                value = 1;
+                this._pageInputElement.value = String(value);
+                this._pageTopInputElement.value = String(value);
+            } else if (value > this._page.totalPages) {
+                value = this._page.totalPages;
+                this._pageInputElement.value = String(value);
+                this._pageTopInputElement.value = String(value);
+            }
+            value -= 1;
+            if (value != this._pageable.page) {
+                this._pageable.page = value;
+                this.onLoad();
+            }
+        }
+
+        /**
+         * page input enter load
+         */
+        private onTopPageEnter(e) {
+            let value = Number(this._pageTopInputElement.value);
+            if (value < 1) {
+                value = 1;
+                this._pageInputElement.value = String(value);
+                this._pageTopInputElement.value = String(value);
+            } else if (value > this._page.totalPages) {
+                value = this._page.totalPages;
+                this._pageInputElement.value = String(value);
+                this._pageTopInputElement.value = String(value);
+            }
+            value -= 1;
+            if (value != this._pageable.page) {
+                this._pageable.page = value;
+                this.onLoad();
             }
         }
     }
@@ -1020,7 +1035,7 @@ export namespace Grid {
         let content = el.nextElementSibling as HTMLElement;
         let td = el.nextElementSibling.firstChild as HTMLElement;
         if (td.innerText == '') {
-            td.appendChild(PageGridBuilder.loadContent(columnContents, i, record));
+            td.appendChild(GridBuilder.loadContent(columnContents, i, record));
         }
         if (el.classList.contains(ClassName.Show)) {
             content.classList.remove(ClassName.Show);
@@ -1028,6 +1043,519 @@ export namespace Grid {
         } else {
             content.classList.add(ClassName.Show);
             el.classList.add(ClassName.Show);
+        }
+    }
+
+    export enum ClassName {
+        Grid = 'cui-grid',
+        Container = 'cui-grid-container',
+        Header = 'cui-grid-header',
+        Body = 'cui-grid-body',
+        Footer = 'cui-grid-footer',
+        Column = 'cui-grid-column',
+        ColumnDiv = 'cui-grid-td-div',
+        Content = 'cui-grid-content',
+        Desc = 'flaticon-down',
+        Asc = 'flaticon-up',
+        Sort = 'sort',
+        LoadMore = 'cui-grid-load-more',
+        FirstPage = 'first-page  flaticon-first',
+        PrevPage = 'prev-page flaticon-prev',
+        NextPage = 'next-page flaticon-next',
+        LastPage = 'last-page flaticon-last',
+        PageInfo = 'page-info',
+        RowInfo = 'row-info',
+        PageInput = 'page-input',
+        Disable = 'disable',
+        HasContent = 'has-content',
+        Show = 'show',
+    }
+
+    /**
+     * 排序列舉
+     */
+    export enum Sort {
+        Desc = 'DESC',
+        Asc = 'ASC',
+    }
+
+    export interface IExportConfig {
+        tableStyle?: string;
+        theadStyle?: string;
+        tbodyStyle?: string;
+        tdStyle?: string;
+    }
+
+    /**
+     * 配置
+     */
+    export interface IConfig<T> {
+        /**表格欄位 */
+        rowColumns: IColumnConfig<T>[];
+        /**更多內容欄位 */
+        contentColumns?: IColumnConfig<T>[];
+        /**每頁資料筆數 */
+        size?: number;
+        /**表格高度 */
+        height?: string;
+        /**表格寬度 */
+        width?: string;
+        index?: boolean;
+        select?: boolean;
+        isSelected?: IColumnRender<T>;
+        /**單一欄位排序 */
+        singleSort?: boolean;
+        /**grid執行 load 或 reload 呼叫的方法*/
+        onLoad?: IOnLoad<T>;
+    }
+
+    interface Attrs {
+        [key: string]: string;
+    }
+
+    /**
+     * 欄位介面
+     */
+    export interface IColumnConfig<T> {
+        value: string;
+        name: string;
+        sort?: Sort;
+        canSort?: boolean;
+        className?: string;
+        align?: string;
+        width?: string;
+        maxWidth?: string;
+        minWidth?: string;
+        nowrap?: boolean;
+        html?: boolean;
+        element?: boolean;
+        onRender?: IColumnRender<T>;
+        attrs?: Attrs;
+        thTranslate?: boolean;
+        tdTranslate?: boolean;
+    }
+
+    export interface IGridColumnConfig<T> extends IColumnConfig<T> {
+        checkbox?: boolean;
+        click?: any;
+    }
+
+    /**
+     * 欄位渲染方法介面
+     */
+    export type IColumnRender<T> = (value: any, record: T, index: number, tr: HTMLTableRowElement) => any;
+
+    export interface IGridColumn<T> {
+        config: IGridColumnConfig<T>;
+        render: any;
+    }
+
+    export interface IGridChecbox {
+        tr?: HTMLTableRowElement;
+        td: HTMLTableCellElement;
+        checkbox: HTMLInputElement;
+        record?: any;
+        index?: number;
+    }
+
+    /**
+     * grid執行 load 或 reload 呼叫的方法的介面
+     */
+    export type IOnLoad<T = any> = (pageable: IPageable, load: ILoad<T>) => any;
+
+    /**
+     * 提供給使用者callback載入ajax返回的資料
+     */
+    export type ILoad<T = any> = (page: IPage<T> | T[]) => any;
+
+    /**
+     * 傳送給後端的分頁內容
+     */
+    export interface IPageable {
+        // 每頁顯示數量
+        size: number;
+        // 頁碼
+        page: number;
+        // 排序
+        sort: string[];
+    }
+
+    /**
+     * 分頁資料格式
+     */
+    export interface IPage<T> {
+        // 返回資料
+        content: T[];
+        // 是否第一筆
+        first?: boolean;
+        // 是否最後一筆
+        last?: boolean;
+        // 目前頁碼
+        number: number;
+        // 資料筆數
+        numberOfElements?: number;
+        // 每頁顯示筆數
+        size: number;
+        // 排序
+        sort?: IPageSort[];
+        // 總共幾筆
+        totalElements?: number;
+        // 總共幾頁
+        totalPages?: number;
+    }
+
+    /**
+     * 欄位排序格式
+     */
+    export interface IPageSort {
+        // 排序類型
+        direction: Sort;
+        // 排序欄位
+        property: string;
+    }
+
+    /**
+     * 依定義渲染方法
+     * innerHTML 渲染
+     * @param onRender 定義渲染方法
+     * @param value 值
+     * @param record 資料
+     * @param index 資料位置
+     */
+    export function htmlRender(onRender: IColumnRender<any>, value, record, index, tr: HTMLTableRowElement) {
+        let render = onRender.call(this, value, record, index, tr);
+        if (this instanceof Element) {
+            (<HTMLElement>this).innerHTML = render;
+        } else {
+            return render;
+        }
+    }
+
+    /**
+     * 依定義渲染方法
+     * innerHTML 渲染
+     * @param onRender 定義渲染方法
+     * @param value 值
+     * @param record 資料
+     * @param index 資料位置
+     */
+    export function valueHtmlRender(onRender: IColumnRender<any>, value, record, index, tr: HTMLTableRowElement) {
+        (<HTMLElement>this).innerHTML = value;
+    }
+
+    /**
+     * 依定義渲染方法
+     * Element appendChild
+     * @param onRender 定義渲染方法
+     * @param value 值
+     * @param record 資料
+     * @param index 資料位置
+     */
+    export function elementRender(onRender: IColumnRender<any>, value, record, index, tr: HTMLTableRowElement) {
+        try {
+            let render = onRender.call(this, value, record, index, tr);
+
+            if (CUI.isArray(render)) {
+                let el;
+                for (let i in render) {
+                    el = render[i];
+                    if (el instanceof Element) {
+                        (<HTMLElement>this).appendChild(el);
+                    } else {
+                        (<HTMLElement>this).innerText = el;
+                        break;
+                    }
+                }
+            } else {
+                if (render instanceof Element) {
+                    (<HTMLElement>this).appendChild(render);
+                } else {
+                    (<HTMLElement>this).innerText = render;
+                }
+            }
+        } catch (e) {
+            (<HTMLElement>this).innerText = e.message;
+            console.error(e);
+        }
+    }
+
+    /**
+     * 依定義渲染方法
+     * 純值渲染
+     * @param onRender 定義渲染方法
+     * @param value 值
+     * @param record 資料
+     * @param index 資料位置
+     */
+    export function textRender(onRender: IColumnRender<any>, value, record, index, tr: HTMLTableRowElement) {
+        let render = onRender.call(this, value, record, index, tr);
+        if (this instanceof Element) {
+            (<HTMLElement>this).innerText = render;
+        } else {
+            return render;
+        }
+    }
+
+    /**
+     * 預設
+     * 純值渲染
+     * @param onRender 定義渲染方法
+     * @param value 值
+     * @param record 資料
+     * @param index 資料位置
+     */
+    export function valueRender(onRender: IColumnRender<any>, value, record, index, tr: HTMLTableRowElement) {
+        if (this instanceof Element) {
+            (<HTMLElement>this).innerText = value;
+        } else {
+            return value;
+        }
+    }
+
+
+    export class GridBuilder {
+        private static setAttrs(element: HTMLElement, attrs: Attrs) {
+            if (element && attrs) {
+                for (let key in attrs) {
+                    element.setAttribute(key, attrs[key]);
+                }
+            }
+        }
+
+        public static build<T>(config: IConfig<T>): Grid<T> {
+            if (!config.rowColumns || config.rowColumns.length == 0) {
+                throw new Error('rowColumns is required');
+            }
+            return new Grid<T>(config);
+        }
+
+        /**
+         *
+         * @param config 檢查
+         */
+        public static checkColumnConfig<T>(config: IGridColumnConfig<T>) {
+            if (config.value == undefined) {
+                throw new Error('column value is required');
+            }
+            if (config.name == undefined) {
+                throw new Error('column name is required');
+            }
+        }
+
+        public static buildColumnConfig<T>(config: IGridColumnConfig<T>): IGridColumnConfig<T> {
+            GridBuilder.checkColumnConfig(config);
+            return CUI.deepClone({
+                value: '',
+                name: '',
+                className: '',
+                sort: '',
+                canSort: false,
+                align: 'left',
+                width: 'auto',
+                nowrap: true,
+                html: false,
+                element: false,
+                thTranslate: true,
+                tdTranslate: false
+            }, config);
+        }
+
+        /**
+         * 產生表頭
+         */
+        public static buildGridHeaderElement<T>(config: IGridColumnConfig<T>): HTMLElement {
+            let element = document.createElement('th');
+            let className = ClassName.Column + ' ' + (config.canSort ? ClassName.Sort : '');
+            element.className = className;
+            element.noWrap = true;
+            element.align = 'center';
+            element.width = config.width;
+            element.innerText = config.name;
+            // 不可被翻譯
+            if (!config.thTranslate) {
+                element.setAttribute('notTranslate', '');
+            }
+            GridBuilder.setAttrs(element, config.attrs);
+            return element;
+        }
+
+        /**
+         * 產生表頭
+         */
+        public static buildGridHeaderCheckboxElement<T>(config: IGridColumnConfig<T>): HTMLElement {
+            let element = document.createElement('th');
+            let className = ClassName.Column;
+            element.className = className;
+            element.noWrap = true;
+            element.align = 'center';
+            element.width = config.width;
+            GridBuilder.setAttrs(element, config.attrs);
+            return element;
+        }
+
+        /**
+         * 產生每筆資料的 tr
+         * @param columns
+         * @param index
+         * @param record
+         */
+        public static buildEmptyGridRecordElement<T>(count: number): HTMLElement {
+            let tr: HTMLElement = document.createElement('tr');
+            tr.className = 'empty';
+            let td: HTMLTableCellElement = document.createElement('td');
+            td.colSpan = count;
+            td.align = 'center';
+            td.innerText = '無資料';
+            tr.appendChild(td);
+            return tr;
+        }
+
+        /**
+         * 產生每筆資料的 tr
+         * @param columns
+         * @param index
+         * @param record
+         */
+        public static buildGridRecordElement<T>(columns: IGridColumn<T>[], index: number, record: T): HTMLElement {
+            let tr: HTMLElement = document.createElement('tr');
+            let column: IGridColumn<T>, config: IGridColumnConfig<T>, td: HTMLTableCellElement, div: HTMLElement, checkbox: HTMLInputElement;
+            for (let i in columns) {
+                column = columns[i];
+                config = column.config;
+                td = document.createElement('td');
+                tr.appendChild(td);
+                td.className = ClassName.Column;
+                td.align = config.align;
+                td.noWrap = config.nowrap;
+                td.width = config.width;
+                // 不可被翻譯
+                if (!config.tdTranslate) {
+                    td.setAttribute('notTranslate', '');
+                }
+                GridBuilder.setAttrs(td, config.attrs);
+                if (config.checkbox) {
+                    checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'checkbox';
+                    td.appendChild(checkbox);
+                    if (column.render) {
+                        checkbox.checked = column.render(tr, td, checkbox, record, index, tr);
+                    }
+                } else {
+                    div = document.createElement('div');
+                    td.appendChild(div);
+                    if (config.maxWidth) {
+                        div.style.maxWidth = config.maxWidth;
+                    }
+                    if (config.minWidth) {
+                        div.style.minWidth = config.minWidth;
+                    }
+                    div.className = ClassName.ColumnDiv + ' ' + config.className;
+                    column.render.call(div, config.onRender, GridBuilder.getValue(config.value, record), record, index, tr);
+                }
+            }
+            return tr;
+        }
+
+        /**
+         * 產生每筆資料的 content
+         * @param columns
+         * @param index
+         * @param record
+         */
+        public static buildGridRecordContentElement<T>(colSpan: number, columns: IGridColumn<T>[], index: number, record: T): HTMLElement {
+            let tr: HTMLElement = document.createElement('tr');
+            tr.className = ClassName.Content;
+            let td = document.createElement('td');
+            td.colSpan = colSpan;
+            tr.appendChild(td);
+            return tr;
+        }
+
+        /**
+         * 延遲加載content
+         * @param columns
+         * @param index
+         * @param record
+         */
+        public static loadContent<T>(columns: IGridColumn<T>[], index: number, record: T): HTMLElement {
+            let table: HTMLElement = document.createElement('table');
+            let column: IGridColumn<T>, config: IGridColumnConfig<T>, tr: HTMLTableRowElement, label: HTMLTableCellElement, content: HTMLTableCellElement, colon;
+            for (let i in columns) {
+                tr = document.createElement('tr');
+                column = columns[i];
+                config = column.config;
+                label = document.createElement('td');
+                label.align = 'left';
+                label.width = '1%';
+                label.noWrap = true;
+                label.innerText = config.name;
+                if (config.name) {
+                    colon = document.createElement('span');
+                    colon.innerText = '：';
+                    label.appendChild(colon);
+                }
+                content = document.createElement('td');
+                content.align = 'left';
+                content.width = '100%';
+                // 不被翻譯
+                if (!config.tdTranslate) {
+                    content.setAttribute('notTranslate', '');
+                }
+                GridBuilder.setAttrs(content, config.attrs);
+                tr.appendChild(label);
+                tr.appendChild(content);
+                table.appendChild(tr);
+                column.render.call(content, config.onRender, GridBuilder.getValue(config.value, record), record, index, tr);
+            }
+            return table;
+        }
+
+        /**
+         *
+         * @param column 產生渲染方法
+         */
+        public static builderGridColumnRenderHandler<T>(config: IGridColumnConfig<T>): Function {
+            if (config.onRender instanceof Function) {
+                if (config.html) {
+                    return htmlRender;
+                } else if (config.element) {
+                    return elementRender;
+                } else {
+                    return textRender;
+                }
+            } else {
+                if (config.html) {
+                    return valueHtmlRender;
+                } else {
+                    return valueRender;
+                }
+            }
+        }
+
+        /**
+         * 解析 key  ex: id.time
+         * @param key
+         * @param record
+         */
+        public static getValue(key: string, record: any) {
+            if (CUI.isEmpty(key)) {
+                return undefined;
+            }
+            let vs = key.split('.'), value = record;
+            for (let i in vs) {
+                value = value[vs[i]];
+            }
+            return value;
+        }
+    }
+
+    export class PageGridBuilder extends GridBuilder {
+        public static build<T>(config: IConfig<T>): PageGrid<T> {
+            if (!config.rowColumns || config.rowColumns.length == 0) {
+                throw new Error('rowColumns is required');
+            }
+            return new PageGrid<T>(config);
         }
     }
 }

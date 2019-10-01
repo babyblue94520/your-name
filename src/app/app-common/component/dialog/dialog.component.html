@@ -1,6 +1,6 @@
 <ng-template #dialog>
-  <div class="cui-dialog">
-    <div class="cui-dialog-window {{_windowClassName}}" [style.width]="width?width:''" [style.height]="height?height:''">
+  <div class="cui-dialog-window {{_windowClassName}}" [style.width]="width?width:''" [style.height]="height?height:''">
+    <div class="cui-dialog-content">
       <div class="close flaticon-close" (click)="close()"></div>
       <div class="cui-dialog-header">
         <ng-container *ngIf="title">{{title}}</ng-container>
@@ -10,11 +10,11 @@
         <ng-content></ng-content>
       </div>
     </div>
-    <div class="cui-dialog-toolbar">
-      <ng-container *ngTemplateOutlet="toolbar"></ng-container>
-    </div>
+    <div [style.height]="marginBottom"></div>
   </div>
-  <div class="cui-dialog-screen"></div>
+  <div class="cui-dialog-toolbar">
+    <ng-container *ngTemplateOutlet="toolbar"></ng-container>
+  </div>
   <ng-template #toolbar>
     <ng-content select="[dialog-toolbar]"></ng-content>
   </ng-template>

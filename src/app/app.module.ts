@@ -18,22 +18,26 @@ import { FooterComponent } from 'app/footer/footer.component';
 import { HeaderComponent } from 'app/header/header.component';
 import { CompanyModule } from './company/company.module';
 import { MenuRoutes } from 'ts/data/word/routes';
+import { WordComponent } from './word/word/word.component';
+import { WordModule } from './word/word.module';
+import { AjaxMethod } from '@cui/core';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    NotFoundComponent,
-    HeaderComponent,
-    FooterComponent,
-    MenuComponent,
-    MenuComponent,
-    IndexComponent,
+    AppComponent
+    , NotFoundComponent
+    , HeaderComponent
+    , FooterComponent
+    , MenuComponent
+    , MenuComponent
+    , IndexComponent
   ],
   imports: [
-    BrowserModule,
-    RouterModule.forRoot(AppModule.routes, { useHash: true }),
-    AppCommonModule,
-    CompanyModule
+    BrowserModule
+    , RouterModule.forRoot(AppModule.routes, { useHash: true })
+    , AppCommonModule
+    , CompanyModule
+    , WordModule
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -43,6 +47,7 @@ export class AppModule {
     { path: '', redirectTo: AppRouteName.Index, pathMatch: 'full' },
     { path: AppRouteName.Index, component: IndexComponent },
     { path: AppRouteName.Company, children: CompanyModule.routes },
+    { path: AppRouteName.Word, children: WordModule.routes },
     /**
      * NotFound
      */

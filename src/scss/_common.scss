@@ -1,14 +1,16 @@
-html,
-body {
-  overflow: hidden;
-  overflow-y: auto;
-}
-
 body {
   font-size: 1em;
   font-family: "Microsoft JhengHei", "黑体", "宋体", sans-serif;
   background-color: #fff;
   color: #262d38;
+}
+
+input,
+textarea,
+select,
+button {
+  font-size: 100%;
+  font-family: "Microsoft JhengHei", "黑体", "宋体", sans-serif;
 }
 
 .space-1 {
@@ -63,13 +65,13 @@ body {
 .panel {
   display: inline-block;
   width: 100%;
-  padding: 10px;
+  padding: .8em;
   overflow: hidden;
   word-wrap: break-word;
 }
 
 .errorMessage {
-  padding-bottom: 10px;
+  padding-bottom: .8em;
   color: $primary-color2;
 }
 
@@ -106,13 +108,13 @@ body {
   background-color: #4a90e2;
   color: #00408b;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 130%;
   line-height: 2em;
   text-align: center;
 
   .tab-item {
     position: relative;
-    padding: 0 15px 0 15px;
+    padding: 0 1em 0 1em;
     float: left;
     cursor: pointer;
 

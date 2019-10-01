@@ -1,6 +1,6 @@
 import { CUI } from '../cui';
-import { LocalStorageManager } from '../storage/local-storage-manager';
 import { NotRecursionMethod } from '../decorators/not-recursion';
+import { SessionStorageManager } from '../storage/session-storage-manager';
 
 export interface IStoreNode<T> {
     listen(handler: IStoreListener, auto: boolean);
@@ -20,7 +20,7 @@ export interface IStoreListener {
     ();
 }
 
-export interface StoreNodeConfig {
+export interface StoreNodeConfig<T> {
     /**
      * 資料ID
      */
@@ -46,8 +46,12 @@ export interface StoreNodeConfig {
      */
     onBorn?: Function;
     /** 預設值*/
-    value?: any;
+    value?: T;
+    /** 是否隔離操作相同資料物件，預設隔離*/
+    safe?: boolean;
 }
+
+let storage = SessionStorageManager;
 
 export class StoreNode<T> implements IStoreNode<T> {
     protected _data = undefined;
@@ -60,11 +64,14 @@ export class StoreNode<T> implements IStoreNode<T> {
      * 資料配置
      * @param config
      */
-    constructor(protected config: StoreNodeConfig) {
+    constructor(protected config: StoreNodeConfig<T>) {
+        if (config.safe == undefined) {
+            config.safe = true;
+        }
         if (config.cache
-            && !(config.timeout && LocalStorageManager.isTimeout(config.id))) {
-            this._data = LocalStorageManager.get(config.id);
-            this._dataString = LocalStorageManager.getNoParse(config.id);
+            && !(config.timeout && storage.isTimeout(config.id))) {
+            this._data = storage.get(config.id);
+            this._dataString = storage.getNoParse(config.id);
         }
         if (config.joinTo) {
             for (let i in config.joinTo) {
@@ -122,18 +129,31 @@ export class StoreNode<T> implements IStoreNode<T> {
         } else {
             newDataString = JSON.stringify(data);
         }
-        if (newDataString === this._dataString) {
-            return;
+        if (this.config.safe) {
+            if (newDataString === this._dataString) {
+                return;
+            }
+            this._data = CUI.deepClone(data);
+        } else {
+            this._data = data;
         }
-
-        this._data = CUI.deepClone(data);
         this._dataString = newDataString;
         this.cache();
+        this.notify();
+    }
+
+    /**
+     * 觸發通知
+     */
+    public notify() {
         this.notifyChilds();
         this.notifys();
         this.notifyJoins();
     }
 
+    /**
+     *
+     */
     public born() {
         if (this.config.onBorn instanceof Function) {
             this.config.onBorn();
@@ -144,20 +164,24 @@ export class StoreNode<T> implements IStoreNode<T> {
      * 取得資料
      */
     public get(): T {
-        return CUI.deepClone(this._data);
+        if (this.config.safe) {
+            return CUI.deepClone(this._data);
+        } else {
+            return this._data;
+        }
     }
 
     /**
      * 是否非空值
      */
-    public isNonEmpty(): Boolean {
+    public isNonEmpty(): boolean {
         return !CUI.isEmpty(this._data);
     }
 
     /**
      * 是否空值
      */
-    public isEmpty(): Boolean {
+    public isEmpty(): boolean {
         return CUI.isEmpty(this._data);
     }
 
@@ -173,7 +197,7 @@ export class StoreNode<T> implements IStoreNode<T> {
      */
     public refreshTime() {
         if (this.config.cache) {
-            LocalStorageManager.refreshTime(this.config.id);
+            storage.refreshTime(this.config.id);
         }
     }
 
@@ -187,7 +211,7 @@ export class StoreNode<T> implements IStoreNode<T> {
         }
     }
     /**
-     * 新曾子節點
+     * 新增子節點
      * @param childNode
      */
     public addChild(childNode: IStoreNode<any>) {
@@ -201,7 +225,7 @@ export class StoreNode<T> implements IStoreNode<T> {
      */
     private cache() {
         if (this.config.cache) {
-            LocalStorageManager.setNoStringify(this.config.id, this._dataString);
+            storage.setNoStringify(this.config.id, this._dataString);
         }
     }
 
@@ -218,7 +242,6 @@ export class StoreNode<T> implements IStoreNode<T> {
      * 通知所有監聽的方法
      */
     private notifys() {
-        let handler: Function;
         for (let i in this._handlers) {
             this.execute(this._handlers[i]);
         }

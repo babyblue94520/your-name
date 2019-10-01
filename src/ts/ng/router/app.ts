@@ -1,22 +1,25 @@
 import { CompanyRouteName, CompanyRoute } from 'ts/ng/router/company';
+import { WordRoute, WordRouteName } from './word';
 
 
 
 export enum AppRouteName {
-    Default = '',
+    Default = ''
     /**
      * 主頁
      */
-    Index = 'index',
-    Company = 'company',
+    , Index = 'index'
+    , Company = 'company'
+    , Word = 'word'
     /**
      * 頁面不存在
      */
-    NotFound = 'not-found',
+    , NotFound = 'not-found'
 }
 export class AppRoute {
     public static Index = ['/index'];
     public static Company = {} as CompanyRoute;
+    public static Word = {} as WordRoute;
 }
 
 /**
@@ -43,3 +46,4 @@ export class AppRouteUtil {
 
 // 產生 Company 路由絕對路徑
 AppRoute.Company = AppRouteUtil.extend(['/' + AppRouteName.Company], CompanyRouteName);
+AppRoute.Word = AppRouteUtil.extend(['/' + AppRouteName.Word], WordRouteName);

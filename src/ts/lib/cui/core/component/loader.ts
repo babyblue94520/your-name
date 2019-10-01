@@ -12,6 +12,7 @@ export class Loader {
     private element: HTMLElement;
     private textElement: Element;
     private openCount = 0;
+    private defauleZIndex = '999';
     private openTimer;
 
     constructor() {
@@ -26,8 +27,16 @@ export class Loader {
         return this.element;
     }
 
+    public message = (msg?: string) => {
+        if (msg) {
+            this.textElement.innerHTML = msg;
+        } else {
+            this.textElement.innerHTML = Loader.defText;
+        }
+    }
+
     /**
-     * 延遲開啟繞圈圈動劃，如果等待時間太短就不用出現
+     * 延遲開啟繞圈圈動畫，如果等待時間太短就不用出現
      * @param {string} msg 顯示訊息
      * @param {any} zIndex css z-index
      */
@@ -43,7 +52,7 @@ export class Loader {
     }
 
     /**
-     * 開啟繞圈圈動劃
+     * 開啟繞圈圈動畫
      * @param {string} msg 顯示訊息
      * @param {any} zIndex css z-index
      */
@@ -52,7 +61,7 @@ export class Loader {
             if (zIndex) {
                 this.element.style.zIndex = zIndex;
             } else {
-                this.element.style.zIndex = '100';
+                this.element.style.zIndex = this.defauleZIndex;
             }
             if (msg) {
                 this.textElement.innerHTML = msg;

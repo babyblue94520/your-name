@@ -4,8 +4,9 @@ import {
   TemplateRef,
   ViewChild,
   ChangeDetectionStrategy,
-  ElementRef,
+  ChangeDetectorRef,
 } from '@angular/core';
+import { CUI } from '@cui/core';
 
 
 @Component({
@@ -31,6 +32,13 @@ export class TabComponent {
 
   @Input() onClose: Function;
 
-  constructor() {
+  constructor(private cdf: ChangeDetectorRef) { }
+
+  public doActive() {
+    this.active = true;
+    CUI.callFunction(this.onActive);
+    setTimeout(() => {
+      this.cdf.markForCheck();
+    }, 0);
   }
 }

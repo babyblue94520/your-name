@@ -1,6 +1,6 @@
-<div class="shrink" #shrink>
-  <div class="shrink-header" (click)="openOrClose()">{{title}}
-    <div class="shrink-close flaticon-down"></div>
+<div class="shrink {{shadow?'shrink-shadow':''}}" #shrink>
+  <div class="shrink-header" (click)="openOrClose()">
+    <div class="shrink-close flaticon-up"></div>
     <ng-container *ngIf="title">{{title}}</ng-container>
     <ng-container *ngTemplateOutlet="header"></ng-container>
   </div>

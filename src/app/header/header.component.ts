@@ -1,14 +1,16 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   ViewChild
 } from '@angular/core';
-import { CUI } from '@cui/core';
+import { Async, CUI, Delay } from '@cui/core';
+import { BasicComponent } from 'app/basic-component';
 import { MainHeaderHeightNode, MainMenuWidthNode } from 'ts/data/node/common';
 import { MenuComponent } from '../menu/menu.component';
-import { BasicComponent } from 'app/basic-component';
+import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 
 
 @Component({
@@ -21,7 +23,7 @@ export class HeaderComponent extends BasicComponent implements AfterViewInit {
 
   private headerElement: HTMLElement;
   private headerSpaceElement: HTMLElement;
-  private resizeDelayHandler: any;
+  private focusElement: HTMLInputElement;
 
   @ViewChild('header')
   public headerRef: ElementRef;
@@ -30,30 +32,52 @@ export class HeaderComponent extends BasicComponent implements AfterViewInit {
   @ViewChild(MenuComponent)
   public menu: MenuComponent;
 
-  constructor() {
+  constructor(private cdf: ChangeDetectorRef, private router: Router) {
     super();
+    // 路由切換
+    router.events.subscribe((e: RouterEvent) => {
+      if (e instanceof NavigationEnd) {
+        this.cdf.markForCheck();
+      }
+    });
   }
 
   ngAfterViewInit() {
     this.headerElement = this.headerRef.nativeElement;
     this.headerSpaceElement = this.headerSpaceRef.nativeElement;
-    this.resizeDelayHandler = CUI.delayAction.bind(this, 'main-header-resize', 300, this.resize);
-    window.addEventListener('resize', this.resizeDelayHandler);
-    document.body.addEventListener('keyup', this.focus);
-    document.body.addEventListener('click', this.focus);
 
-    CUI.addElementContentChangeEvent(this.headerElement, this.resizeDelayHandler);
+    CUI.addElementContentChangeEvent(this.headerElement, this.delayResize.bind(this));
     this.listenNode(MainMenuWidthNode, () => {
-      this.headerElement.style.paddingLeft = MainMenuWidthNode.get() + 'px';
+      this.paddingLeftChange();
     }, true);
 
+    this.resize();
+    window.addEventListener('resize', this.delayResize.bind(this));
+    window.addEventListener('resize', this.paddingLeftChange.bind(this));
+    document.body.addEventListener('keyup', this.focus.bind(this));
+    document.body.addEventListener('click', this.focus.bind(this));
+  }
+
+  @Async()
+  private paddingLeftChange() {
+    let left = MainMenuWidthNode.get();
+    if (window.innerWidth < 996 && left > 0) {
+      this.headerElement.style.paddingLeft = '0px';
+    } else {
+      this.headerElement.style.paddingLeft = left + 'px';
+    }
+    this.cdf.markForCheck();
+  }
+
+  @Delay(300)
+  private delayResize() {
     this.resize();
   }
 
   /**
    * 刷新header占用空間的高度
    */
-  private resize = () => {
+  private resize() {
     let h1 = this.headerSpaceElement.offsetHeight;
     let h2 = this.headerElement.offsetHeight;
     if (this.headerElement
@@ -66,9 +90,13 @@ export class HeaderComponent extends BasicComponent implements AfterViewInit {
   /**
    * input or textarea focused 隱藏header
    */
-  private focus = (e: Event) => {
+  private focus(e: Event) {
+    if (this.focusElement) {
+      this.focusElement.removeEventListener('blur', this.show);
+    }
     let element = document.activeElement as HTMLInputElement;
     if ((element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') && !element.readOnly && !element.disabled) {
+      this.focusElement = element;
       this.hide();
     } else {
       this.show();
@@ -78,15 +106,22 @@ export class HeaderComponent extends BasicComponent implements AfterViewInit {
   /**
    * 開啟選單
    */
-  public openMenu = () => {
+  public openMenu() {
     this.menu.openOrClose();
   }
 
-  public show() {
-    this.headerElement.style.top = '';
+  public show = () => {
+    if (this.focusElement) {
+      this.focusElement.removeEventListener('blur', this.show);
+      this.focusElement = undefined;
+    }
+    CUI.style(this.headerElement, 'transform', 'translateY(0)');
   }
 
   public hide() {
-    this.headerElement.style.top = '-100%';
+    if (this.focusElement) {
+      this.focusElement.addEventListener('blur', this.show);
+    }
+    CUI.style(this.headerElement, 'transform', 'translateY(-100%)');
   }
 }

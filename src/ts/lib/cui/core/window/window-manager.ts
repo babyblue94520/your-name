@@ -36,7 +36,7 @@ export class WindowManager {
     /**
      * 是否有開啟新視窗
      */
-    public static hasOpen(): Boolean {
+    public static hasOpen(): boolean {
         let win: Window;
         for (let i in this._windows) {
             win = this._windows[i];
@@ -52,7 +52,7 @@ export class WindowManager {
      * 切換到目標新視窗
      * @param data
      */
-    public static focus(data: WindowData): Boolean {
+    public static focus(data: WindowData): boolean {
         if (!this.checkData(data)) { return false; }
         return this.doFocus(data.id);
     }
@@ -103,7 +103,7 @@ export class WindowManager {
      * 依id切換視窗
      * @param id
      */
-    private static doFocus(id): Boolean {
+    private static doFocus(id): boolean {
         let win = this._windows[id];
         if (win && !win.closed) {
             win.focus();
@@ -135,7 +135,7 @@ export class WindowManager {
      * 檢查資料
      * @param data
      */
-    private static checkData(data: WindowData): Boolean {
+    private static checkData(data: WindowData): boolean {
         if (CUI.isEmpty(data.url)) {
             alert('url is empty！');
             return false;

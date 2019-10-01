@@ -3,6 +3,7 @@ import { AppRoute as AppRouteOrigin } from 'ts/ng/router/app';
 import { StoreNode, IStoreListener } from '@cui/core';
 import { OnDestroy } from '@angular/core';
 import { Global as GlobalOrigin } from 'ts/globle';
+import { BasicState as BasicStateOrigin } from 'ts/constant/basic-state';
 
 
 interface Nodes {
@@ -13,6 +14,7 @@ interface NodeHandlers {
 }
 
 export abstract class BasicComponent implements OnDestroy {
+    public BasicState = BasicStateOrigin;
     public Global = GlobalOrigin;
     public AppRoute = AppRouteOrigin;
     public nodes: Nodes = {};

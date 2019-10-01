@@ -1,0 +1,29 @@
+@import 'base/function';
+
+.cui-globle-tooltip {
+  position: fixed;
+  top: 2em;
+  right: 10px;
+  z-index: 99999;
+
+  pointer-events: none;
+
+  .cui-g-t-message {
+    margin-top: 10px;
+    min-width: 10em;
+    height: 2em;
+    opacity: .9;
+    overflow: hidden;
+    line-height: 2em;
+    text-indent: 1em;
+    color: #fff;
+    background: #2196f39e;
+    @include box-shadow(rgba(0, 0, 0, 0.3) 0px 7px 14px, rgba(0, 0, 0, 0.2) 0px 5px 8px);
+    @include transitions(opacity .3s ease-in-out, height .2s .3s ease-in-out);
+
+    &.hide {
+      opacity: 0;
+      height: 0;
+    }
+  }
+}

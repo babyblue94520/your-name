@@ -1,8 +1,7 @@
 import {
-    AjaxManager,
-    DatePicker,
-    Loader
+    DatePicker, AjaxManager
 } from '@cui/core';
+import { environment } from '@environment';
 
 
 interface QueryString {
@@ -10,6 +9,9 @@ interface QueryString {
 }
 
 export class Global {
+    public static readonly env = environment;
+    public static readonly ajaxManager = new AjaxManager();
+    public static readonly datePicker = new DatePicker();
     public static currentRouteName = '';
     public static routeName = {};
     private static queryParamters: QueryString = {};

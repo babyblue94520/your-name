@@ -1,38 +1,48 @@
 @import "base/function";
 @import "base/themes";
+
 .accordion-list {
-  padding-left: 20px;
+  padding-left: 1.2em;
+
   ul,
   li {
     list-style: none;
     padding: 0;
   }
+
   .item {
     &.active {
       .child {
+        height: auto;
         opacity: 1;
       }
     }
+
     .text {
       position: relative; // width: 100%;
       display: block;
       line-height: 2em;
-      color: $primary-color3;
+      color: #fff;
       cursor: pointer;
       @include transition(color .3s ease-in-out);
+
       &:hover {
-        color: $primary-color1;
+        // color: $primary-color1;
+
         a {
-          color: $primary-color1;
+          // color: $primary-color1;
         }
+
         &:after {
-          opacity: 1;
+          opacity: .5;
           width: 100%;
         }
       }
+
       &:before {
         padding-right: 5px;
       }
+
       &:after {
         content: '';
         position: absolute;
@@ -48,6 +58,7 @@
         @include transitions(width .3s ease-in-out, opacity .3s ease-in-out);
       }
     }
+
     .child {
       height: 0px;
       opacity: 0;

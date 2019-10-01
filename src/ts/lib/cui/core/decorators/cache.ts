@@ -12,6 +12,14 @@ export namespace Cache {
     let localCache = LocalStorageManager.get(id, false) || {};
     let sessionCache = SessionStorageManager.get(id, false) || {};
 
+    export function cleanLocal() {
+        LocalStorageManager.clean(id);
+    }
+
+    export function cleanSession() {
+        SessionStorageManager.clean(id);
+    }
+
     /**
      *
      * @param scope 取得緩存資料

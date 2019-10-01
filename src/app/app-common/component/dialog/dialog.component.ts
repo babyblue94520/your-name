@@ -1,21 +1,17 @@
 import {
-  AfterViewInit,
   ApplicationRef,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ComponentFactoryResolver,
-  ElementRef,
   Injector,
   Input,
   OnDestroy,
-  OnInit,
   TemplateRef,
   ViewChild,
-  ViewContainerRef,
-  ChangeDetectorRef
+  ViewContainerRef
 } from '@angular/core';
-import { BasicComponent } from '../../../basic-component';
-import { CUI, Async } from '@cui/core';
+import { CUI, Overlay } from '@cui/core';
 import { DomPortalOutlet, TemplatePortal } from '@angular/cdk/portal';
 
 
@@ -25,18 +21,14 @@ import { DomPortalOutlet, TemplatePortal } from '@angular/cdk/portal';
   styleUrls: ['./dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DialogComponent extends BasicComponent implements OnInit, AfterViewInit, OnDestroy {
-  private dialog: HTMLElement;
-  private window: HTMLElement;
-  private screen: HTMLElement;
+export class DialogComponent implements OnDestroy {
+  private dialogWindow: HTMLElement;
   private toolbar: HTMLElement;
-  private timer;
-  private delayResize;
-  public _windowClassName;
-
-  private nativeElement: HTMLElement;
+  private overlay = new Overlay();
   private outlet: DomPortalOutlet;
 
+  public marginBottom = '10px';
+  public _windowClassName;
 
   @ViewChild('dialog')
   public templateRef: TemplateRef<any>;
@@ -60,87 +52,111 @@ export class DialogComponent extends BasicComponent implements OnInit, AfterView
   public width: string;
 
   constructor(
-    private changeDetectorRef: ChangeDetectorRef,
+    private cdf: ChangeDetectorRef,
     private componentFactoryResolver: ComponentFactoryResolver,
     private injector: Injector,
     private viewContainerRef: ViewContainerRef
   ) {
-    super();
-  }
-
-  ngOnInit() {
-    let appRef = this.injector.get<ApplicationRef>(ApplicationRef);
-
-    let templatePortal = new TemplatePortal(
-      this.templateRef,
-      this.viewContainerRef
-    );
-    this.nativeElement = document.createElement('div');
-    document.body.appendChild(this.nativeElement);
-
-    this.outlet = new DomPortalOutlet(this.nativeElement, this.componentFactoryResolver, appRef, this.injector);
-    this.outlet.attach(templatePortal);
-  }
-
-  ngAfterViewInit() {
-    this.dialog = this.nativeElement.querySelector('.cui-dialog');
-    this.screen = this.nativeElement.querySelector('.cui-dialog-screen');
-    this.toolbar = this.nativeElement.querySelector('.cui-dialog-toolbar');
-    this.window = this.dialog.querySelector('.cui-dialog-window');
-    this.dialog.style.display = 'block';
-    this.resize();
-    this.dialog.style.display = 'none';
-    this.delayResize = CUI.delayAction.bind(null, 'dialog-resize', 100, this.resize);
   }
 
   ngOnDestroy() {
-    window.removeEventListener('resize', this.delayResize);
-    this.outlet.dispose();
+    this.destroy();
   }
 
+  public isOpen(): boolean {
+    return this.outlet ? true : false;
+  }
+
+  /**
+   * 打開Dialog
+  */
   public open() {
-    this.changeDetectorRef.markForCheck();
-    this.screen.style.display = 'block';
-    this.dialog.style.display = 'block';
-    document.documentElement.classList.add('cui-show-dialog');
-    document.body.classList.add('cui-show-dialog');
-    this.resize();
-    CUI.addElementContentChangeEvent(this.window, this.delayResize);
-    window.addEventListener('resize', this.delayResize);
-    clearTimeout(this.timer);
-    this.timer = this.doOpen();
+    if (this.outlet) {
+      return;
+    }
+    this.overlay.open(this.doOpen);
   }
 
+  /**
+   * 關閉Dialog
+  */
   public close() {
-    this.dialog.classList.remove('show');
-    document.documentElement.classList.remove('cui-show-dialog');
-    document.body.classList.remove('cui-show-dialog');
-    CUI.removeElementContentChangeEvent(this.window, this.delayResize);
-    window.removeEventListener('resize', this.delayResize);
+    window.removeEventListener('resize', this.resize);
+    this.overlay.close(this.doClose);
+    if (this.dialogWindow) {
+      CUI.removeElementContentChangeEvent(this.dialogWindow, this.resize);
+    }
     CUI.callFunction(this.onClose);
-    clearTimeout(this.timer);
-    this.timer = this.doClose();
   }
 
-  @Async(0)
-  private doOpen() {
-    this.dialog.classList.add('show');
-  }
+  /**
+   * 讓overlay 呼叫的callback
+  */
+  private doOpen = () => {
+    this.cdf.markForCheck();
 
-  @Async(300)
-  private doClose() {
-    this.dialog.style.display = 'none';
-    this.screen.style.display = 'none';
-  }
+    let wrapper = this.overlay.getElement();
+    this.outlet = new DomPortalOutlet(wrapper
+      , this.componentFactoryResolver
+      , this.injector.get<ApplicationRef>(ApplicationRef)
+      , this.injector
+    );
+    this.outlet.attach(new TemplatePortal(
+      this.templateRef,
+      this.viewContainerRef
+    ));
 
-  private resize = (e?) => {
+    this.toolbar = wrapper.querySelector('.cui-dialog-toolbar');
+    this.dialogWindow = wrapper.querySelector('.cui-dialog-window');
     if (this.toolbar.childElementCount == 0) {
       this.toolbar.style.display = 'none';
+      this.marginBottom = '10px';
     } else {
       this.toolbar.style.display = 'block';
+      this.marginBottom = (this.toolbar.offsetHeight + 10) + 'px';
     }
-    this.window.style.marginBottom = (this.toolbar.offsetHeight + 10) + 'px';
-    this.setCenter(this.window);
+    CUI.addElementContentChangeEvent(this.dialogWindow, this.resize);
+    window.addEventListener('resize', this.resize);
+    // 第一次開啟，必須重新計算兩次才能抓到正確位置
+    this.resize();
+    this.resize();
+  }
+
+  /**
+   * 讓overlay 呼叫的callback
+   * 等待動畫結束後才移除物件
+  */
+  private doClose = () => {
+    if (this.outlet) {
+      this.outlet.dispose();
+      this.outlet = undefined;
+    }
+  }
+
+  /**
+   * 移除物件
+   */
+  private destroy() {
+    window.removeEventListener('resize', this.resize);
+    if (this.dialogWindow) {
+      CUI.removeElementContentChangeEvent(this.dialogWindow, this.resize);
+    }
+    if (this.outlet) {
+      this.outlet.dispose();
+      this.outlet = undefined;
+    }
+    if (this.overlay) {
+      this.overlay.destory();
+      this.overlay = undefined;
+    }
+  }
+
+  /**
+   * 重新計算Dialog位置
+   * @param e
+   */
+  private resize = (e?) => {
+    this.setCenter(this.dialogWindow);
   }
 
   /**
@@ -170,8 +186,6 @@ export class DialogComponent extends BasicComponent implements OnInit, AfterView
     }
     element.style.top = top;
     element.style.left = left;
-    element.style.transform = 'translate(-' + translateLeft + 'px,-' + translateTop + 'px)';
-    element.style.webkitTransform = '-webkit-translate(-' + translateLeft + 'px,-' + translateTop + 'px)';
+    CUI.style(element, 'transform', 'translate(-' + translateLeft + 'px,-' + translateTop + 'px)');
   }
-
 }

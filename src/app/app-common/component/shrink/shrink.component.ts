@@ -1,12 +1,13 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Input,
   TemplateRef,
-  ViewChild,
-  ChangeDetectionStrategy
+  ViewChild
 } from '@angular/core';
+import { Async } from '@cui/core';
 
 @Component({
   selector: 'app-shrink',
@@ -28,6 +29,8 @@ export class ShrinkComponent implements AfterViewInit {
   public title = '';
   @ViewChild('shrink')
   public shrinkRef: ElementRef;
+  @Input()
+  public shadow: boolean = false;
 
   constructor() {
 
@@ -45,9 +48,11 @@ export class ShrinkComponent implements AfterViewInit {
     this.header.style.height = this.getIconHeight() + 'px';
     if (this._isOpen) {
       this.shrink.style.height = 'auto';
+      this.shrink.style.opacity = '1';
       this.header.classList.remove('close');
     } else {
       this.shrink.style.height = this.getIconHeight() + 'px';
+      this.shrink.style.opacity = '.9';
       this.header.classList.add('close');
     }
   }
@@ -65,8 +70,9 @@ export class ShrinkComponent implements AfterViewInit {
       this._isOpen = true;
       this.header.classList.remove('close');
       this.shrink.style.height = this.getAllHeight() + 'px';
+      this.shrink.style.opacity = '1';
       clearTimeout(this.timer);
-      this.timer = setTimeout(this.asyncHeightAuto, 300);
+      this.timer = this.asyncHeightAuto();
     }
   }
 
@@ -75,15 +81,19 @@ export class ShrinkComponent implements AfterViewInit {
       this._isOpen = false;
       this.header.classList.add('close');
       this.shrink.style.height = this.getAllHeight() + 'px';
+      this.shrink.style.opacity = '.9';
       clearTimeout(this.timer);
-      this.timer = setTimeout(this.asyncHeightZero, 0);
+      this.timer = this.asyncHeightZero();
     }
   }
-  private asyncHeightAuto = () => {
+
+  @Async(300)
+  private asyncHeightAuto() {
     this.shrink.style.height = 'auto';
   }
 
-  private asyncHeightZero = () => {
+  @Async(0)
+  private asyncHeightZero() {
     this.shrink.style.height = this.getIconHeight() + 'px';
     this.header.style.height = this.getIconHeight() + 'px';
   }

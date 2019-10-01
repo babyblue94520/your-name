@@ -1,17 +1,21 @@
 @import 'base/themes';
+
 .tab {
   display: inline-block;
   width: 96%;
   margin-left: 2%;
   background-color: #fff;
   color: $primary-color3;
-  font-size: 1em;
+  font-size: 100%;
+
   .tab-item {
     width: 16%;
     overflow: hidden;
+
     &:hover {
       color: $primary-color1;
     }
+
     &:after {
       background-color: $primary-color1;
     }

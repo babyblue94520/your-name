@@ -2,15 +2,11 @@ import { Combobox, ValueNameRender, ValueName, SubmitConfig } from './common';
 
 /**
  * 負責處理一些有的沒有的
- * by clare
  */
 export class CUI {
 
-
-
     /**
      * 防止XSS
-     * @author Clare
      * @param {String}
      * @return {String}
      */
@@ -27,7 +23,7 @@ export class CUI {
             return _key[m];
         }
         return (str: string): string => {
-            return str.replace(/[<>&/\"\']/g, _escaped);
+            return String(str).replace(/[<>&/\"\']/g, _escaped);
         };
     })();
 
@@ -56,7 +52,7 @@ export class CUI {
     /**
      * 將json 轉成 html
      * @param {String or Object} str
-     * @retrun {String} thml
+     * @return {String} html
      */
     public static printJson = (function () {
         const _space = '&emsp;&emsp;';
@@ -132,14 +128,14 @@ export class CUI {
         }
 
         function _getName(text): string {
-            return CUI.format(_nameHtml, { text: text });
+            return CUI.format(_nameHtml, { text: CUI.escaped(text) });
         }
 
         function _getValue(text): string {
             if (typeof text === 'string') {
                 return CUI.format(_valueStringHtml, { text: CUI.escaped(text) });
             } else {
-                return CUI.format(_valueHtml, { text: text });
+                return CUI.format(_valueHtml, { text: CUI.escaped(text) });
             }
         }
     })();
@@ -168,28 +164,30 @@ export class CUI {
     /**
      * 是否為空值
      * @param {?} value
-     * @return {Boolean}
+     * @return {boolean}
      */
-    public static isEmpty(value) {
+    public static isEmpty(value): boolean {
         if (value === null || value === undefined || value == '') {
             return true;
         }
         return false;
     }
+
     /**
      * 是否為純Array
      * @param {?} value
-     * @return {Boolean}
+     * @return {boolean}
      */
-    public static isArray(value) {
+    public static isArray(value): boolean {
         return (value instanceof Array);
     }
+
     /**
      * 是否為純Object
      * @param {?} value
-     * @return {Boolean}
+     * @return {boolean}
      */
-    public static isObject(value) {
+    public static isObject(value): boolean {
         if (value === null || value === undefined) {
             return false;
         }
@@ -199,9 +197,9 @@ export class CUI {
     /**
      * 是否為空物件
      * @param {?} value
-     * @return {Boolean}
+     * @return {boolean}
      */
-    public static isEmptyObject(value) {
+    public static isEmptyObject(value): boolean {
         if (!CUI.isObject(value)) {
             return true;
         }
@@ -214,9 +212,9 @@ export class CUI {
     /**
      * 是否為純Function
      * @param {?} value
-     * @return {Boolean}
+     * @return {boolean}
      */
-    public static isFunction(value) {
+    public static isFunction(value): boolean {
         return (value instanceof Function);
     }
 
@@ -242,7 +240,10 @@ export class CUI {
     }
 
     /**
-     * 複製
+     * 深複製
+     * 1. deepClone(被複製物件) 回傳全新物件
+     * 2. deepClone(目標物件，被複製物件)
+     * @param data
      */
     public static deepClone(...data) {
         let _orginData;
@@ -292,67 +293,6 @@ export class CUI {
         }
     }
 
-    /**
-     * 監聽內容變化
-     * @param element
-     * @param handler
-     */
-    public static addElementContentChangeEvent(element, handler) {
-        // element.addEventListener('DOMNodeInserted', handler);
-        element.addEventListener('DOMSubtreeModified', handler);
-        // element.addEventListener('DOMNodeInsertedIntoDocument', handler);
-    }
-
-    /**
-     * 移除監聽內容變化
-     * @param element
-     * @param handler
-     */
-    public static removeElementContentChangeEvent(element, handler) {
-        // element.addEventListener('DOMNodeInserted', handler);
-        element.addEventListener('DOMSubtreeModified', handler);
-        // element.addEventListener('DOMNodeInsertedIntoDocument', handler);
-    }
-
-    /**
-     * 設定Element Translate置中
-     * @param element
-     */
-    public static setTranslateCenter(element: HTMLElement) {
-        let height = element.offsetHeight;
-        let width = element.offsetWidth;
-        let translateTop = Math.round(height / 2);
-        let translateLeft = Math.round(width / 2);
-        element.style.transform = 'translate(-' + translateLeft + 'px,-' + translateTop + 'px)';
-        element.style.webkitTransform = '-webkit-translate(-' + translateLeft + 'px,-' + translateTop + 'px)';
-    }
-
-    /**
-     * 設定Element Translate置中
-     * @param element
-     */
-    public static setCenter(element: HTMLElement) {
-        let winWidth = window.innerWidth;
-        let winHeight = window.innerHeight;
-        let height = element.offsetHeight;
-        let width = element.offsetWidth;
-        let top = '50%';
-        let left = '50%';
-        let translateTop = Math.round(height / 2);
-        let translateLeft = Math.round(width / 2);
-        if (width > winWidth) {
-            left = '10px';
-            translateLeft = 0;
-        }
-        if (height > winHeight) {
-            top = '20px';
-            translateTop = 0;
-        }
-        element.style.top = top;
-        element.style.left = left;
-        element.style.transform = 'translate(-' + translateLeft + 'px,-' + translateTop + 'px)';
-        element.style.webkitTransform = '-webkit-translate(-' + translateLeft + 'px,-' + translateTop + 'px)';
-    }
 
     /**
      * Object 轉換成 Combobox 陣列
@@ -408,6 +348,96 @@ export class CUI {
     }
 
     /**
+     * 模擬form submit
+     * @param config
+     */
+    public static submit(config: SubmitConfig) {
+        config = CUI.deepClone({
+            target: '_self',
+            method: 'post'
+        }, config);
+        let formElement = CUI.create<HTMLFormElement>('form');
+        formElement.action = config.url;
+        formElement.method = config.method;
+        formElement.target = config.target;
+        for (let name in config.params) {
+            let input = CUI.create<HTMLInputElement>('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = config.params[name];
+            formElement.appendChild(input);
+        }
+        document.body.appendChild(formElement);
+        formElement.submit();
+        setTimeout(function () {
+            if (formElement) {
+                CUI.remove(formElement);
+                formElement = null;
+            }
+        }, 1000);
+    }
+
+    /**
+     * 監聽內容變化
+     * @param element
+     * @param handler
+     */
+    public static addElementContentChangeEvent(element: HTMLElement, handler) {
+        if (element) {
+            element.addEventListener('DOMSubtreeModified', handler);
+        }
+    }
+
+    /**
+     * 移除監聽內容變化
+     * @param element
+     * @param handler
+     */
+    public static removeElementContentChangeEvent(element: HTMLElement, handler) {
+        if (element) {
+            element.removeEventListener('DOMSubtreeModified', handler);
+        }
+    }
+
+    /**
+     * 設定Element Translate置中
+     * @param element
+     */
+    public static setTranslateCenter(element: HTMLElement) {
+        let height = element.offsetHeight;
+        let width = element.offsetWidth;
+        let translateTop = Math.round(height / 2);
+        let translateLeft = Math.round(width / 2);
+        CUI.style(element, 'transform', 'translate(-' + translateLeft + 'px,-' + translateTop + 'px)');
+    }
+
+    /**
+     * 設定Element Translate置中
+     * @param element
+     */
+    public static setCenter(element: HTMLElement) {
+        let winWidth = window.innerWidth;
+        let winHeight = window.innerHeight;
+        let height = element.offsetHeight;
+        let width = element.offsetWidth;
+        let top = '50%';
+        let left = '50%';
+        let translateTop = Math.round(height / 2);
+        let translateLeft = Math.round(width / 2);
+        if (width > winWidth) {
+            left = '10px';
+            translateLeft = 0;
+        }
+        if (height > winHeight) {
+            top = '20px';
+            translateTop = 0;
+        }
+        element.style.top = top;
+        element.style.left = left;
+        CUI.style(element, 'transform', 'translate(-' + translateLeft + 'px,-' + translateTop + 'px)');
+    }
+
+    /**
      * 監聽Element中有input:focus和Enter keyup
      * @param element
      * @param handler
@@ -423,37 +453,62 @@ export class CUI {
     }
 
     /**
-     * 模擬form submit
-     * @param config
+     * 產生HTMLElement，純粹減少編譯後的方法長度
+     * @param tagName
      */
-    public static submit(config: SubmitConfig) {
-        config = CUI.deepClone({
-            target: '_self',
-            method: 'post'
-        }, config);
-        let formElement = document.createElement('form');
-        formElement.action = config.url;
-        formElement.method = config.method;
-        formElement.target = config.target;
-        for (let name in config.params) {
-            let input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = name;
-            input.value = config.params[name];
-            formElement.appendChild(input);
-        }
-        document.body.appendChild(formElement);
-        formElement.submit();
-        setTimeout(function () {
-            if (formElement) {
-                formElement.remove();
-                formElement = null;
-            }
-        }, 1000);
+    public static create<T extends HTMLElement>(tagName: string): T {
+        return (<T>document.createElement(tagName));
     }
 
-    public static createElement = (tagName: string): any => {
-        return document.createElement(tagName);
+    /**
+     * 檢查HTMLElement是否渲染在body上
+     * @param element
+     */
+    public static isConnected(element: HTMLElement): boolean {
+        if (element && element.parentElement) {
+            if ((<any>element).isConnected == undefined) {
+                if (element == document.body || element.parentElement == document.body) {
+                    return true;
+                } else {
+                    return CUI.isConnected(element.parentElement);
+                }
+            } else {
+                return (<any>element).isConnected;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 移除HTMLElement
+     * 為了相容IE
+     * @param element
+     */
+    public static remove(element: HTMLElement) {
+        if (element) {
+            if (element.remove) {
+                element.remove();
+            } else if (element.parentElement) {
+                element.parentElement.removeChild(element);
+            }
+        }
+    }
+
+    /**
+     * 設定瀏覽器相容的css 屬性
+     * @param element
+     * @param key
+     * @param value
+     */
+    public static style(element: HTMLElement, key: string, value: string) {
+        if (element && key) {
+            element.style[key] = value;
+            key = key[0].toUpperCase() + key.substring(1);
+            element.style['webkit' + key] = value;
+            element.style['moz' + key] = value;
+            element.style['ms' + key] = value;
+            element.style['o' + key] = value;
+        }
     }
 }
-

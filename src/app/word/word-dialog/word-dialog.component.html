@@ -1,0 +1,32 @@
+<app-dialog [onClose]="cancel" [title]="title" [windowClassName]="'cui-col-xs32-10 cui-col-xs48-8 cui-col-xs64-6'">
+  <div class="cui-field">
+    <input type="text" [(ngModel)]="form.word">
+    <label>字</label>
+  </div>
+  <div class="cui-field">
+    <input type="text" [(ngModel)]="form.num">
+    <label>筆劃</label>
+  </div>
+  <div class="cui-field">
+    <input type="text" [(ngModel)]="form.sound">
+    <label>音</label>
+  </div>
+  <div class="cui-field">
+    <select [(ngModel)]="form.type" notTranslate>
+      <option value="">請選擇</option>
+      <option value="金">金</option>
+      <option value="木">木</option>
+      <option value="水">水</option>
+      <option value="火">火</option>
+      <option value="土">土</option>
+    </select>
+    <label>五行</label>
+  </div>
+  <div class="cui-field">
+    <textarea type="text" [(ngModel)]="form.content" rows="5"></textarea>
+    <label>字義</label>
+  </div>
+  <div class="cui-button-row right">
+    <button class="cui-button" (click)="save()">提交</button>
+  </div>
+</app-dialog>

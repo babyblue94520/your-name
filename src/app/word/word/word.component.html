@@ -1,0 +1,30 @@
+<app-shrink [isOpen]="true">
+  <div class="cui-row">
+    <div class="cui-field cui-col-xs32-4">
+      <input type="text" [(ngModel)]="searchForm.word">
+      <label>字</label>
+    </div>
+    <div class="cui-field cui-col-xs32-4">
+      <input type="text" [(ngModel)]="searchForm.num">
+      <label>筆劃</label>
+    </div>
+    <div class="cui-field cui-col-xs32-4">
+      <select [(ngModel)]="searchForm.type" notTranslate>
+        <option value="">請選擇</option>
+        <option value="金">金</option>
+        <option value="木">木</option>
+        <option value="水">水</option>
+        <option value="火">火</option>
+        <option value="土">土</option>
+      </select>
+      <label>五行</label>
+    </div>
+  </div>
+  <div class="cui-button-row center">
+    <button class="cui-button" (click)="search()">查詢</button>
+    <button class="cui-button bg-accent" (click)="clean()">清除</button>
+    <button class="cui-button bg-dark" (click)="download()">下載</button>
+  </div>
+</app-shrink>
+<div class="view-content" [appInitElement]="grid.getElement()"></div>
+<app-word-dialog [onComplete]="onComplete"></app-word-dialog>

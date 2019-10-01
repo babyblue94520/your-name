@@ -1,66 +1,80 @@
 @import 'base/function';
+
 .cui-tab-header {
   position: relative;
   width: 100%;
   overflow: hidden;
   border-bottom: 1px solid #eee;
+
   .cui-tab-prev,
   .cui-tab-next {
     position: absolute;
     top: 0;
     height: 100%;
-    padding: 10px;
+    padding: .8em;
     background-color: #fff;
     z-index: 1;
     cursor: pointer;
   }
+
   .cui-tab-prev {
     left: 0;
     @include box-shadow(2px 0px 3px #aaa);
   }
+
   .cui-tab-next {
     right: 0;
     @include box-shadow(-2px 0px 3px #aaa);
   }
-  .cui-tab-header-hover {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    z-index: 1;
-    display: inline-block;
-    width: 0px;
-    height: 2px;
-    background-color: #00bcd4;
-    pointer-events: none;
-    @include transform(translateX(0px));
-    @include transition(transform .3s ease-in-out);
-  }
+
   .cui-tab-labels {
     position: relative;
     display: inline-block;
+    color: #ddd;
     white-space: nowrap;
-    cursor: pointer;
     @include transition(transform .3s ease-in-out);
+
     .cui-tab-label {
       position: relative;
       display: inline-block;
       font-size: 100%;
       letter-spacing: 3px;
       white-space: nowrap;
-      color: #666;
+      cursor: pointer;
       @include transition;
+
       &.active {
-        color: #344149;
+        color: #00bcd4;
         font-weight: bold;
+
+        &:after {
+          @include transform(scale(1, 1));
+        }
       }
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 2px;
+        background-color: #00bcd4;
+        @include transform(scale(0, 1));
+        @include transition(transform .3s ease-in-out);
+      }
+
       &.disabled {
         color: #ccc;
       }
+
       .cui-tab-label-text {
         display: inline-block;
         margin: 10px 15px 10px 15px;
         pointer-events: none;
       }
+
       .cui-tab-label-close {
         display: inline-block;
         vertical-align: top;
@@ -75,6 +89,7 @@
   display: inline-block;
   width: 100%;
   overflow: hidden;
+
   .cui-tab-contents {
     position: relative;
     display: flex;
@@ -82,15 +97,18 @@
     white-space: nowrap;
     @include transform(translateX(0%));
     @include transition(transform .3s ease-in-out);
+
     .cui-tab-content {
       display: inline-block;
       width: 100%;
       height: 0;
-      padding: 10px;
+      padding: .8em;
       opacity: 0;
       flex-shrink: 0;
       pointer-events: none;
+      white-space: normal;
       @include transition(opacity .3s ease-in-out);
+
       &.active {
         height: auto;
         opacity: 1;

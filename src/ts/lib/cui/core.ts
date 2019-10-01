@@ -16,8 +16,7 @@ export { StoreNode, IStoreNode, IStoreListener, StoreNodeConfig } from './core/s
 export { Cache } from './core/decorators/cache';
 export { AjaxTryCatch } from './core/decorators/ajax-try-catch';
 export { StoreNodeSource } from './core/decorators/store-source';
-export { AjaxManageComplete } from './core/decorators/ajax-manage-complete';
-export { ComboboxComplete } from './core/decorators/combobox-complete';
+export { AjaxComplete } from './core/decorators/ajax-complete';
 export { Async, Delay } from './core/decorators/async';
 
 export { AjaxHeaders } from './core/ajax/ajax.beans';
@@ -32,3 +31,5 @@ export { DatePicker, PickerType } from './core/component/date-picker';
 export { AutoComplete, AutoCompleteConfig } from './core/component/auto-complete';
 export { Loader } from './core/component/loader';
 export { Grid } from './core/component/grid';
+export { Overlay } from './core/component/overlay';
+export { GlobleTooltip } from './core/component/globle-tooltip';

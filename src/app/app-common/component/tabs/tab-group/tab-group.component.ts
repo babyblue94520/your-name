@@ -1,4 +1,4 @@
-import { CUI, Delay } from '@cui/core';
+import { Delay } from '@cui/core';
 import { TabComponent } from '../tab/tab.component';
 import {
   AfterContentInit,
@@ -11,7 +11,6 @@ import {
   ViewChildren,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewChecked,
 } from '@angular/core';
 
 @Component({
@@ -20,9 +19,8 @@ import {
   styleUrls: ['./tab-group.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TabGroupComponent implements AfterContentInit, AfterViewInit, AfterViewChecked {
+export class TabGroupComponent implements AfterContentInit, AfterViewInit {
   private header: HTMLElement;
-  private hover: HTMLElement;
   private labels: HTMLElement;
   private contents: HTMLElement;
   private prev: HTMLElement;
@@ -39,19 +37,17 @@ export class TabGroupComponent implements AfterContentInit, AfterViewInit, After
   public tabsRef: QueryList<TabComponent>;
 
   @Input()
-  set activeIndex(value: number) {
-    this.active(value);
-  }
+  public activeIndex = 0;
 
   constructor(
     private elementRef: ElementRef,
-    private changeDetectorRef: ChangeDetectorRef
+    private cdf: ChangeDetectorRef
   ) {
   }
 
   ngAfterContentInit() {
     this.tabsRef.changes.subscribe(() => {
-      this.changeDetectorRef.markForCheck();
+      this.cdf.markForCheck();
       if (this.tabsRef.length) {
         this.initActive();
       } else {
@@ -63,7 +59,7 @@ export class TabGroupComponent implements AfterContentInit, AfterViewInit, After
 
   ngAfterViewInit() {
     this.labelRef.changes.subscribe(() => {
-      this.changeDetectorRef.markForCheck();
+      this.cdf.markForCheck();
       if (this.labelRef.length) {
         this.hoverBar();
         this.showPrevNext();
@@ -74,20 +70,20 @@ export class TabGroupComponent implements AfterContentInit, AfterViewInit, After
 
     let element: HTMLElement = this.elementRef.nativeElement;
     this.header = element.querySelector('.cui-tab-header');
-    this.hover = element.querySelector('.cui-tab-header-hover');
     this.labels = element.querySelector('.cui-tab-labels');
     this.contents = element.querySelector('.cui-tab-contents');
     this.prev = element.querySelector('.cui-tab-prev');
-    this.prev.addEventListener('click', this.prevClick);
+    this.prev.addEventListener('click', this.prevClick.bind(this));
     this.next = element.querySelector('.cui-tab-next');
-    this.next.addEventListener('click', this.nextClick);
+    this.next.addEventListener('click', this.nextClick.bind(this));
 
     window.addEventListener('resize', this.resize.bind(this));
     this.showPrevNext();
-    this.hoverBar();
+    this.delayAfterViewInit();
   }
 
-  ngAfterViewChecked() {
+  @Delay(300)
+  private delayAfterViewInit() {
     this.showPrevNext();
     this.hoverBar();
   }
@@ -102,10 +98,6 @@ export class TabGroupComponent implements AfterContentInit, AfterViewInit, After
     if (this.labels) {
       this.labels.style.transform = '';
     }
-    if (this.hover) {
-      this.hover.style.width = '0px';
-      this.hover.style.transform = '';
-    }
   }
 
   private contentClear() {
@@ -117,7 +109,9 @@ export class TabGroupComponent implements AfterContentInit, AfterViewInit, After
     let index = 0;
     let nan = isNaN(this.currentIndex);
     if (nan || this.currentIndex > this.tabsRef.length) {
-      index = nan ? 0 : (this.tabsRef.length - 1);
+      index = nan ? this.activeIndex : (this.tabsRef.length - 1);
+    } else {
+      index = this.currentIndex;
     }
     let tabs = this.tabsRef.toArray();
     let tab: TabComponent;
@@ -131,10 +125,10 @@ export class TabGroupComponent implements AfterContentInit, AfterViewInit, After
     this.active(index);
   }
 
-  public active = (index: number) => {
+  public active(index: number) {
     if (index < 0) { return; }
     if (!this.tabsRef) { return; }
-    this.changeDetectorRef.markForCheck();
+    this.cdf.markForCheck();
     let l = this.tabsRef.length;
     this.currentIndex = index % l;
     let tabs: TabComponent[] = this.tabsRef.toArray();
@@ -147,41 +141,50 @@ export class TabGroupComponent implements AfterContentInit, AfterViewInit, After
       tabs[i].active = (i == this.currentIndex);
     }
     if (tabs[this.currentIndex]) {
-      CUI.callFunction(tabs[this.currentIndex].onActive);
+      tabs[this.currentIndex].doActive();
     }
     this.hoverBar();
   }
 
-  private showPrevNext = () => {
-    if (this.labels.offsetWidth > this.header.offsetWidth) {
-      if (this.labelsLeft == 0) {
+  private showPrevNext() {
+    if (this.labels) {
+      if (this.labels.offsetWidth > this.header.offsetWidth) {
+        if (this.labelsLeft == 0) {
+          this.prev.style.display = 'none';
+        } else {
+          this.prev.style.display = 'block';
+        }
+        if (this.header.offsetWidth + this.labelsLeft < this.labels.offsetWidth) {
+          this.next.style.display = 'block';
+        } else {
+          this.next.style.display = 'none';
+        }
+      } else {
         this.prev.style.display = 'none';
-      } else {
-        this.prev.style.display = 'block';
-      }
-      if (this.header.offsetWidth + this.labelsLeft < this.labels.offsetWidth) {
-        this.next.style.display = 'block';
-      } else {
         this.next.style.display = 'none';
+        this.labelsLeft = 0;
+        this.labels.style.transform = 'translateX(0px)';
+        this.hoverBar();
       }
-    } else {
-      this.prev.style.display = 'none';
-      this.next.style.display = 'none';
     }
   }
 
-  public prevClick = () => {
+  public prevClick() {
     if (this.leftIndex != 0) {
       let label: HTMLElement = this.labelRef.toArray()[--this.leftIndex].nativeElement;
-      this.labelsLeft -= label.offsetWidth;
+      if (this.leftIndex == 0) {
+        this.labelsLeft = 0;
+      } else {
+        this.labelsLeft -= label.offsetWidth;
+      }
       this.labels.style.transform = 'translateX(-' + this.labelsLeft + 'px)';
       this.hoverBar();
     }
     this.showPrevNext();
   }
 
-  public nextClick = () => {
-    if (this.header.offsetWidth + this.labelsLeft < this.labels.offsetWidth) {
+  public nextClick() {
+    if (this.header.offsetWidth + this.labelsLeft < this.labels.offsetWidth && this.leftIndex < this.labelRef.length - 1) {
       let label: HTMLElement = this.labelRef.toArray()[this.leftIndex++].nativeElement;
       this.labelsLeft += label.offsetWidth;
       this.labels.style.transform = 'translateX(-' + this.labelsLeft + 'px)';
@@ -194,27 +197,17 @@ export class TabGroupComponent implements AfterContentInit, AfterViewInit, After
     if (!this.labelRef) {
       return;
     }
-    if (this.labelRef.length == 0) {
-      if (this.hover) {
-        this.hover.style.width = '0px';
-      }
-      return;
-    }
     let labels = this.labelRef.toArray();
     let label: HTMLElement;
-    let left = 0;
     for (let i = 0, l = labels.length; i < l; i++) {
       label = labels[i].nativeElement;
       if (i == this.currentIndex) {
         break;
-      } else {
-        left += label.offsetWidth;
       }
     }
     if (label) {
       this.contents.style.transform = 'translateX(-' + (this.currentIndex * 100) + '%)';
-      this.hover.style.width = label.offsetWidth + 'px';
-      this.hover.style.transform = 'translateX(' + (left - this.labelsLeft) + 'px)';
     }
   }
+
 }

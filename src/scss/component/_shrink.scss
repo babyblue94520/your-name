@@ -3,29 +3,37 @@
   width: 100%;
   overflow: hidden;
   @include transition(height .3s ease-in-out);
+
+  &.shrink-shadow {
+    @include box-shadow(0 1px 2px rgba(0, 0, 0, .5));
+  }
+
   .shrink-header {
     position: relative;
     display: inline-block;
-    padding: 10px;
+    padding: .8em;
     width: 100%;
     cursor: pointer;
+
     &.close {
       .shrink-close {
         @include transform(rotate(180deg));
       }
     }
   }
+
   .shrink-close {
     position: absolute;
     top: 0;
     right: 0;
     display: inline-block;
-    padding: 10px;
+    padding: .8em;
     @include transition(transform .3s ease-in-out);
   }
+
   .shrink-content {
     display: inline-block;
     width: 100%;
-    padding: 0 10px 10px 10px;
+    padding: 0 .8em .8em .8em;
   }
 }

@@ -1,5 +1,5 @@
 import { AppConfig } from 'ts/app-config';
-import { Directive, ElementRef, Input } from '@angular/core';
+import { Directive, ElementRef, Input, OnDestroy } from '@angular/core';
 import { Global } from 'ts/globle';
 import { PickerType } from '@cui/core';
 
@@ -9,21 +9,19 @@ import { PickerType } from '@cui/core';
 @Directive({
   selector: '[appDatePicker]'
 })
-export class DatePickerDirective {
+export class DatePickerDirective implements OnDestroy {
   private element: HTMLElement;
   private input: HTMLInputElement;
   private _format = AppConfig.YYYYMMDDHHmmss;
   private _pickerType = PickerType.YMDHms;
 
   constructor(el: ElementRef) {
-
     this.element = el.nativeElement;
     let icon = document.createElement('div');
     icon.className = 'cui-datepicker-icon flaticon-date';
+    icon.addEventListener('click', this.click);
     this.element.classList.add('cui-datepicker-select');
-
     this.element.appendChild(icon);
-    this.element.addEventListener('click', this.click);
   }
 
   /**
@@ -44,6 +42,14 @@ export class DatePickerDirective {
     if (!this.input) {
       this.input = this.element.querySelector('input');
     }
-    // Global.datePicker.open(this.input, this._format, this._pickerType);
+    Global.datePicker.open(this.input, this._format, this._pickerType);
+  }
+
+  ngOnDestroy() {
+    Global.datePicker.close();
+    this.element = undefined;
+    this.input = undefined;
+    this._format = undefined;
+    this._pickerType = undefined;
   }
 }

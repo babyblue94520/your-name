@@ -3,14 +3,14 @@ export interface AuthRoute {
     id: number;
     className: string;
     name: string;
-    order: number;
     parentId: number;
     path: string[];
     type: number;
+    sort: number;
+    active?: boolean;
 }
 
 export interface Word {
-    id: number;
     num: number;
     word: string;
     sound: string;

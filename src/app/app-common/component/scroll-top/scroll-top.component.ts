@@ -1,9 +1,9 @@
+import { Async } from '@cui/core';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component
 } from '@angular/core';
-import { Async } from '@cui/core';
 
 /**
  * 滾動到最上面按鈕
@@ -15,6 +15,7 @@ import { Async } from '@cui/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScrollTopComponent {
+  public target;
   private ms = 300;
   private count = Math.floor(this.ms / 16);
   private px;
@@ -22,8 +23,12 @@ export class ScrollTopComponent {
   private timer;
   public show = false;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {
-    document.body.addEventListener('scroll', this.isShow);
+  constructor(private cdf: ChangeDetectorRef) {
+    this.target = document.scrollingElement;
+    if (this.target == undefined) {
+      this.target = document.documentElement;
+    }
+    window.addEventListener('scroll', this.isShow);
   }
 
   /**
@@ -33,7 +38,7 @@ export class ScrollTopComponent {
     if (this.run) { return; }
     this.run = true;
     if (!this.px) {
-      this.px = Math.floor(document.body.scrollTop / this.count);
+      this.px = Math.floor(this.target.scrollTop / this.count);
     }
     this.show = false;
     clearTimeout(this.timer);
@@ -45,8 +50,8 @@ export class ScrollTopComponent {
    */
   @Async(16)
   private doScrollTop() {
-    if (document.body.scrollTop > 0) {
-      document.body.scrollTop -= this.px;
+    if (this.target.scrollTop > 0) {
+      window.scrollTo(0, this.target.scrollTop - this.px);
       this.timer = this.doScrollTop();
     } else {
       this.px = 0;
@@ -61,10 +66,11 @@ export class ScrollTopComponent {
     if (this.run) {
       return;
     }
-    let b = document.body.scrollTop > 0;
+    let top = window.pageYOffset || this.target.scrollTop;
+    let b = top > 0;
     if (b != this.show) {
       this.show = b;
-      this.changeDetectorRef.markForCheck();
+      this.cdf.markForCheck();
     }
   }
 }

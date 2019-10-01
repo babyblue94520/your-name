@@ -12,10 +12,10 @@ import { RuleComponent } from './rule/rule.component';
 
 @NgModule({
   imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    AppCommonModule,
+    CommonModule
+    , RouterModule
+    , FormsModule
+    , AppCommonModule
   ],
   declarations: [
     CompanyComponent,

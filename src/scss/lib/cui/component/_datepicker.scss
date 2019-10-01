@@ -18,7 +18,7 @@ body {
 }
 
 .cui-datepicker-icon {
-  font-size: 20px;
+  font-size: 130%;
   position: absolute;
   top: .8em;
   right: .5em;
@@ -31,7 +31,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 5;
+  z-index: 1000;
   display: none;
   overflow-y: auto;
 
@@ -67,7 +67,7 @@ body {
     position: absolute;
     top: 45%;
     left: 50%;
-    z-index: 99;
+    z-index: 2;
     display: inline-block;
     width: 300px;
     height: auto;
@@ -87,7 +87,7 @@ body {
       position: relative;
       display: inline-block;
       width: 100%;
-      font-size: .8em;
+      font-size: 80%;
       background-color: #fff;
     }
   }
@@ -101,7 +101,7 @@ body {
   .cui-datepicker-header-text-1 {
     text-align: left;
     text-indent: 5px;
-    font-size: 1em;
+    font-size: 100%;
     color: rgba(255, 255, 255, .8);
   }
 
@@ -109,14 +109,14 @@ body {
     width: 4em;
     margin: 0 auto;
     text-align: center;
-    font-size: 4em;
+    font-size: 400%;
     color: #fff;
     cursor: pointer;
   }
 }
 
 .cui-datepicker-footer {
-  padding: 10px;
+  padding: .8em;
   background-color: #fff;
 }
 
@@ -126,11 +126,11 @@ body {
 
 .cui-datepicker-button {
   display: inline-block;
-  padding: 5px 10px 5px 10px;
+  padding: .5em 1em .5em 1em;
   border: none;
   letter-spacing: 1px;
   font-family: Roboto, sans-serif;
-  font-size: 1em;
+  font-size: 100%;
   font-weight: 500;
   text-transform: uppercase;
   background-color: transparent;
@@ -145,7 +145,7 @@ body {
 .cui-datepicker-year-block {
   display: none;
   width: 100%;
-  padding: 10px;
+  padding: .8em;
   text-align: center;
   line-height: 250%;
   opacity: 0;
@@ -167,7 +167,7 @@ body {
       width: 100%;
       padding-top: 10px;
       padding-bottom: 10px;
-      font-size: 1.5em;
+      font-size: 150%;
       cursor: pointer;
 
       &.active {
@@ -182,7 +182,7 @@ body {
   display: none;
   width: 100%;
   height: 300px;
-  padding: 10px;
+  padding: .8em;
   text-align: center;
   line-height: 250%;
   opacity: 0;
@@ -204,7 +204,7 @@ body {
       width: 100%;
       padding-top: 10px;
       padding-bottom: 10px;
-      font-size: 1.5em;
+      font-size: 150%;
       cursor: pointer;
 
       &.active {
@@ -218,7 +218,7 @@ body {
 .cui-datepicker-day-block {
   display: inline-block;
   width: 100%;
-  padding: 10px;
+  padding: .8em;
   opacity: 0;
   pointer-events: none;
   @include transition;
@@ -278,13 +278,13 @@ body {
 .cui-datepicker-day-yearmonth-text {
   font-weight: 600;
   text-align: center;
-  font-size: 1.2em;
+  font-size: 120%;
 }
 
 .cui-datepicker-week {
   display: inline-block;
   width: 100%;
-  font-size: 600;
+  font-weight: 600;
   color: #969a9c;
 }
 
@@ -327,13 +327,15 @@ body {
   }
 
   &:hover {
-    &.day:before {
-      @include transform(scale3d(.9, .9, .9));
-      background-color: #a7d5f9;
-    }
+    &.day {
+      &:before {
+        @include transform(scale3d(.9, .9, .9));
+        background-color: #a7d5f9;
+      }
 
-    span {
-      color: #fff;
+      span {
+        color: #fff;
+      }
     }
   }
 
@@ -351,7 +353,7 @@ body {
   input {
     width: 6em;
     text-align: center;
-    font-size: 1.2em;
+    font-size: 100%;
     line-height: 1.5em;
     letter-spacing: 1px;
   }

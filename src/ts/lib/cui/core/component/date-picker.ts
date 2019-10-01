@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { CUI } from '../cui';
 
 enum ClassName {
     Datepicker = 'cui-datepicker',
@@ -383,7 +384,7 @@ export class DatePicker {
      * @param {jquery element object} $element
      */
     public open = (element: HTMLInputElement, format: string, pickerType: PickerType) => {
-        if (element.tagName != 'INPUT') { return; }
+        if (!element || element.tagName != 'INPUT') { return; }
 
         this.init();
         this._datepickerElement.style.display = 'block';
@@ -427,7 +428,7 @@ export class DatePicker {
         } else {
             this._windowElement.classList.remove('top');
         }
-        this._windowElement.style.transform = 'translate(-' + translateLeft + 'px,-' + translateTop + 'px)';
+        CUI.style(this._windowElement, 'transform', 'translate(-' + translateLeft + 'px,-' + translateTop + 'px)');
     }
 
     private delayShow = () => {
@@ -440,11 +441,12 @@ export class DatePicker {
      * 關閉日期套件
      */
     public close = () => {
-        document.documentElement.classList.remove(ClassName.ShowDatePicker);
-        document.body.classList.remove(ClassName.ShowDatePicker);
-        this._datepickerElement.classList.remove(ClassName.Show);
-
-        setTimeout(this.delayHide, 300);
+        if (this._datepickerElement) {
+            document.documentElement.classList.remove(ClassName.ShowDatePicker);
+            document.body.classList.remove(ClassName.ShowDatePicker);
+            this._datepickerElement.classList.remove(ClassName.Show);
+            setTimeout(this.delayHide, 300);
+        }
     }
 
     private delayHide = () => {

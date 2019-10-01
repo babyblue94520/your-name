@@ -4,7 +4,7 @@
  * @param callbackIndex callback方法的位置
  */
 export function AjaxTryCatch(callbackIndex?: number) {
-    return (target, key, descriptor) => {
+    return function (target, key, descriptor) {
         if (descriptor === undefined) {
             descriptor = Object.getOwnPropertyDescriptor(target, key);
         }
@@ -13,7 +13,7 @@ export function AjaxTryCatch(callbackIndex?: number) {
             try {
                 originalMethod.apply(this, arguments);
             } catch (e) {
-                console.log(e);
+                console.error(e);
                 if (callbackIndex != undefined) {
                     let fn = arguments[callbackIndex];
                     if (fn instanceof Function) {

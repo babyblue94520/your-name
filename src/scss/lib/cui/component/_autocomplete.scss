@@ -1,13 +1,33 @@
 @import 'base/function';
 
-.cui-autocomplete-list {
-  position: fixed;
-  z-index: 1;
-  width: 100%;
-  @include box-shadow(rgba(0, 0, 0, 0.247059) 0px 14px 45px, rgba(0, 0, 0, 0.219608) 0px 10px 18px);
+.cui-autocomplete-container {
+  pointer-events: none;
+}
 
-  >div {
-    padding: 10px;
+.cui-autocomplete-list {
+  position: absolute;
+  z-index: 9999;
+  width: 100%;
+  pointer-events: auto;
+
+
+  .cui-autocomplete-bottom {
+    height: 1em;
+    background-color: transparent;
+  }
+
+  .cui-autocomplete-items {
+    @include box-shadow(rgba(0, 0, 0, 0.247059) 0px 14px 45px, rgba(0, 0, 0, 0.219608) 0px 10px 18px);
+  }
+
+  .cui-autocomplete-sreach {
+    padding: .8em;
+    cursor: pointer;
+    background-color: #fff;
+  }
+
+  .cui-autocomplete-item {
+    padding: .8em;
     cursor: pointer;
     background-color: #fff;
     border-bottom: 1px solid #d4d4d4;

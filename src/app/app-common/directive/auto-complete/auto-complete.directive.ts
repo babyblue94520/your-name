@@ -1,34 +1,38 @@
+import { AutoComplete, AutoCompleteConfig } from '@cui/core';
 import {
   Directive,
   ElementRef,
-  Input
+  Input,
+  OnDestroy
 } from '@angular/core';
-import { AutoComplete, AutoCompleteConfig } from '@cui/core';
 
 @Directive({
   selector: '[appAutoComplete]'
 })
-export class AutoCompleteDirective {
+export class AutoCompleteDirective implements OnDestroy {
   private autoComplete: AutoComplete;
-  private config: AutoCompleteConfig;
 
   constructor(private el: ElementRef) {
-
+    let input;
+    if (this.el.nativeElement instanceof HTMLInputElement) {
+      input = this.el.nativeElement;
+    } else {
+      input = this.el.nativeElement.querySelector('input');
+    }
+    if (input) {
+      this.autoComplete = new AutoComplete(input);
+    }
   }
 
   @Input() set appAutoComplete(config: AutoCompleteConfig) {
-    this.config = config;
-    if (!this.autoComplete) {
-      let input: HTMLInputElement;
-      if (this.el.nativeElement instanceof HTMLInputElement) {
-        input = this.el.nativeElement;
-      } else {
-        input = this.el.nativeElement.querySelector('input');
-      }
-      if (input) {
-        this.autoComplete = new AutoComplete(input, this.config);
-      }
+    if (this.autoComplete) {
+      this.autoComplete.setConfig(config);
     }
-    this.autoComplete.setConfig(config);
+  }
+
+  ngOnDestroy() {
+    if (this.autoComplete) {
+      this.autoComplete.destroy();
+    }
   }
 }

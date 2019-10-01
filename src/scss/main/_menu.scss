@@ -13,10 +13,9 @@
   border-right: 1px solid #ddd;
   opacity: 0;
   overflow-y: auto;
-  background-color: $primary-bg-color1;
+  background-color: #FF2257;
   pointer-events: none;
-  @include transform(translateX(-250px));
-  @include transitions(transform .3s ease-in-out, opacity .3s ease-in-out);
+  @include transition(all .3s ease-in-out);
 
   &.open {
     opacity: 1;
@@ -29,10 +28,10 @@
 
     .info {
       width: 100%;
-      font-size: 10em;
+      font-size: 200%;
       letter-spacing: 5px;
       text-align: center;
-      text-shadow: 1px 1px 5px #34383a;
+      // text-shadow: 1px 1px 5px #34383a;
       background-color: #FF2257;
       color: #fff;
       cursor: pointer;
@@ -51,7 +50,7 @@
   opacity: 0;
   pointer-events: none;
   background-color: #0000003d;
-  @include transition(opacity .3s ease-in-out);
+  @include transition(all .3s ease-in-out);
 
   &.open {
     opacity: 1;
@@ -68,7 +67,6 @@
       overflow: hidden !important;
 
       .main-container,
-      .main-header,
       .main-footer {
         padding-left: 0px !important;
       }
