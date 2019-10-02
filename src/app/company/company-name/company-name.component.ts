@@ -1,7 +1,7 @@
 import { Cache } from '@cui/core';
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Fortune, Word } from 'ts/data/entity/entity';
-import { FortuneService } from 'ts/service/fortune-service';
+import { CompanyFortune, Word } from 'ts/data/entity/entity';
+import { CompanyFortuneService } from 'ts/service/company-fortune-service';
 import { WordService } from 'ts/service/word-service';
 
 interface Form {
@@ -23,8 +23,8 @@ export class CompanyNameComponent {
   public form: Form;
 
   public words: Word[];
-  public fortune1: Fortune;
-  public fortune2: Fortune;
+  public fortune1: CompanyFortune;
+  public fortune2: CompanyFortune;
   public total1;
   public total2;
   public type: string;
@@ -55,8 +55,8 @@ export class CompanyNameComponent {
     this.words = WordService.getWords(this.form.name1.split(''));
     this.total1 = count1;
     this.total2 = count1 + count2;
-    this.fortune1 = FortuneService.getFortuneByNum(count1);
-    this.fortune2 = FortuneService.getFortuneByNum((count1 + count2) % 80);
+    this.fortune1 = CompanyFortuneService.getFortuneByNum(count1);
+    this.fortune2 = CompanyFortuneService.getFortuneByNum((count1 + count2) % 80);
     this.type = types.join('>');
   }
 }

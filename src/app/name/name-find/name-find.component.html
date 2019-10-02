@@ -1,0 +1,23 @@
+<app-shrink>
+  <h3 shrink-title>智慧選名</h3>
+  <div class="space-1"></div>
+  <div class="cui-field cui-col-xs32-6">
+    <input type="text" required [(ngModel)]="firstName" (input)="delayFindFortunes()">
+    <label>姓</label>
+    <div class="message">兩字</div>
+  </div>
+</app-shrink>
+<div class="space-1"></div>
+<app-shrink #groupShrink *ngIf="fortunes">
+  <h3 shrink-title>選擇名字筆劃組合：
+    <span class="selected" *ngIf="currentFortune">
+      {{currentFortune.type}}({{currentFortune.luck}})
+    </span>
+  </h3>
+  <h3 *ngIf="currentFortune">
+    {{currentFortune.content}}
+  </h3>
+  <div class="item {{currentFortune==fortune?'active':''}}" *ngFor="let fortune of fortunes"
+    (click)="selectedFortune(fortune)">
+    {{fortune.type}}({{fortune.luck}})</div>
+</app-shrink>

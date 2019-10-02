@@ -18,11 +18,18 @@ export interface Word {
     type: string;
 }
 
-export interface Fortune {
-    id: number;
+export interface CompanyFortune {
     num: number;
     name: string;
     content: string;
     type: string;
     luck: string;
+}
+
+
+export interface NameFortune {
+    num: string;
+    type: string;
+    luck: string;
+    content: string;
 }

@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { Fortune } from 'ts/data/entity/entity';
-import { FortuneService } from 'ts/service/fortune-service';
+import { CompanyFortune } from 'ts/data/entity/entity';
+import { CompanyFortuneService } from 'ts/service/company-fortune-service';
 
 @Component({
   selector: 'app-company-description',
@@ -9,6 +9,6 @@ import { FortuneService } from 'ts/service/fortune-service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompanyDescriptionComponent {
-  public fortunes: Fortune[] = FortuneService.getFortunes();
+  public fortunes: CompanyFortune[] = CompanyFortuneService.getFortunes();
   constructor() { }
 }

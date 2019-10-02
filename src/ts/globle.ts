@@ -1,5 +1,5 @@
 import {
-    DatePicker, AjaxManager
+    DatePicker, AjaxManager, Loader
 } from '@cui/core';
 import { environment } from '@environment';
 
@@ -12,6 +12,7 @@ export class Global {
     public static readonly env = environment;
     public static readonly ajaxManager = new AjaxManager();
     public static readonly datePicker = new DatePicker();
+    public static readonly loader = new Loader();
     public static currentRouteName = '';
     public static routeName = {};
     private static queryParamters: QueryString = {};

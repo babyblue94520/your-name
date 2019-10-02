@@ -58,21 +58,39 @@ export const MenuRoutes: AuthRoute[] = [
         type: 1
     },
     {
-        id: 3,
-        className: 'flaticon-user',
-        name: '個人(未開發)',
-        sort: 3,
-        parentId: 0,
-        path: [],
-        type: 0
-    },
-    {
         id: 8,
         className: 'flaticon-user',
         name: '字典維護',
         sort: 4,
         parentId: 0,
         path: AppRoute.Word.Word,
+        type: 1
+    },
+    {
+        id: 30,
+        className: 'flaticon-user',
+        name: '姓名學',
+        sort: 3,
+        parentId: 0,
+        path: [],
+        type: 0
+    },
+    {
+        id: 31,
+        className: 'flaticon-search',
+        name: '找名字',
+        sort: 1,
+        parentId: 30,
+        path: AppRoute.Name.Find,
+        type: 1
+    },
+    {
+        id: 32,
+        className: 'flaticon-user',
+        name: '三才表',
+        sort: 5,
+        parentId: 30,
+        path: AppRoute.Name.Three,
         type: 1
     }
 ];

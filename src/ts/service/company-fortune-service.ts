@@ -1,14 +1,14 @@
-import { Fortune, Word } from 'ts/data/entity/entity';
-import { Fortunes } from 'ts/data/word/fortunes';
+import { CompanyFortune, Word } from 'ts/data/entity/entity';
+import { CompanyFortunes } from 'ts/data/word/company-fortunes';
 
 declare var WordsByNum: any;
 
-export class FortuneService {
+export class CompanyFortuneService {
 	// 相生
 	private static create = ['木', '火', '土', '金', '水'];
 
 	public static getFortunes() {
-		return Fortunes;
+		return CompanyFortunes;
 	}
 
 	/**
@@ -16,8 +16,8 @@ export class FortuneService {
 	 * @param {Integer} num 文字
 	 * @return {Object} fortune Object
 	 */
-	public static getFortuneByNum(num): Fortune {
-		return Fortunes[num - 1];
+	public static getFortuneByNum(num): CompanyFortune {
+		return CompanyFortunes[num - 1];
 	}
 
 	/**
@@ -37,7 +37,7 @@ export class FortuneService {
 		let start = 1;
 		let end = Math.floor(total / count);
 		let lastIndex = count - 1;
-		FortuneService.next(result, start, end, [], total, lastIndex);
+		CompanyFortuneService.next(result, start, end, [], total, lastIndex);
 		return result;
 	}
 
@@ -46,7 +46,7 @@ export class FortuneService {
 	 * @param type
 	 */
 	public static getNextType(type: string): string {
-		return FortuneService.create[(FortuneService.create.indexOf(type) + 1) % 5];
+		return CompanyFortuneService.create[(CompanyFortuneService.create.indexOf(type) + 1) % 5];
 	}
 
 	/**
@@ -80,7 +80,7 @@ export class FortuneService {
 				}
 				nextTemp = Object.assign([], temp);
 				nextTemp.push(i);
-				FortuneService.next(result, i + 1, end, nextTemp, remain - i, lastIndex);
+				CompanyFortuneService.next(result, i + 1, end, nextTemp, remain - i, lastIndex);
 			}
 		}
 	}

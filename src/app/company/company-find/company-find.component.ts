@@ -1,6 +1,6 @@
 import { Component, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Cache, Delay } from '@cui/core';
-import { FortuneService } from 'ts/service/fortune-service';
+import { CompanyFortuneService } from 'ts/service/company-fortune-service';
 import { Word } from 'ts/data/entity/entity';
 import { ShrinkComponent } from 'app/app-common/component/shrink/shrink.component';
 
@@ -68,7 +68,7 @@ export class CompanyFindComponent {
    * 找出筆劃字數組合陣列
    */
   public findNumGroup() {
-    this.numGroups = FortuneService.getNumGroup(this.form.total, this.form.count);
+    this.numGroups = CompanyFortuneService.getNumGroup(this.form.total, this.form.count);
     this.currentGroup = undefined;
     this.fiveWords = undefined;
     this.name = undefined;
@@ -108,8 +108,8 @@ export class CompanyFindComponent {
    * @param word
    */
   public selectedFirstWord(word: Word) {
-    let nextType = FortuneService.getNextType(word.type);
-    let nextWords = FortuneService.getGoodNextWords(this.currentGroup[1], nextType);
+    let nextType = CompanyFortuneService.getNextType(word.type);
+    let nextWords = CompanyFortuneService.getGoodNextWords(this.currentGroup[1], nextType);
     this.firstWord = word;
     this.name = [word];
     this.nameTypes = [word.type, nextType];
@@ -129,8 +129,8 @@ export class CompanyFindComponent {
     if (this.name.length == this.currentGroup.length) {
       return;
     }
-    let nextType = FortuneService.getNextType(word.type);
-    let nextWords = FortuneService.getGoodNextWords(this.currentGroup[1], nextType);
+    let nextType = CompanyFortuneService.getNextType(word.type);
+    let nextWords = CompanyFortuneService.getGoodNextWords(this.currentGroup[1], nextType);
     this.nameTypes.push(nextType);
     this.nameWords.push(nextWords);
   }

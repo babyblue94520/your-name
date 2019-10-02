@@ -15,7 +15,8 @@
 <div class="space-1"></div>
 <app-shrink #groupShrink *ngIf="numGroups">
   <h3 shrink-title>選擇名字筆劃組合：<span class="selected">{{currentGroup}}</span></h3>
-  <div class="item {{currentGroup==group?'active':''}}" *ngFor="let group of numGroups" (click)="selectedGroup(group)">{{group}}</div>
+  <div class="item {{currentGroup==group?'active':''}}" *ngFor="let group of numGroups" (click)="selectedGroup(group)">
+    {{group}}</div>
 </app-shrink>
 <app-shrink #firstWordShrink *ngIf="fiveWords">
   <ng-container *ngIf="firstWord">
@@ -33,23 +34,28 @@
   </ng-container>
   <fieldset class="cui-col-xs32-12">
     <legend>木</legend>
-    <div *ngFor="let word of woodWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">{{word.word}}</div>
+    <div *ngFor="let word of woodWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">
+      {{word.word}}</div>
   </fieldset>
   <fieldset class="cui-col-xs32-12">
     <legend>火</legend>
-    <div *ngFor="let word of fireWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">{{word.word}}</div>
+    <div *ngFor="let word of fireWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">
+      {{word.word}}</div>
   </fieldset>
   <fieldset class="cui-col-xs32-12">
     <legend>土</legend>
-    <div *ngFor="let word of earthWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">{{word.word}}</div>
+    <div *ngFor="let word of earthWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">
+      {{word.word}}</div>
   </fieldset>
   <fieldset class="cui-col-xs32-12">
     <legend>金</legend>
-    <div *ngFor="let word of goldWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">{{word.word}}</div>
+    <div *ngFor="let word of goldWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">
+      {{word.word}}</div>
   </fieldset>
   <fieldset class="cui-col-xs32-12">
     <legend>水</legend>
-    <div *ngFor="let word of waterWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">{{word.word}}</div>
+    <div *ngFor="let word of waterWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">
+      {{word.word}}</div>
   </fieldset>
 </app-shrink>
 <ng-container *ngIf="nameWords">

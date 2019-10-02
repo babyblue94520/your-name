@@ -12,6 +12,8 @@ import { WordService } from 'ts/service/word-service';
 import { DownloadUtil } from 'ts/util/download-util';
 
 
+declare var Words: Word[];
+
 interface SearchForm {
   word: string;
   num: number;
@@ -40,11 +42,21 @@ export class WordComponent extends BasicComponent {
   @Cache.session('Word', defaultForm())
   public searchForm: SearchForm;
 
+  public words = Words
+    .filter(w => {
+      return !w.type;
+    })
+    // .sort((a, b) => {
+    //   let ac = String(a.content), bc = String(b.content);
+    //   return ac.length > bc.length ? -1 : ac.length == bc.length ? 0 : 1;
+    // })
+    ;
 
   constructor() {
     super();
     this.grid = this.buildGrid();
-    this.grid.load();
+    // this.grid.load();
+    console.log(this.words)
   }
 
   /**
@@ -70,7 +82,9 @@ export class WordComponent extends BasicComponent {
   }
 
   public download() {
-    WordService.findAll({ sort: ['num'] }, (result) => {
+    // WordService.findAll({ sort: ['num'] }, (result) => {
+    WordService.findAll({ sort: ['type'] }, (result) => {
+      console.log(this.words[0], result.data[0], Words[0], this.words[0] == result.data[0], this.words[0] == Words[0], Words[0] == result.data[0])
       DownloadUtil.js('words.js', 'var Words = ' + JSON.stringify(result.data) + ';');
     });
   }

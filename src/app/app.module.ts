@@ -18,9 +18,8 @@ import { FooterComponent } from 'app/footer/footer.component';
 import { HeaderComponent } from 'app/header/header.component';
 import { CompanyModule } from './company/company.module';
 import { MenuRoutes } from 'ts/data/word/routes';
-import { WordComponent } from './word/word/word.component';
 import { WordModule } from './word/word.module';
-import { AjaxMethod } from '@cui/core';
+import { NameModule } from './name/name.module';
 
 @NgModule({
   declarations: [
@@ -37,6 +36,7 @@ import { AjaxMethod } from '@cui/core';
     , RouterModule.forRoot(AppModule.routes, { useHash: true })
     , AppCommonModule
     , CompanyModule
+    , NameModule
     , WordModule
   ],
   providers: [],
@@ -47,6 +47,7 @@ export class AppModule {
     { path: '', redirectTo: AppRouteName.Index, pathMatch: 'full' },
     { path: AppRouteName.Index, component: IndexComponent },
     { path: AppRouteName.Company, children: CompanyModule.routes },
+    { path: AppRouteName.Name, children: NameModule.routes },
     { path: AppRouteName.Word, children: WordModule.routes },
     /**
      * NotFound
@@ -66,5 +67,7 @@ export class AppModule {
         Global.currentRouteName = Global.routeName[e.url] || '';
       }
     });
+    // 加載入動畫物件
+    document.body.appendChild(Global.loader.getElement());
   }
 }

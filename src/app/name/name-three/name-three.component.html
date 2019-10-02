@@ -1,0 +1,21 @@
+<div class="space-3"></div>
+<div class="cui-col-xs32-12 cui-col-sm-10 cui-col-sm-offset-1 cui-col-lg-8 cui-col-lg-offset-2">
+  <h2>姓名三才配置表</h2>
+  <ol>
+    <li>　　姓名學最重要者乃不離天、地、人三格，三格配置又稱為三才配置，命名時不可偏為陽數或陰數之一方。</li>
+  </ol>
+  <table>
+    <tr>
+      <th align="center" nowrap>筆劃</th>
+      <th align="center" nowrap>五行</th>
+      <th align="center" nowrap>吉凶</th>
+      <th align="center" nowrap>義釋</th>
+    </tr>
+    <tr *ngFor="let fortune of fortunes">
+      <td width="1%" align="center" nowrap>{{fortune.num}}</td>
+      <td width="1%" align="center" nowrap>{{fortune.type}}</td>
+      <td width="1%" align="center" nowrap>{{fortune.luck}}</td>
+      <td width="100%">{{fortune.content}}</td>
+    </tr>
+  </table>
+</div>

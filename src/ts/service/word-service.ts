@@ -12,34 +12,6 @@ Words.forEach(w => {
 	WordMap[w.word] = w;
 });
 
-function sort(sorts: string[], array: any[]) {
-	if (array && array.length > 0 && sorts && sorts.length > 0) {
-		array.sort((a, b) => {
-			return sortsCompare(sorts, 0, a, b);
-		});
-	}
-}
-
-function sortsCompare(sorts: string[], i: number, a, b) {
-	if (sorts[i]) {
-		let ss = sorts[i].split(',');
-		let v = ss[0];
-		let av = a[v], bv = b[v];
-		let c = ss.length <= 1 || 'asc' == ss[1].toLowerCase() ? 1 : -1;
-		let r;
-		if (isNaN(av) && isNaN(bv)) {
-			r = av.localeCompare(bv);
-		} else {
-			r = av > bv ? 1 : av == bv ? 0 : -1;
-		}
-		if (r == 0) {
-			r = sortsCompare(sorts, i + 1, a, b);
-		}
-		return r * c;
-	} else {
-		return 0;
-	}
-}
 
 /**
  */
@@ -47,7 +19,7 @@ export class WordService {
 
 	@AjaxTryCatch(1)
 	public static findAll(formData, callback: IAjaxManagerResultCallback<Word[]>) {
-		sort(formData.sort, Words);
+		// SortUtil.sort(formData.sort, Words);
 		callback({ success: true, data: Words });
 	}
 
@@ -78,13 +50,27 @@ export class WordService {
 	public static remove(formData: Word, callback: IAjaxManagerResultCallback) {
 		Asserts.notNull(formData, 'data' + Asserts.NotNullMessage);
 		Asserts.notEmpty(formData.word, 'word' + Asserts.NotEmptyMessage);
-		let old = WordMap[formData.word];
 		delete WordMap[formData.word];
 		let index = Words.indexOf(formData);
 		if (index != -1) {
 			Words.splice(index, 1);
 		}
+		console.log(index, formData, Words);
 		callback({ success: true });
+	}
+
+	/**
+	 * @param {String} word 文字
+	 * @return {Object} wordObject
+	 */
+	@AjaxTryCatch(1)
+	public static find(word: any, callback: IAjaxManagerResultCallback<Word[]>) {
+		Asserts.notEmpty(word, 'word' + Asserts.NotEmptyMessage);
+		let array = [];
+		for (var i in word) {
+			array.push(WordMap[word[i]]);
+		}
+		callback({ success: true, data: array });
 	}
 
 	/**
