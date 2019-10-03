@@ -1,4 +1,4 @@
-export class SortUtil {
+export abstract class SortUtil {
     public static sort(sorts: string[], array: any[]) {
         if (array && array.length > 0 && sorts && sorts.length > 0) {
             array.sort((a, b) => {

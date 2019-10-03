@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-export class MoneyUtil {
+export abstract class MoneyUtil {
     /**
      * 金額格式 無條件捨去
      * @param value
@@ -26,8 +26,10 @@ export class MoneyUtil {
      * @param value
      * @param n
      */
-    public static format(value: any) {
+    public static format(value: any, n?: number): string {
         if (isNaN(value)) { return value; }
+        n = isNaN(n) ? 2 : n;
+        value = Number(value).toFixed(n);
         return String(value).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
     }
 }

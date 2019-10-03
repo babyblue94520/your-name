@@ -92,5 +92,14 @@ export const MenuRoutes: AuthRoute[] = [
         parentId: 30,
         path: AppRoute.Name.Three,
         type: 1
+    },
+    {
+        id: 33,
+        className: 'flaticon-user',
+        name: '1-81數吉凶',
+        sort: 6,
+        parentId: 30,
+        path: AppRoute.Name.Num,
+        type: 1
     }
 ];

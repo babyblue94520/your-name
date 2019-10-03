@@ -10,14 +10,6 @@ export interface AuthRoute {
     active?: boolean;
 }
 
-export interface Word {
-    num: number;
-    word: string;
-    sound: string;
-    content: string;
-    type: string;
-}
-
 export interface CompanyFortune {
     num: number;
     name: string;
@@ -30,6 +22,12 @@ export interface CompanyFortune {
 export interface NameFortune {
     num: string;
     type: string;
+    luck: string;
+    content: string;
+}
+
+export interface NameNumFortune {
+    num: number;
     luck: string;
     content: string;
 }

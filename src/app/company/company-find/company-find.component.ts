@@ -1,23 +1,16 @@
 import { Component, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Cache, Delay } from '@cui/core';
 import { CompanyFortuneService } from 'ts/service/company-fortune-service';
-import { Word } from 'ts/data/entity/entity';
 import { ShrinkComponent } from 'app/app-common/component/shrink/shrink.component';
+import { FiveTypeWords, Word, WordHome } from 'ts/constant/word';
 
-declare var WordsByNum: any;
 
 interface Form {
   total: number;
   count: number;
 }
 
-interface FiveElementsWords {
-  '木': Word[];
-  '火': Word[];
-  '土': Word[];
-  '金': Word[];
-  '水': Word[];
-}
+
 
 @Component({
   selector: 'app-company-find',
@@ -34,7 +27,7 @@ export class CompanyFindComponent {
 
   public numGroups = [];
 
-  public fiveWords: FiveElementsWords;
+  public fiveWords: FiveTypeWords;
   public woodWords: Word[];
   public fireWords: Word[];
   public earthWords: Word[];
@@ -88,7 +81,7 @@ export class CompanyFindComponent {
       return;
     }
     this.currentGroup = group;
-    this.fiveWords = WordsByNum[this.currentGroup[0]] as FiveElementsWords;
+    this.fiveWords = WordHome.wordByNumType[this.currentGroup[0]];
     this.woodWords = this.fiveWords['木'];
     this.fireWords = this.fiveWords['火'];
     this.earthWords = this.fiveWords['土'];

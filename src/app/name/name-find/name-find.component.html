@@ -21,3 +21,61 @@
     (click)="selectedFortune(fortune)">
     {{fortune.type}}({{fortune.luck}})</div>
 </app-shrink>
+<app-shrink #firstWordShrink *ngIf="currentFortune">
+  <h3 shrink-title>第一個字<span class="selected"></span></h3>
+  <ng-container *ngIf="firstWord">
+    <fieldset class="cui-col-xs32-12">
+      <legend>{{firstWord.word}}</legend>
+      <strong>發音：</strong><span>{{firstWord.sound}}</span>
+      <br>
+      <strong>筆劃：</strong><span>{{firstWord.num}}</span>
+      <br>
+      <strong>五行：</strong><span>{{firstWord.type}}</span>
+      <br>
+      <strong>譯釋：</strong><span>{{firstWord.content}}</span>
+    </fieldset>
+  </ng-container>
+  <ng-container *ngIf="firstWords">
+    <ng-container *ngFor="let fiveWords of firstWords;let i = index;">
+      <h3>
+        筆劃:{{firstNums[i]}}
+      </h3>
+      <fieldset class="cui-col-xs32-12" *ngFor="let type of fiveType">
+        <legend>{{type}}</legend>
+        <div *ngFor="let word of fiveWords[type]" (click)="selectedFirstWord(word)"
+          class="item {{firstWord==word?'active':''}}">
+          {{word.word}}</div>
+      </fieldset>
+      <span class="space-1"></span>
+    </ng-container>
+  </ng-container>
+</app-shrink>
+<app-shrink #secondWordShrink *ngIf="currentFortune">
+  <h3 shrink-title>第二個字<span class="selected"></span></h3>
+  <ng-container *ngIf="secondWord">
+    <fieldset class="cui-col-xs32-12">
+      <legend>{{secondWord.word}}</legend>
+      <strong>發音：</strong><span>{{secondWord.sound}}</span>
+      <br>
+      <strong>筆劃：</strong><span>{{secondWord.num}}</span>
+      <br>
+      <strong>五行：</strong><span>{{secondWord.type}}</span>
+      <br>
+      <strong>譯釋：</strong><span>{{secondWord.content}}</span>
+    </fieldset>
+  </ng-container>
+  <ng-container *ngIf="secondWords">
+    <ng-container *ngFor="let fiveWords of secondWords;let i = index;">
+      <h3>
+        筆劃:{{secondNums[i]}}
+      </h3>
+      <fieldset class="cui-col-xs32-12" *ngFor="let type of fiveType">
+        <legend>{{type}}</legend>
+        <div *ngFor="let word of fiveWords[type]" (click)="selectedSecondWord(word)"
+          class="item {{secondWord==word?'active':''}}">
+          {{word.word}}</div>
+      </fieldset>
+      <span class="space-1"></span>
+    </ng-container>
+  </ng-container>
+</app-shrink>

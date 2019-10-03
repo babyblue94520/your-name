@@ -7,6 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NameThreeComponent } from './name-three/name-three.component';
 import { NameComponent } from './name.component';
 import { NameFindComponent } from './name-find/name-find.component';
+import { NameNumComponent } from './name-num/name-num.component';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { NameFindComponent } from './name-find/name-find.component';
     NameComponent
     , NameThreeComponent
     , NameFindComponent
+    , NameNumComponent
   ]
 })
 export class NameModule {
@@ -28,6 +30,7 @@ export class NameModule {
         { path: '', redirectTo: NameRouteName.Three, pathMatch: 'full' },
         { path: NameRouteName.Find, component: NameFindComponent },
         { path: NameRouteName.Three, component: NameThreeComponent },
+        { path: NameRouteName.Num, component: NameNumComponent },
       ]
     }
   ];

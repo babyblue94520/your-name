@@ -1,5 +1,6 @@
-import { CompanyFortune, Word } from 'ts/data/entity/entity';
+import { CompanyFortune } from 'ts/data/entity/entity';
 import { CompanyFortunes } from 'ts/data/word/company-fortunes';
+import { Word } from 'ts/constant/word';
 
 declare var WordsByNum: any;
 

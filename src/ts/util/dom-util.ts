@@ -12,7 +12,7 @@ interface PasteCallback {
     (text: string)
 }
 
-export class DomUtil {
+export abstract class DomUtil {
     /**
      * 產生按鈕
      * @param config

@@ -5,7 +5,7 @@ import { DomUtil } from './dom-util';
 import { MoneyUtil } from './money-util';
 import { Global } from 'ts/globle';
 
-export class GridRenderUtil {
+export abstract class GridRenderUtil {
 
     public static blank(value, record: any, index) {
         return value == undefined ? '' : value;

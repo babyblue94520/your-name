@@ -1,11 +1,11 @@
-import { AjaxUtil, IAjaxManagerResultCallback } from '@cui/core';
+import { AjaxUtil } from '@cui/core';
 import { BasicComponent } from 'app/basic-component';
 import { BasicState } from 'ts/constant/basic-state';
 import { Component, Input, ViewChild } from '@angular/core';
 import { CUI, IAjaxManagerResult } from '@cui/core';
 import { DialogComponent } from 'app/app-common/component/dialog/dialog.component';
-import { Word } from 'ts/data/entity/entity';
 import { WordService } from 'ts/service/word-service';
+import { Word } from 'ts/constant/word';
 
 @Component({
   selector: 'app-word-dialog',

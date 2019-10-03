@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Delay } from '@cui/core';
 import { NameFortune } from 'ts/data/entity/entity';
-import { NameFortuneService } from 'ts/service/name-fortune-service';
+import { NameFortuneService, NameNumFortunesMap } from 'ts/service/name-fortune-service';
 import { WordService } from 'ts/service/word-service';
+import { Word, IWordByNumType, FiveTypeWords } from 'ts/constant/word';
 
 @Component({
   selector: 'app-name-find',
@@ -10,11 +11,18 @@ import { WordService } from 'ts/service/word-service';
   styleUrls: ['./name-find.component.scss']
 })
 export class NameFindComponent {
+  public fiveType = ['木', '火', '土', '金', '水'];
   public numbers = [];
   public firstName: string = '吳';
   public lastName: string = '';
   public fortunes: NameFortune[];
   public currentFortune: NameFortune;
+  public firstNums: Number[];
+  public secondNums: Number[];
+  public firstWords: FiveTypeWords[];
+  public secondWords: FiveTypeWords[];
+  public firstWord: Word;
+  public secondWord: Word;
 
   constructor(private cdf: ChangeDetectorRef) {
     this.findFortunes();
@@ -32,6 +40,12 @@ export class NameFindComponent {
       this.fortunes = undefined;
       this.currentFortune = undefined;
       this.numbers[0] = 0;
+      this.firstNums = undefined;
+      this.secondNums = undefined;
+      this.firstWords = undefined;
+      this.secondWords = undefined;
+      this.firstWord = undefined;
+      this.secondWord = undefined;
       return;
     }
     WordService.find(this.firstName, (result) => {
@@ -71,18 +85,63 @@ export class NameFindComponent {
 
   public selectedFortune(fortune: NameFortune) {
     this.currentFortune = fortune;
-    let one = Number(fortune.num[1]);
-    let two = Number(fortune.num[2]);
-    let first = this.numbers[0];
-    let ones = [], twos = [], c;
+    this.firstNums = undefined;
+    this.secondNums = undefined;
+    this.firstWords = undefined;
+    this.secondWords = undefined;
+    this.firstWord = undefined;
+    this.secondWord = undefined;
+    let one = Number(this.currentFortune.num[1]);
+    let last = this.numbers[0];
+    this.firstNums = [];
+    let c;
     for (let i = 1; i < 31; i++) {
-      c = (i + first) % 10;
+      c = (i + last) % 10;
       if (c == one) {
-        ones.push(i);
-      } else if (c == two) {
-        twos.push(i);
+        let luck = NameNumFortunesMap[i + last].luck;
+        if (luck == '吉') {
+          this.firstNums.push(i);
+        }
       }
     }
-    console.log(ones, twos);
+    console.log(this.firstNums);
+    WordService.findNumType(this.firstNums, (result) => {
+      this.firstWords = result.data;
+    });
+    console.log(this.firstWords);
+  }
+
+  public selectedFirstWord(word: Word) {
+    this.firstWord = word;
+
+    WordService.find(this.firstWord.word, (result) => {
+      console.log(this.firstWord, result.data);
+      this.numbers[1] = result.data[0].num;
+    });
+
+    let two = Number(this.currentFortune.num[2]);
+    let last = this.numbers[1];
+    this.secondNums = [];
+    let c;
+    for (let i = 1; i < 31; i++) {
+      c = (i + last) % 10;
+      if (c == two) {
+        let luck = NameNumFortunesMap[i + last].luck;
+        if (luck == '吉') {
+          this.secondNums.push(i);
+        }
+      }
+    }
+    console.log(this.secondNums);
+    WordService.findNumType(this.secondNums, (result) => {
+      this.secondWords = result.data;
+    });
+    console.log(this.secondWords);
+  }
+
+
+  public selectedSecondWord(word: Word) {
+    this.secondWord = word;
   }
 }
+

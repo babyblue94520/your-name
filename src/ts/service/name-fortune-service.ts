@@ -1,4 +1,4 @@
-import { NameFortunes } from "ts/data/word/name-fortunes";
+import { NameFortunes, NameNumFortunes } from "ts/data/word/name-fortunes";
 import { NameFortune } from "ts/data/entity/entity";
 import { IAjaxManagerResultCallback } from "@cui/core";
 import { SortUtil } from "ts/util/sort-util";
@@ -7,12 +7,18 @@ import { WordService } from "./word-service";
 
 export const FirstNameFortunes = {};
 
+export const NameNumFortunesMap = {};
+
 NameFortunes.forEach(f => {
     let array;
     if (!(array = FirstNameFortunes[f.num[0]])) {
         array = (FirstNameFortunes[f.num[0]] = []);
     }
     array.push(f);
+});
+
+NameNumFortunes.forEach(f => {
+    NameNumFortunesMap[f.num] = f;
 });
 
 export class NameFortuneService {
@@ -112,4 +118,20 @@ function parse() {
     });
 
     console.log(NameFortunes);
+}
+
+//https://kknews.cc/zh-tw/astrology/2elm6r.html
+function parse2() {
+    var array = [];
+    document.querySelectorAll('div p').forEach(p => {
+        var text = p.innerHTML;
+        if (/第\d+數暗示意義為/.test(text)) {
+            array.push({
+                num: Number(text.replace(/(第)(\d+)(數暗示意義為).+/, '$2'))
+                , content: text.replace(/.+）(.+)。.+$/, '$1')
+                , luck: text.replace(/.+（(.+)）$/, '$1')
+            });
+        }
+    });
+    console.log(array)
 }

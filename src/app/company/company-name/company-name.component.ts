@@ -1,7 +1,8 @@
 import { Cache } from '@cui/core';
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { CompanyFortune, Word } from 'ts/data/entity/entity';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { CompanyFortune } from 'ts/data/entity/entity';
 import { CompanyFortuneService } from 'ts/service/company-fortune-service';
+import { Word } from 'ts/constant/word';
 import { WordService } from 'ts/service/word-service';
 
 interface Form {

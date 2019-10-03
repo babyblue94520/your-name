@@ -1,7 +1,6 @@
 import * as moment from 'moment';
 
-(<any>window).moment = moment;
-export class DateUtil {
+export abstract class DateUtil {
 
 
     public static moment(date?: any): moment.Moment {

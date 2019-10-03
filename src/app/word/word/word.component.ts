@@ -1,7 +1,6 @@
 import { BasicComponent } from 'app/basic-component';
 import { Cache, CUI, Grid } from '@cui/core';
 import { DomUtil } from 'ts/util/dom-util';
-import { Word } from 'ts/data/entity/entity';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,6 +9,7 @@ import {
 import { WordDialogComponent } from '../word-dialog/word-dialog.component';
 import { WordService } from 'ts/service/word-service';
 import { DownloadUtil } from 'ts/util/download-util';
+import { Word } from 'ts/constant/word';
 
 
 declare var Words: Word[];

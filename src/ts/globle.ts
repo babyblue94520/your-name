@@ -8,7 +8,7 @@ interface QueryString {
     [key: string]: string[];
 }
 
-export class Global {
+export abstract class Global {
     public static readonly env = environment;
     public static readonly ajaxManager = new AjaxManager();
     public static readonly datePicker = new DatePicker();

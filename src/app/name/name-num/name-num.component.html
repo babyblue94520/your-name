@@ -1,0 +1,16 @@
+<div class="space-3"></div>
+<div class="cui-col-xs32-12 cui-col-sm-10 cui-col-sm-offset-1 cui-col-lg-8 cui-col-lg-offset-2">
+  <h2>1-81</h2>
+  <table>
+    <tr>
+      <th align="center" nowrap>筆劃</th>
+      <th align="center" nowrap>吉凶</th>
+      <th align="center" nowrap>義釋</th>
+    </tr>
+    <tr *ngFor="let fortune of fortunes">
+      <td width="1%" align="center" nowrap>{{fortune.num}}</td>
+      <td width="1%" align="center" nowrap>{{fortune.luck}}</td>
+      <td width="100%">{{fortune.content}}</td>
+    </tr>
+  </table>
+</div>

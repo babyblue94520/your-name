@@ -1,4 +1,4 @@
-export class DownloadUtil {
+export abstract class DownloadUtil {
     public static js(name: string, content: string) {
         DownloadUtil.download.call(null, name, content, 'application/javascript');
     }
