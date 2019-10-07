@@ -15,7 +15,8 @@ export class NameFindComponent implements AfterContentInit {
   public nameFortune: NameNumFortune[] = [];
   @Cache.local('NameFind', undefined)
   public startNameWord: Word[] = [];
-  public startName = '吳';
+  @Cache.local('NameFind', '吳')
+  public startName;
   @Cache.local('NameFind', undefined)
   public fortunes: NameFortune[];
   @Cache.local('NameFind', undefined)

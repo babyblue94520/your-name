@@ -63,7 +63,7 @@ export class NameFortuneService {
 
     public static findByNum(num: number, callback: IAjaxManagerResultCallback<NameFortune[]>) {
         Asserts.notNull(num, 'num' + Asserts.NotNullMessage);
-        callback({ success: true, data: FirstNameFortunes[num] });
+        callback({ success: true, data: FirstNameFortunes[num % 10] });
     }
 }
 
