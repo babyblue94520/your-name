@@ -45,7 +45,6 @@ export class WordService {
 		if (index != -1) {
 			WordHome.words.splice(index, 1);
 		}
-		console.log(index, formData, WordHome.words);
 		callback({ success: true });
 	}
 
@@ -57,7 +56,7 @@ export class WordService {
 	public static find(word: any, callback: IAjaxManagerResultCallback<Word[]>) {
 		Asserts.notEmpty(word, 'word' + Asserts.NotEmptyMessage);
 		let array = [];
-		for (var i in word) {
+		for (let i in word) {
 			array.push(WordHome.wordMap[word[i]]);
 		}
 		callback({ success: true, data: array });
@@ -67,7 +66,7 @@ export class WordService {
 	public static findNumType(nums: any[], callback: IAjaxManagerResultCallback<FiveTypeWords[]>) {
 		Asserts.notNull(nums, '筆劃不可為空');
 		let array = [];
-		for (var i in nums) {
+		for (let i in nums) {
 			array.push(WordHome.wordByNumType[nums[i]]);
 		}
 		callback({ success: true, data: array });

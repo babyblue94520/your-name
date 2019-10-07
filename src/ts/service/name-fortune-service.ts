@@ -1,13 +1,18 @@
-import { NameFortunes, NameNumFortunes } from "ts/data/word/name-fortunes";
-import { NameFortune } from "ts/data/entity/entity";
-import { IAjaxManagerResultCallback } from "@cui/core";
-import { SortUtil } from "ts/util/sort-util";
-import { Asserts } from "ts/util/asserts";
-import { WordService } from "./word-service";
+import { NameFortunes, NameNumFortunes } from 'ts/data/word/name-fortunes';
+import { NameFortune, NameNumFortune } from 'ts/data/entity/entity';
+import { IAjaxManagerResultCallback } from '@cui/core';
+import { SortUtil } from 'ts/util/sort-util';
+import { Asserts } from 'ts/util/asserts';
+import { WordService } from './word-service';
 
+interface NameNumFortunesMap {
+    [key: string]: NameNumFortune;
+}
 export const FirstNameFortunes = {};
 
-export const NameNumFortunesMap = {};
+export const NameNumFortunesMap: NameNumFortunesMap = {};
+
+
 
 NameFortunes.forEach(f => {
     let array;
@@ -46,7 +51,7 @@ export class NameFortuneService {
                 }
                 count = ws[0].num + ws[1].num;
             } else {
-                //單數姓
+                // 單數姓
                 if (!ws[0]) {
                     callback({ success: false, message: firstName[0] + ' 找不到' });
                 }
@@ -64,7 +69,7 @@ export class NameFortuneService {
 
 // http://www.360doc.com/content/11/0611/12/5873852_126193502.shtml
 function parse() {
-    var NameFortunes = [];
+    let array = [];
     document.querySelectorAll('tr').forEach(t => {
         let tds = t.querySelectorAll('td');
         if (tds.length == 2) {
@@ -81,13 +86,13 @@ function parse() {
                     content = content.substring(0, start);
                 }
                 luck = luck.replace(/【|】/g, '');
-                NameFortunes.push({
+                array.push({
                     num: replace(ps.item(0).innerText)
                     , type: ps.item(1).innerText
                     , content: replace(content)
                     , luck: replace(luck)
                 });
-                NameFortunes.push({
+                array.push({
                     num: replace(ps.item(2).innerText)
                     , type: ps.item(1).innerText
                     , content: replace(content)
@@ -97,8 +102,8 @@ function parse() {
         }
 
         function replace(value) {
-            return value.replace(/０|１|２|３|４|５|６|７|８|９|＋|－/g, function (value) {
-                var num = {
+            return value.replace(/０|１|２|３|４|５|６|７|８|９|＋|－/g, function (arg1) {
+                let num = {
                     '０': '0'
                     , '１': '1'
                     , '２': '2'
@@ -112,19 +117,19 @@ function parse() {
                     , '＋': '+'
                     , '－': '-'
                 };
-                return num[value];
+                return num[arg1];
             });
         }
     });
 
-    console.log(NameFortunes);
+    console.log(array);
 }
 
-//https://kknews.cc/zh-tw/astrology/2elm6r.html
+// https://kknews.cc/zh-tw/astrology/2elm6r.html
 function parse2() {
-    var array = [];
+    let array = [];
     document.querySelectorAll('div p').forEach(p => {
-        var text = p.innerHTML;
+        let text = p.innerHTML;
         if (/第\d+數暗示意義為/.test(text)) {
             array.push({
                 num: Number(text.replace(/(第)(\d+)(數暗示意義為).+/, '$2'))
@@ -133,5 +138,5 @@ function parse2() {
             });
         }
     });
-    console.log(array)
+    console.log(array);
 }

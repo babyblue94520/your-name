@@ -1,4 +1,4 @@
-import { Component, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, AfterContentInit } from '@angular/core';
 import { Cache, Delay } from '@cui/core';
 import { CompanyFortuneService } from 'ts/service/company-fortune-service';
 import { ShrinkComponent } from 'app/app-common/component/shrink/shrink.component';
@@ -10,15 +10,13 @@ interface Form {
   count: number;
 }
 
-
-
 @Component({
   selector: 'app-company-find',
   templateUrl: './company-find.component.html',
   styleUrls: ['./company-find.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CompanyFindComponent {
+export class CompanyFindComponent implements AfterContentInit {
   @Cache.session('CompanyFind', {
     total: 29,
     count: 2
@@ -41,6 +39,11 @@ export class CompanyFindComponent {
   public nameTypes: string[];
   public nameWords: Word[][];
 
+  @ViewChild('result')
+  public resultElementRef: ElementRef;
+  @ViewChild('option')
+  public optionElementRef: ElementRef;
+
   @ViewChild('groupShrink')
   public groupShrink: ShrinkComponent;
 
@@ -49,6 +52,24 @@ export class CompanyFindComponent {
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
     this.findNumGroup();
+  }
+
+  ngAfterContentInit() {
+    new MutationObserver((records: MutationRecord[]) => {
+      this.reOptionHeight();
+    }).observe(this.resultElementRef.nativeElement
+      , {
+        childList: true
+        , characterData: true
+        , subtree: true
+      });
+    this.reOptionHeight();
+  }
+
+  private reOptionHeight() {
+    let windowHeight = window.innerHeight - 76;
+    let resultHeight = this.resultElementRef.nativeElement.clientHeight;
+    this.optionElementRef.nativeElement.style.height = (windowHeight > resultHeight ? windowHeight : resultHeight) + 'px';
   }
 
   @Delay(1000)

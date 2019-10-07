@@ -1,5 +1,5 @@
 import { BasicComponent } from 'app/basic-component';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, AfterContentInit, ViewChild, ElementRef } from '@angular/core';
 import { MainMenuWidthNode } from 'ts/data/node/common';
 
 @Component({
@@ -18,4 +18,5 @@ export class AppComponent extends BasicComponent {
       this.changeDetectorRef.markForCheck();
     }, true);
   }
+
 }

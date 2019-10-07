@@ -9,13 +9,13 @@ interface QueryString {
 }
 
 export abstract class Global {
+    private static queryParamters: QueryString = {};
     public static readonly env = environment;
     public static readonly ajaxManager = new AjaxManager();
     public static readonly datePicker = new DatePicker();
     public static readonly loader = new Loader();
     public static currentRouteName = '';
     public static routeName = {};
-    private static queryParamters: QueryString = {};
 
     public static getParamter(key: string): string {
         let value = Global.queryParamters[key];

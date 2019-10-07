@@ -1,6 +1,4 @@
 
-
-
 export interface Word {
     num: number;
     word: string;
@@ -10,10 +8,10 @@ export interface Word {
 }
 
 export interface IWordMap {
-    [key: string]: Word
+    [key: string]: Word;
 }
 export interface IWordByNumType {
-    [key: string]: FiveTypeWords
+    [key: string]: FiveTypeWords;
 }
 
 export interface FiveTypeWords {
@@ -32,7 +30,6 @@ export abstract class WordHome {
     public static wordByNumType: IWordByNumType = {};
 }
 
-let t = Date.now();
 Words.forEach(w => {
     WordHome.wordMap[w.word] = w;
     if (w.type) {
@@ -49,5 +46,3 @@ Words.forEach(w => {
         types[w.type].push(w);
     }
 });
-console.log(Date.now() - t);
-console.log(WordHome.wordByNumType);

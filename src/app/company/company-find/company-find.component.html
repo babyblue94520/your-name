@@ -1,82 +1,101 @@
-<app-shrink>
-  <h3 shrink-title>智慧選名</h3>
+<div #result class="cui-col-xs32-4">
   <div class="space-1"></div>
-  <div class="cui-field cui-col-xs32-6">
-    <input type="text" required [(ngModel)]="form.total" (input)="delayFindNumGroup()">
-    <label>公司名稱筆劃</label>
-    <div class="message">不包含「有限公司」之類的總筆劃</div>
-  </div>
-  <div class="cui-field cui-col-xs32-6">
-    <input type="text" required [(ngModel)]="form.count" (input)="delayFindNumGroup()">
-    <label>公司名稱字數</label>
-    <div class="message">不包含「有限公司」之類的字數</div>
-  </div>
-</app-shrink>
-<div class="space-1"></div>
-<app-shrink #groupShrink *ngIf="numGroups">
-  <h3 shrink-title>選擇名字筆劃組合：<span class="selected">{{currentGroup}}</span></h3>
-  <div class="item {{currentGroup==group?'active':''}}" *ngFor="let group of numGroups" (click)="selectedGroup(group)">
-    {{group}}</div>
-</app-shrink>
-<app-shrink #firstWordShrink *ngIf="fiveWords">
-  <ng-container *ngIf="firstWord">
-    <h3 shrink-title>選擇名稱開頭：<span class="selected">{{firstWord.word}}({{firstWord.type}})</span></h3>
-    <fieldset class="cui-col-xs32-12">
-      <legend>{{firstWord.word}}</legend>
-      <strong>發音：</strong><span>{{firstWord.sound}}</span>
-      <br>
-      <strong>筆劃：</strong><span>{{firstWord.num}}</span>
-      <br>
-      <strong>五行：</strong><span>{{firstWord.type}}</span>
-      <br>
-      <strong>譯釋：</strong><span>{{firstWord.content}}</span>
-    </fieldset>
-  </ng-container>
-  <fieldset class="cui-col-xs32-12">
-    <legend>木</legend>
-    <div *ngFor="let word of woodWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">
-      {{word.word}}</div>
-  </fieldset>
-  <fieldset class="cui-col-xs32-12">
-    <legend>火</legend>
-    <div *ngFor="let word of fireWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">
-      {{word.word}}</div>
-  </fieldset>
-  <fieldset class="cui-col-xs32-12">
-    <legend>土</legend>
-    <div *ngFor="let word of earthWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">
-      {{word.word}}</div>
-  </fieldset>
-  <fieldset class="cui-col-xs32-12">
-    <legend>金</legend>
-    <div *ngFor="let word of goldWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">
-      {{word.word}}</div>
-  </fieldset>
-  <fieldset class="cui-col-xs32-12">
-    <legend>水</legend>
-    <div *ngFor="let word of waterWords" (click)="selectedFirstWord(word)" class="item {{firstWord==word?'active':''}}">
-      {{word.word}}</div>
-  </fieldset>
-</app-shrink>
-<ng-container *ngIf="nameWords">
-  <app-shrink *ngFor="let words of nameWords;let i = index">
-    <h3 shrink-title>屬性：
-      <span class="selected">
-        {{nameTypes.slice(0,i+2).join(' > ')}}
-      </span>
-    </h3>
-    <fieldset *ngIf="name[i+1]">
-      <legend>{{name[i+1].word}}</legend>
-      <strong>發音：</strong><span>{{name[i+1].sound}}</span>
-      <br>
-      <strong>筆劃：</strong><span>{{name[i+1].num}}</span>
-      <br>
-      <strong>五行：</strong><span>{{name[i+1].type}}</span>
-      <br>
-      <strong>譯釋：</strong><span>{{name[i+1].content}}</span>
-    </fieldset>
-    <div *ngFor="let word of words" (click)="selectedNextWord(i,word)" class="item {{name[i+1]==word?'active':''}}">
-      {{getNameByIndex(i,word)}}
+  <app-shrink>
+    <h3 shrink-title>智慧選名</h3>
+    <div class="space-1"></div>
+    <div class="cui-field cui-col-xs32-6">
+      <input type="text" required [(ngModel)]="form.total" (input)="delayFindNumGroup()">
+      <label>公司名稱筆劃</label>
+      <div class="message">不包含「有限公司」之類的總筆劃</div>
     </div>
+    <div class="cui-field cui-col-xs32-6">
+      <input type="text" required [(ngModel)]="form.count" (input)="delayFindNumGroup()">
+      <label>公司名稱字數</label>
+      <div class="message">不包含「有限公司」之類的字數</div>
+    </div>
+    <ng-container *ngIf="firstWord">
+      <h3 shrink-title>選擇名稱開頭：<span class="selected">{{firstWord.word}}({{firstWord.type}})</span></h3>
+      <fieldset class="cui-col-xs32-12">
+        <legend>{{firstWord.word}}</legend>
+        <strong>發音：</strong><span>{{firstWord.sound}}</span>
+        <br>
+        <strong>筆劃：</strong><span>{{firstWord.num}}</span>
+        <br>
+        <strong>五行：</strong><span>{{firstWord.type}}</span>
+        <br>
+        <strong>譯釋：</strong><span>{{firstWord.content}}</span>
+      </fieldset>
+    </ng-container>
+    <ng-container *ngIf="nameWords">
+      <app-shrink *ngFor="let words of nameWords;let i = index">
+        <h3 shrink-title>屬性：
+          <span class="selected">
+            {{nameTypes.slice(0,i+2).join(' > ')}}
+          </span>
+        </h3>
+        <fieldset *ngIf="name[i+1]">
+          <legend>{{name[i+1].word}}</legend>
+          <strong>發音：</strong><span>{{name[i+1].sound}}</span>
+          <br>
+          <strong>筆劃：</strong><span>{{name[i+1].num}}</span>
+          <br>
+          <strong>五行：</strong><span>{{name[i+1].type}}</span>
+          <br>
+          <strong>譯釋：</strong><span>{{name[i+1].content}}</span>
+        </fieldset>
+      </app-shrink>
+    </ng-container>
   </app-shrink>
-</ng-container>
+</div>
+<div #option class="cui-col-xs32-8" style="overflow-y:auto;">
+  <app-shrink #groupShrink *ngIf="numGroups">
+    <h3 shrink-title>選擇名字筆劃組合：<span class="selected">{{currentGroup}}</span></h3>
+    <div class="item {{currentGroup==group?'active':''}}" *ngFor="let group of numGroups"
+      (click)="selectedGroup(group)">
+      {{group}}</div>
+  </app-shrink>
+  <app-shrink #firstWordShrink *ngIf="fiveWords">
+    <fieldset class="cui-col-xs32-12">
+      <legend>木</legend>
+      <div *ngFor="let word of woodWords" (click)="selectedFirstWord(word)"
+        class="item {{firstWord==word?'active':''}}">
+        {{word.word}}</div>
+    </fieldset>
+    <fieldset class="cui-col-xs32-12">
+      <legend>火</legend>
+      <div *ngFor="let word of fireWords" (click)="selectedFirstWord(word)"
+        class="item {{firstWord==word?'active':''}}">
+        {{word.word}}</div>
+    </fieldset>
+    <fieldset class="cui-col-xs32-12">
+      <legend>土</legend>
+      <div *ngFor="let word of earthWords" (click)="selectedFirstWord(word)"
+        class="item {{firstWord==word?'active':''}}">
+        {{word.word}}</div>
+    </fieldset>
+    <fieldset class="cui-col-xs32-12">
+      <legend>金</legend>
+      <div *ngFor="let word of goldWords" (click)="selectedFirstWord(word)"
+        class="item {{firstWord==word?'active':''}}">
+        {{word.word}}</div>
+    </fieldset>
+    <fieldset class="cui-col-xs32-12">
+      <legend>水</legend>
+      <div *ngFor="let word of waterWords" (click)="selectedFirstWord(word)"
+        class="item {{firstWord==word?'active':''}}">
+        {{word.word}}</div>
+    </fieldset>
+  </app-shrink>
+  <ng-container *ngIf="nameWords">
+    <app-shrink *ngFor="let words of nameWords;let i = index">
+      <h3 shrink-title>屬性：
+        <span class="selected">
+          {{nameTypes.slice(0,i+2).join(' > ')}}
+        </span>
+      </h3>
+      <div *ngFor="let word of words" (click)="selectedNextWord(i,word)" class="item {{name[i+1]==word?'active':''}}">
+        {{getNameByIndex(i,word)}}
+      </div>
+    </app-shrink>
+  </ng-container>
+</div>

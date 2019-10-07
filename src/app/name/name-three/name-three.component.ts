@@ -13,7 +13,6 @@ export class NameThreeComponent {
 
   constructor() {
     NameFortuneService.findAll({}, (result) => {
-      console.log(result.data)
       this.fortunes = result.data;
     });
   }

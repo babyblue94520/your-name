@@ -1,8 +1,6 @@
 import { CompanyFortune } from 'ts/data/entity/entity';
 import { CompanyFortunes } from 'ts/data/word/company-fortunes';
-import { Word } from 'ts/constant/word';
-
-declare var WordsByNum: any;
+import { Word, WordHome } from 'ts/constant/word';
 
 export class CompanyFortuneService {
 	// 相生
@@ -56,7 +54,7 @@ export class CompanyFortuneService {
 	 * @param type 屬性
 	 */
 	public static getGoodNextWords(num, type): Word[] {
-		return WordsByNum[num][type] || [];
+		return WordHome.wordByNumType[num][type] || [];
 	}
 
 	/**

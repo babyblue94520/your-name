@@ -30,7 +30,7 @@ export class ShrinkComponent implements AfterViewInit {
   @ViewChild('shrink')
   public shrinkRef: ElementRef;
   @Input()
-  public shadow: boolean = false;
+  public shadow = false;
 
   constructor() {
 

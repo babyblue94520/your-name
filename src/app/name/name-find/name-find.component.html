@@ -1,81 +1,128 @@
-<app-shrink>
-  <h3 shrink-title>智慧選名</h3>
+<div #result class="cui-col-xs32-4">
   <div class="space-1"></div>
-  <div class="cui-field cui-col-xs32-6">
-    <input type="text" required [(ngModel)]="firstName" (input)="delayFindFortunes()">
-    <label>姓</label>
-    <div class="message">兩字</div>
-  </div>
-</app-shrink>
-<div class="space-1"></div>
-<app-shrink #groupShrink *ngIf="fortunes">
-  <h3 shrink-title>選擇名字筆劃組合：
-    <span class="selected" *ngIf="currentFortune">
-      {{currentFortune.type}}({{currentFortune.luck}})
-    </span>
-  </h3>
-  <h3 *ngIf="currentFortune">
-    {{currentFortune.content}}
-  </h3>
-  <div class="item {{currentFortune==fortune?'active':''}}" *ngFor="let fortune of fortunes"
-    (click)="selectedFortune(fortune)">
-    {{fortune.type}}({{fortune.luck}})</div>
-</app-shrink>
-<app-shrink #firstWordShrink *ngIf="currentFortune">
-  <h3 shrink-title>第一個字<span class="selected"></span></h3>
-  <ng-container *ngIf="firstWord">
-    <fieldset class="cui-col-xs32-12">
-      <legend>{{firstWord.word}}</legend>
-      <strong>發音：</strong><span>{{firstWord.sound}}</span>
-      <br>
-      <strong>筆劃：</strong><span>{{firstWord.num}}</span>
-      <br>
-      <strong>五行：</strong><span>{{firstWord.type}}</span>
-      <br>
-      <strong>譯釋：</strong><span>{{firstWord.content}}</span>
-    </fieldset>
-  </ng-container>
-  <ng-container *ngIf="firstWords">
-    <ng-container *ngFor="let fiveWords of firstWords;let i = index;">
-      <h3>
-        筆劃:{{firstNums[i]}}
-      </h3>
-      <fieldset class="cui-col-xs32-12" *ngFor="let type of fiveType">
-        <legend>{{type}}</legend>
-        <div *ngFor="let word of fiveWords[type]" (click)="selectedFirstWord(word)"
-          class="item {{firstWord==word?'active':''}}">
-          {{word.word}}</div>
-      </fieldset>
-      <span class="space-1"></span>
+  <app-shrink>
+    <h3 shrink-title>智慧選名</h3>
+    <div class="cui-row">
+      參考姓名打分網址
+      <ol>
+        <li><a href="https://www.lnka.tw/app/analyzename.aspx" target="_blank">靈匣網姓名測驗打分</a></li>
+        <li><a href="http://v.8s8s.com/xingmingceshi_2.php" target="_blank">姓名測試評分</a></li>
+      </ol>
+    </div>
+    <div class="space-1"></div>
+    <div class="cui-field cui-col-xs32-12">
+      <input type="text" required [(ngModel)]="startName" (input)="delayFindFortunes()">
+      <label>姓</label>
+      <div class="message">兩字</div>
+    </div>
+    <ng-container *ngIf="startNameWord">
+      <ng-container *ngFor="let word of startNameWord">
+        <fieldset class="cui-row">
+          <legend><strong>{{word.word}}</strong></legend>
+          <strong>發音：</strong><span>{{word.sound}}</span>
+          <br>
+          <strong>筆劃：</strong><span>{{word.num}}</span>
+          <br>
+          <strong>五行：</strong><span>{{word.type}}</span>
+          <br>
+          <strong>譯釋：</strong><span>{{word.content}}</span>
+        </fieldset>
+      </ng-container>
     </ng-container>
-  </ng-container>
-</app-shrink>
-<app-shrink #secondWordShrink *ngIf="currentFortune">
-  <h3 shrink-title>第二個字<span class="selected"></span></h3>
-  <ng-container *ngIf="secondWord">
-    <fieldset class="cui-col-xs32-12">
-      <legend>{{secondWord.word}}</legend>
-      <strong>發音：</strong><span>{{secondWord.sound}}</span>
-      <br>
-      <strong>筆劃：</strong><span>{{secondWord.num}}</span>
-      <br>
-      <strong>五行：</strong><span>{{secondWord.type}}</span>
-      <br>
-      <strong>譯釋：</strong><span>{{secondWord.content}}</span>
-    </fieldset>
-  </ng-container>
-  <ng-container *ngIf="secondWords">
-    <ng-container *ngFor="let fiveWords of secondWords;let i = index;">
-      <h3>
-        筆劃:{{secondNums[i]}}
-      </h3>
-      <fieldset class="cui-col-xs32-12" *ngFor="let type of fiveType">
-        <legend>{{type}}</legend>
-        <div *ngFor="let word of fiveWords[type]" (click)="selectedSecondWord(word)"
-          class="item {{secondWord==word?'active':''}}">
-          {{word.word}}</div>
+    <ng-container *ngIf="firstWord">
+      <fieldset class="cui-row">
+        <legend><strong>{{firstWord.word}}</strong></legend>
+        <strong>發音：</strong><span>{{firstWord.sound}}</span>
+        <br>
+        <strong>筆劃：</strong><span>{{firstWord.num}}</span>
+        <br>
+        <strong>五行：</strong><span>{{firstWord.type}}</span>
+        <br>
+        <strong>譯釋：</strong><span>{{firstWord.content}}</span>
       </fieldset>
-      <span class="space-1"></span>
     </ng-container>
-  </ng-container>
-</app-shrink>
+    <ng-container *ngIf="secondWord">
+      <fieldset class="cui-row">
+        <legend><strong>{{secondWord.word}}</strong></legend>
+        <strong>發音：</strong><span>{{secondWord.sound}}</span>
+        <br>
+        <strong>筆劃：</strong><span>{{secondWord.num}}</span>
+        <br>
+        <strong>五行：</strong><span>{{secondWord.type}}</span>
+        <br>
+        <strong>譯釋：</strong><span>{{secondWord.content}}</span>
+      </fieldset>
+    </ng-container>
+    <fieldset class="cui-row" *ngIf="currentFortune">
+      <legend><strong>三才：{{currentFortune.type}}</strong></legend>
+      {{currentFortune.content}}
+    </fieldset>
+    <fieldset class="cui-row" *ngIf="nameFortune[0]">
+      <legend><strong>天：{{nameFortune[0].num}}劃、[{{nameFortune[0].luck}}]</strong></legend>
+      {{nameFortune[0].content}}
+    </fieldset>
+    <fieldset class="cui-row" *ngIf="nameFortune[1]">
+      <legend><strong>人：{{nameFortune[1].num}}劃、[{{nameFortune[1].luck}}]</strong></legend>
+      {{nameFortune[1].content}}
+    </fieldset>
+    <fieldset class="cui-row" *ngIf="nameFortune[2]">
+      <legend><strong>地：{{nameFortune[2].num}}劃、[{{nameFortune[2].luck}}]</strong></legend>
+      {{nameFortune[2].content}}
+    </fieldset>
+    <fieldset class="cui-row" *ngIf="nameFortune[3]">
+      <legend><strong>外：{{nameFortune[3].num}}劃、[{{nameFortune[3].luck}}]</strong></legend>
+      {{nameFortune[3].content}}
+    </fieldset>
+    <fieldset class="cui-row" *ngIf="nameFortune[4]">
+      <legend><strong>總：{{nameFortune[4].num}}劃、[{{nameFortune[4].luck}}]</strong></legend>
+      {{nameFortune[4].content}}
+    </fieldset>
+  </app-shrink>
+</div>
+<div #option class="cui-col-xs32-8" style="overflow-y:auto;">
+  <div class="space-1"></div>
+  <app-shrink #groupShrink *ngIf="fortunes">
+    <h3 shrink-title>選擇三才配置組合：
+      <span class="selected" *ngIf="currentFortune">
+        {{currentFortune.type}}[{{currentFortune.luck}}]
+      </span>
+    </h3>
+    <div class="item {{currentFortune&&(currentFortune.type==fortune.type)?'active':''}}"
+      *ngFor="let fortune of fortunes" (click)="selectedFortune(fortune)">
+      {{fortune.type}}[{{fortune.luck}}]</div>
+  </app-shrink>
+  <app-shrink #firstWordShrink *ngIf="currentFortune">
+    <h3 shrink-title>第一個字<span class="selected"></span></h3>
+    <ng-container *ngIf="firstWords">
+      <ng-container *ngFor="let fiveWords of firstWords;let i = index;">
+        <h3>
+          筆劃：{{firstNums[i]}}
+        </h3>
+        <fieldset class="cui-col-xs32-12" *ngFor="let type of fiveType">
+          <legend>{{type}}</legend>
+          <div *ngFor="let word of fiveWords[type]" (click)="selectedFirstWord(word)"
+            class="item {{firstWord&&(firstWord.word==word.word)?'active':''}}">
+            {{startName}}{{word.word}}</div>
+        </fieldset>
+        <span class="space-1"></span>
+      </ng-container>
+    </ng-container>
+  </app-shrink>
+  <app-shrink #secondWordShrink *ngIf="currentFortune">
+    <h3 shrink-title>第二個字<span class="selected"></span></h3>
+    <ng-container *ngIf="secondWords">
+      <ng-container *ngFor="let fiveWords of secondWords;let i = index;">
+        <h3>
+          筆劃：{{secondNums[i]}}
+        </h3>
+        <fieldset class="cui-col-xs32-12" *ngFor="let type of fiveType">
+          <legend>{{type}}</legend>
+          <div *ngFor="let word of fiveWords[type]" (click)="selectedSecondWord(word)"
+            class="item {{secondWord&&(secondWord.word==word.word)?'active':''}}">
+            {{startName}}{{firstWord.word}}{{word.word}}</div>
+        </fieldset>
+        <span class="space-1"></span>
+      </ng-container>
+    </ng-container>
+  </app-shrink>
+</div>
