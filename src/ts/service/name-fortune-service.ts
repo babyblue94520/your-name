@@ -1,30 +1,68 @@
-import { NameFortunes, NameNumFortunes } from 'ts/data/word/name-fortunes';
-import { NameFortune, NameNumFortune } from 'ts/data/entity/entity';
+import { NameFortunes, NameNumFortunes, NameFortuneSociality, NameFortuneBasics, NameFortuneSuccess, NameSicks } from 'ts/data/word/name-fortunes';
+import { NameFortune, NameNumFortune, NameFortuneOther, NameFortuneSick } from 'ts/data/entity/entity';
 import { IAjaxManagerResultCallback } from '@cui/core';
 import { SortUtil } from 'ts/util/sort-util';
 import { Asserts } from 'ts/util/asserts';
 import { WordService } from './word-service';
 
-interface NameNumFortunesMap {
+interface INameFortunesMap {
+    [key: string]: NameFortune;
+}
+interface INameNumFortunesMap {
     [key: string]: NameNumFortune;
 }
-export const FirstNameFortunes = {};
 
-export const NameNumFortunesMap: NameNumFortunesMap = {};
+interface INameFortuneOtherMap {
+    [key: string]: NameFortuneOther;
+}
 
+interface INameFortuneSickMap {
+    [key: string]: NameFortuneSick;
+}
 
+export const NameFortunesMap: INameFortunesMap = {};
+export const FirstTypeFortunes = {};
+
+export const NameNumFortunesMap: INameNumFortunesMap = {};
+
+export const NameFortuneBasicsMap: INameFortuneOtherMap = {};
+export const NameFortuneSuccessMap: INameFortuneOtherMap = {};
+export const NameFortuneSocialityMap: INameFortuneOtherMap = {};
+export const NameFortuneSickMap: INameFortuneSickMap = {};
 
 NameFortunes.forEach(f => {
     let array;
-    if (!(array = FirstNameFortunes[f.num[0]])) {
-        array = (FirstNameFortunes[f.num[0]] = []);
+    if (!(array = FirstTypeFortunes[f.type[0]])) {
+        array = (FirstTypeFortunes[f.type[0]] = []);
     }
     array.push(f);
+    NameFortunesMap[f.type] = f;
 });
 
 NameNumFortunes.forEach(f => {
     NameNumFortunesMap[f.num] = f;
 });
+
+NameFortuneBasics.forEach(f => {
+    NameFortuneBasicsMap[f.type] = f;
+});
+NameFortuneSuccess.forEach(f => {
+    NameFortuneSuccessMap[f.type] = f;
+});
+NameFortuneSociality.forEach(f => {
+    NameFortuneSocialityMap[f.type] = f;
+});
+NameSicks.forEach(f => {
+    NameFortuneSickMap[f.type] = f;
+});
+export const NumTypes = ['水', '木', '木', '火', '火', '土', '土', '金', '金', '水'];
+export const TypeNums = {
+    '水': [0, 9]
+    , '木': [1, 2]
+    , '火': [3, 4]
+    , '土': [5, 6]
+    , '金': [7, 8]
+};
 
 export class NameFortuneService {
     public static findAll(formData, callback: IAjaxManagerResultCallback<NameFortune[]>) {
@@ -32,38 +70,9 @@ export class NameFortuneService {
         callback({ success: true, data: NameFortunes });
     }
 
-    public static find(firstName: string, callback: IAjaxManagerResultCallback<NameFortune[]>) {
-        Asserts.notEmpty(firstName, '姓氏不能為空');
-        Asserts.isTrue(firstName.length <= 2, '姓氏最大長度為2');
-        WordService.find(firstName, (result) => {
-            if (!result.success) {
-                callback({ success: true, message: result.message });
-            }
-            let count;
-            let ws = result.data;
-            if (ws.length > 1) {
-                // 複數姓
-                if (!ws[0]) {
-                    callback({ success: false, message: firstName[0] + ' 找不到' });
-                }
-                if (!ws[1]) {
-                    callback({ success: false, message: firstName[1] + ' 找不到' });
-                }
-                count = ws[0].num + ws[1].num;
-            } else {
-                // 單數姓
-                if (!ws[0]) {
-                    callback({ success: false, message: firstName[0] + ' 找不到' });
-                }
-                count = 1 + ws[0].num;
-            }
-            callback({ success: true, data: FirstNameFortunes[count] });
-        });
-    }
-
     public static findByNum(num: number, callback: IAjaxManagerResultCallback<NameFortune[]>) {
         Asserts.notNull(num, 'num' + Asserts.NotNullMessage);
-        callback({ success: true, data: FirstNameFortunes[num % 10] });
+        callback({ success: true, data: FirstTypeFortunes[NumTypes[num % 10]] });
     }
 }
 
@@ -139,4 +148,18 @@ function parse2() {
         }
     });
     console.log(array);
+}
+// https://m.golla.tw/xm/zs/16696_8.html
+function pars3() {
+    let ps = document.querySelectorAll('.maincontent p');
+    let array = [];
+    for (let i = 0; i < ps.length; i++) {
+        let title = ps.item(i++).innerHTML;
+        array.push({
+            num: title.replace(/(\d+).+/, '$1')
+            , luck: title.replace(/.+（(.+)）$/, '$1')
+            , content: ps.item(i++).innerHTML + '\n' + ps.item(i++).innerHTML + '\n' + ps.item(i++).innerHTML + '\n' + ps.item(i++).innerHTML
+        });
+    }
+
 }

@@ -20,6 +20,7 @@ export interface FiveTypeWords {
     '土': Word[];
     '金': Word[];
     '水': Word[];
+    '?': Word[];
 }
 
 declare var Words: Word[];
@@ -32,17 +33,19 @@ export abstract class WordHome {
 
 Words.forEach(w => {
     WordHome.wordMap[w.word] = w;
-    if (w.type) {
-        let types = WordHome.wordByNumType[w.num];
-        if (!types) {
-            types = (WordHome.wordByNumType[w.num] = {
-                '木': []
-                , '火': []
-                , '土': []
-                , '金': []
-                , '水': []
-            });
-        }
-        types[w.type].push(w);
+    let types = WordHome.wordByNumType[w.num];
+    if (!types) {
+        types = (WordHome.wordByNumType[w.num] = {
+            '木': []
+            , '火': []
+            , '土': []
+            , '金': []
+            , '水': []
+            , '?': []
+        });
     }
+    types[w.type || '?'].push(w);
+
 });
+
+console.log(WordHome.wordByNumType);

@@ -91,6 +91,7 @@ export namespace Cache {
         let _val = CUI.deepClone(defaultValue, cache[_cacheKey]);
         cache[_cacheKey] = _val;
         cacheUnloadHandlers[_cacheKey] = function () {
+            console.log(_cacheKey, _val);
             cache[_cacheKey] = _val;
         };
         // Delete property.

@@ -1,7 +1,7 @@
-import { Component, ChangeDetectorRef, ElementRef, AfterViewInit, AfterContentInit, ViewChild } from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, AfterContentInit, ViewChild } from '@angular/core';
 import { Delay, Cache } from '@cui/core';
-import { NameFortune, NameNumFortune } from 'ts/data/entity/entity';
-import { NameFortuneService, NameNumFortunesMap } from 'ts/service/name-fortune-service';
+import { NameFortune, NameNumFortune, NameFortuneOther, NameFortuneSick } from 'ts/data/entity/entity';
+import { NameFortuneService, NameNumFortunesMap, TypeNums, NameFortuneBasicsMap, NameFortuneSuccessMap, NameFortuneSocialityMap, NameFortuneSickMap } from 'ts/service/name-fortune-service';
 import { WordService } from 'ts/service/word-service';
 import { Word, FiveTypeWords } from 'ts/constant/word';
 
@@ -11,16 +11,25 @@ import { Word, FiveTypeWords } from 'ts/constant/word';
   styleUrls: ['./name-find.component.scss']
 })
 export class NameFindComponent implements AfterContentInit {
-  public fiveType = ['木', '火', '土', '金', '水'];
+  public fiveType = ['木', '火', '土', '金', '水', '?'];
   public nameFortune: NameNumFortune[] = [];
   @Cache.local('NameFind', undefined)
-  public startNameWord: Word[] = [];
+  public startNameWords: Word[] = [];
   @Cache.local('NameFind', '吳')
   public startName;
-  @Cache.local('NameFind', undefined)
   public fortunes: NameFortune[];
   @Cache.local('NameFind', undefined)
   public currentFortune: NameFortune;
+  @Cache.local('NameFind', undefined)
+  public currentFortuneBasic: NameFortuneOther;
+  @Cache.local('NameFind', undefined)
+  public currentFortuneSuccess: NameFortuneOther;
+  @Cache.local('NameFind', undefined)
+  public currentFortuneSociality: NameFortuneOther;
+  @Cache.local('NameFind', undefined)
+  public currentFortuneSick: NameFortuneSick;
+
+
   @Cache.local('NameFind', undefined)
   public firstNums: Number[];
   @Cache.local('NameFind', undefined)
@@ -37,6 +46,11 @@ export class NameFindComponent implements AfterContentInit {
   public resultElementRef: ElementRef;
   @ViewChild('option')
   public optionElementRef: ElementRef;
+
+  private luckFilter = [
+    '吉'
+    , '半吉'
+  ];
 
   constructor(private cdf: ChangeDetectorRef) {
     this.findFortunes();
@@ -73,8 +87,12 @@ export class NameFindComponent implements AfterContentInit {
     if (!this.startName) {
       this.fortunes = undefined;
       this.currentFortune = undefined;
+      this.currentFortuneBasic = undefined;
+      this.currentFortuneSuccess = undefined;
+      this.currentFortuneSociality = undefined;
+      this.currentFortuneSick = undefined;
       this.nameFortune = [];
-      this.startNameWord = [];
+      this.startNameWords = [];
       this.firstNums = undefined;
       this.secondNums = undefined;
       this.firstWords = undefined;
@@ -89,7 +107,7 @@ export class NameFindComponent implements AfterContentInit {
       }
       let count;
       let ws = result.data;
-      this.startNameWord = ws;
+      this.startNameWords = ws;
       if (ws.length > 1) {
         // 複數姓
         if (!ws[0]) {
@@ -125,6 +143,11 @@ export class NameFindComponent implements AfterContentInit {
    */
   public selectedFortune(fortune: NameFortune) {
     this.currentFortune = fortune;
+    let subType = fortune.type.substring(1);
+    this.currentFortuneBasic = NameFortuneBasicsMap[subType];
+    this.currentFortuneSuccess = NameFortuneSuccessMap[subType];
+    this.currentFortuneSociality = NameFortuneSocialityMap[subType];
+    this.currentFortuneSick = NameFortuneSickMap[fortune.type];
     this.firstNums = undefined;
     this.secondNums = undefined;
     this.firstWords = undefined;
@@ -132,15 +155,15 @@ export class NameFindComponent implements AfterContentInit {
     this.firstWord = undefined;
     this.secondWord = undefined;
     this.nameFortune.splice(1);
-    let one = Number(this.currentFortune.num[1]);
-    let last = (this.startNameWord.length > 1 ? this.startNameWord[1].num : this.startNameWord[0].num);
+    let nums = TypeNums[this.currentFortune.type[1]];
+    let last = (this.startNameWords.length > 1 ? this.startNameWords[1].num : this.startNameWords[0].num);
     this.firstNums = [];
     let c;
-    for (let i = 1; i < 31; i++) {
+    for (let i = 1; i < 34; i++) {
       c = (i + last) % 10;
-      if (c == one) {
+      if (nums.indexOf(c) != -1) {
         let luck = NameNumFortunesMap[i + last].luck;
-        if (luck == '吉' || luck == '半吉') {
+        if (this.luckFilter.indexOf(luck) != -1) {
           this.firstNums.push(i);
         }
       }
@@ -154,17 +177,29 @@ export class NameFindComponent implements AfterContentInit {
     this.firstWord = word;
     this.countNameFortune();
 
-    let two = Number(this.currentFortune.num[2]);
+    let nums = TypeNums[this.currentFortune.type[2]];
     let last = this.firstWord.num;
     this.secondNums = [];
     this.secondWord = undefined;
     let c;
     for (let i = 1; i < 31; i++) {
       c = (i + last) % 10;
-      if (c == two) {
+      if (nums.indexOf(c) != -1) {
         let luck = NameNumFortunesMap[i + last].luck;
-        if (luck == '吉' || luck == '半吉') {
-          this.secondNums.push(i);
+        if (this.luckFilter.indexOf(luck) != -1) {
+          luck = NameNumFortunesMap[i + (this.startNameWords.length > 1 ? this.startNameWords[0].num : 1)].luck;
+          if (this.luckFilter.indexOf(luck) != -1) {
+            let count = 0;
+            this.startNameWords.forEach(w => {
+              count += w.num;
+            });
+            count += last;
+            count += i;
+            luck = NameNumFortunesMap[count].luck;
+            if (this.luckFilter.indexOf(luck) != -1) {
+              this.secondNums.push(i);
+            }
+          }
         }
       }
     }
@@ -184,14 +219,14 @@ export class NameFindComponent implements AfterContentInit {
     let num = this.firstWord.num;
     let num2 = this.secondWord ? this.secondWord.num : 1;
     // 人格
-    this.nameFortune[1] = NameNumFortunesMap[num + (this.startNameWord.length > 1 ? this.startNameWord[1].num : this.startNameWord[0].num)];
+    this.nameFortune[1] = NameNumFortunesMap[num + (this.startNameWords.length > 1 ? this.startNameWords[1].num : this.startNameWords[0].num)];
     // 地格
     this.nameFortune[2] = NameNumFortunesMap[num + num2];
     // 外格
-    this.nameFortune[3] = NameNumFortunesMap[num2 + (this.startNameWord.length > 1 ? this.startNameWord[0].num : 1)];
+    this.nameFortune[3] = NameNumFortunesMap[num2 + (this.startNameWords.length > 1 ? this.startNameWords[0].num : 1)];
     // 總格
     let count = 0;
-    this.startNameWord.forEach(w => {
+    this.startNameWords.forEach(w => {
       count += w.num;
     });
     count += num;

@@ -8,6 +8,7 @@ import { NameThreeComponent } from './name-three/name-three.component';
 import { NameComponent } from './name.component';
 import { NameFindComponent } from './name-find/name-find.component';
 import { NameNumComponent } from './name-num/name-num.component';
+import { NameFortuneComponent } from './name-fortune/name-fortune.component';
 
 @NgModule({
   imports: [
@@ -21,13 +22,15 @@ import { NameNumComponent } from './name-num/name-num.component';
     , NameThreeComponent
     , NameFindComponent
     , NameNumComponent
+    , NameFortuneComponent
   ]
 })
 export class NameModule {
   public static routes: Routes = [
     {
       path: '', component: NameComponent, children: [
-        { path: '', redirectTo: NameRouteName.Three, pathMatch: 'full' },
+        { path: '', redirectTo: NameRouteName.Fortune, pathMatch: 'full' },
+        { path: NameRouteName.Fortune, component: NameFortuneComponent },
         { path: NameRouteName.Find, component: NameFindComponent },
         { path: NameRouteName.Three, component: NameThreeComponent },
         { path: NameRouteName.Num, component: NameNumComponent },

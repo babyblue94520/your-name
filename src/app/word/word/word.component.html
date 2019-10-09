@@ -26,9 +26,9 @@
     <button class="cui-button bg-dark" (click)="download()">下載</button>
   </div>
 </app-shrink>
-<!-- <div class="view-content" [appInitElement]="grid.getElement()"></div> -->
-<ng-container *ngFor="let word of words">
-  <!-- <ng-container *ngIf="show(word)"> -->
+<div class="view-content" [appInitElement]="grid.getElement()"></div>
+<!-- <ng-container *ngFor="let word of words">
+   <ng-container *ngIf="show(word)"> 
   <div class="cui-field cui-col-xs32-3">
     <input value="text" readonly [value]="word.word">
   </div>
@@ -43,7 +43,7 @@
   </div>
   <div class="cui-field">
     <textarea type="text" [(ngModel)]="word.content" rows="20"></textarea>
-  </div>
-  <!-- </ng-container> -->
-</ng-container>
+  </div> 
+  </ng-container>
+</ng-container> -->
 <app-word-dialog [onComplete]="onComplete"></app-word-dialog>

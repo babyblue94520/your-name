@@ -55,8 +55,8 @@ export class WordComponent extends BasicComponent {
   constructor() {
     super();
     this.grid = this.buildGrid();
-    // this.grid.load();
-    console.log(this.words)
+    this.grid.load();
+    console.log(this.words);
   }
 
   /**
@@ -84,7 +84,7 @@ export class WordComponent extends BasicComponent {
   public download() {
     // WordService.findAll({ sort: ['num'] }, (result) => {
     WordService.findAll({ sort: ['type'] }, (result) => {
-      console.log(this.words[0], result.data[0], Words[0], this.words[0] == result.data[0], this.words[0] == Words[0], Words[0] == result.data[0])
+      console.log(this.words[0], result.data[0], Words[0], this.words[0] == result.data[0], this.words[0] == Words[0], Words[0] == result.data[0]);
       DownloadUtil.js('words.js', 'var Words = ' + JSON.stringify(result.data) + ';');
     });
   }

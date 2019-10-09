@@ -3,7 +3,7 @@
   <app-shrink>
     <h3 shrink-title>智慧選名</h3>
     <div class="cui-row">
-      參考姓名打分網址
+      <h3>參考姓名打分網址</h3>
       <ol>
         <li><a href="https://www.lnka.tw/app/analyzename.aspx" target="_blank">靈匣網姓名測驗打分</a></li>
         <li><a href="http://v.8s8s.com/xingmingceshi_2.php" target="_blank">姓名測試評分</a></li>
@@ -15,8 +15,17 @@
       <label>姓</label>
       <div class="message">兩字</div>
     </div>
-    <ng-container *ngIf="startNameWord">
-      <ng-container *ngFor="let word of startNameWord">
+    <div class="cui-field cui-col-xs32-12">
+      名：
+      <ng-container *ngIf="firstWord">
+        <strong>{{firstWord.word}}</strong>
+      </ng-container>
+      <ng-container *ngIf="secondWord">
+        <strong>{{secondWord.word}}</strong>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="startNameWords">
+      <ng-container *ngFor="let word of startNameWords">
         <fieldset class="cui-row">
           <legend><strong>{{word.word}}</strong></legend>
           <strong>發音：</strong><span>{{word.sound}}</span>
@@ -53,29 +62,46 @@
         <strong>譯釋：</strong><span>{{secondWord.content}}</span>
       </fieldset>
     </ng-container>
-    <fieldset class="cui-row" *ngIf="currentFortune">
-      <legend><strong>三才：{{currentFortune.type}}</strong></legend>
-      {{currentFortune.content}}
-    </fieldset>
-    <fieldset class="cui-row" *ngIf="nameFortune[0]">
+    <fieldset *ngIf="nameFortune[0]">
       <legend><strong>天：{{nameFortune[0].num}}劃、[{{nameFortune[0].luck}}]</strong></legend>
-      {{nameFortune[0].content}}
+      <div [innerText]="nameFortune[0].content"></div>
     </fieldset>
-    <fieldset class="cui-row" *ngIf="nameFortune[1]">
+    <fieldset *ngIf="nameFortune[1]">
       <legend><strong>人：{{nameFortune[1].num}}劃、[{{nameFortune[1].luck}}]</strong></legend>
-      {{nameFortune[1].content}}
+      <div [innerText]="nameFortune[1].content"></div>
     </fieldset>
-    <fieldset class="cui-row" *ngIf="nameFortune[2]">
+    <fieldset *ngIf="nameFortune[2]">
       <legend><strong>地：{{nameFortune[2].num}}劃、[{{nameFortune[2].luck}}]</strong></legend>
-      {{nameFortune[2].content}}
+      <div [innerText]="nameFortune[2].content"></div>
     </fieldset>
-    <fieldset class="cui-row" *ngIf="nameFortune[3]">
+    <fieldset *ngIf="nameFortune[3]">
       <legend><strong>外：{{nameFortune[3].num}}劃、[{{nameFortune[3].luck}}]</strong></legend>
-      {{nameFortune[3].content}}
+      <div [innerText]="nameFortune[3].content"></div>
     </fieldset>
-    <fieldset class="cui-row" *ngIf="nameFortune[4]">
+    <fieldset *ngIf="nameFortune[4]">
       <legend><strong>總：{{nameFortune[4].num}}劃、[{{nameFortune[4].luck}}]</strong></legend>
-      {{nameFortune[4].content}}
+      <div [innerText]="nameFortune[4].content"></div>
+    </fieldset>
+    <fieldset *ngIf="currentFortune">
+      <legend><strong>三才：{{currentFortune.type}}、[{{currentFortune.luck}}]</strong></legend>
+
+      <fieldset *ngIf="currentFortuneBasic">
+        <legend><strong>基礎運：{{currentFortuneBasic.type}}、[{{currentFortuneBasic.luck}}]</strong></legend>
+        <div [innerText]="currentFortuneBasic.content"></div>
+      </fieldset>
+      <fieldset *ngIf="currentFortuneSuccess">
+        <legend><strong>成功運：{{currentFortuneSuccess.type}}、[{{currentFortuneSuccess.luck}}]</strong></legend>
+        <div [innerText]="currentFortuneSuccess.content"></div>
+      </fieldset>
+      <fieldset *ngIf="currentFortuneSociality">
+        <legend><strong>社交運：{{currentFortuneSociality.type}}、[{{currentFortuneSociality.luck}}]</strong></legend>
+        <div [innerText]="currentFortuneSociality.content"></div>
+      </fieldset>
+      <fieldset *ngIf="currentFortuneSick">
+        <legend><strong>凶患數病原：</strong></legend>
+        <div [innerText]="currentFortuneSick.content"></div>
+      </fieldset>
+      <div [innerText]="currentFortune.content"></div>
     </fieldset>
   </app-shrink>
 </div>
@@ -102,7 +128,7 @@
           <legend>{{type}}</legend>
           <div *ngFor="let word of fiveWords[type]" (click)="selectedFirstWord(word)"
             class="item {{firstWord&&(firstWord.word==word.word)?'active':''}}">
-            {{startName}}{{word.word}}</div>
+            {{word.word}}</div>
         </fieldset>
         <span class="space-1"></span>
       </ng-container>
@@ -119,7 +145,7 @@
           <legend>{{type}}</legend>
           <div *ngFor="let word of fiveWords[type]" (click)="selectedSecondWord(word)"
             class="item {{secondWord&&(secondWord.word==word.word)?'active':''}}">
-            {{startName}}{{firstWord.word}}{{word.word}}</div>
+            {{word.word}}</div>
         </fieldset>
         <span class="space-1"></span>
       </ng-container>

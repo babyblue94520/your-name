@@ -10,7 +10,7 @@
     <tr *ngFor="let fortune of fortunes">
       <td width="1%" align="center" nowrap>{{fortune.num}}</td>
       <td width="1%" align="center" nowrap>{{fortune.luck}}</td>
-      <td width="100%">{{fortune.content}}</td>
+      <td width="100%" [innerText]="fortune.title+'\n'+fortune.content"></td>
     </tr>
   </table>
 </div>

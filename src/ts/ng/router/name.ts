@@ -1,5 +1,6 @@
 
 export enum NameRouteName {
+    Fortune = 'fortune',
     Name = 'name',
     Find = 'find',
     Three = 'three',
@@ -8,6 +9,7 @@ export enum NameRouteName {
 }
 
 export interface NameRoute {
+    Fortune: string[];
     Name: string[];
     Find: string[];
     Three: string[];

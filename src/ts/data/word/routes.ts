@@ -76,6 +76,15 @@ export const MenuRoutes: AuthRoute[] = [
         type: 0
     },
     {
+        id: 34,
+        className: 'flaticon-mark-star',
+        name: '名字運勢',
+        sort: 0,
+        parentId: 30,
+        path: AppRoute.Name.Fortune,
+        type: 1
+    },
+    {
         id: 31,
         className: 'flaticon-search',
         name: '找名字',

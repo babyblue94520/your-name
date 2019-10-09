@@ -20,14 +20,24 @@ export interface CompanyFortune {
 
 
 export interface NameFortune {
-    num: string;
     type: string;
     luck: string;
+    title: string;
     content: string;
 }
 
 export interface NameNumFortune {
     num: number;
     luck: string;
+    title: string;
+    content: string;
+}
+export interface NameFortuneOther {
+    type: string;
+    luck: string;
+    content: string;
+}
+export interface NameFortuneSick {
+    type: string;
     content: string;
 }
